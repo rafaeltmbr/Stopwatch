@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.presentation.screens
+package com.rafaeltmbr.stopwatch.presentation.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,37 +37,32 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rafaeltmbr.stopwatch.presentation.components.ElapsedTimeSection
+import com.rafaeltmbr.stopwatch.presentation.components.Lap
+import com.rafaeltmbr.stopwatch.presentation.components.LapsSection
 import com.rafaeltmbr.stopwatch.presentation.theme.StopwatchTheme
 
-data class Time(
+private data class Time(
     val minutes: List<String>,
     val seconds: List<String>,
     val fraction: List<String>,
 )
 
-data class ElapsedTime(
-    val index: Int,
-    val time: String,
-    val diff: String,
-)
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Home(modifier: Modifier = Modifier) {
+fun HomeView(modifier: Modifier = Modifier) {
     val time = Time(
         minutes = listOf("0", "2"),
         seconds = listOf("3", "7"),
         fraction = listOf("9", "1"),
     )
 
-    val elapsedTimes = listOf(
-        ElapsedTime(index = 1, time = "01:16:35", diff = ""),
-        ElapsedTime(index = 2, time = "02:15:09", diff = "+0:58.34"),
-        ElapsedTime(index = 3, time = "02:16:11", diff = "+1:01.02"),
+    val laps = listOf(
+        Lap(index = 1, time = "01:16:35", diff = ""),
+        Lap(index = 2, time = "02:15:09", diff = "+0:58.34"),
+        Lap(index = 3, time = "02:16:11", diff = "+1:01.02"),
     )
 
-    val showSeeMore = elapsedTimes.isNotEmpty()
+    val showSeeMore = laps.isNotEmpty()
 
     Scaffold(
         topBar = {
@@ -116,8 +111,8 @@ fun Home(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.weight(1f))
 
             if (showSeeMore) {
-                ElapsedTimeSection(
-                    elapsedTimes,
+                LapsSection(
+                    laps,
                     modifier = Modifier.padding(bottom = 24.dp)
                 ) {}
             }
@@ -128,14 +123,14 @@ fun Home(modifier: Modifier = Modifier) {
 
 @Preview(showSystemUi = true)
 @Composable
-fun HomePreview() {
+private fun HomePreview() {
     StopwatchTheme {
-        Home()
+        HomeView()
     }
 }
 
 @Composable
-fun Count(
+private fun Count(
     minutes: List<String>,
     seconds: List<String>,
     fraction: List<String>,
@@ -165,7 +160,7 @@ fun Count(
 }
 
 @Composable
-fun CountLargeText(text: String, modifier: Modifier = Modifier) {
+private fun CountLargeText(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         fontSize = 96.sp,
@@ -175,7 +170,7 @@ fun CountLargeText(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CountSmallText(text: String, modifier: Modifier = Modifier) {
+private fun CountSmallText(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         fontSize = 36.sp,
@@ -186,7 +181,7 @@ fun CountSmallText(text: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun CounterPreview() {
+private fun CounterPreview() {
     StopwatchTheme {
         Count(
             minutes = listOf("0", "2"),
@@ -196,12 +191,12 @@ fun CounterPreview() {
     }
 }
 
-enum class AppButtonType {
+private enum class AppButtonType {
     START, PAUSE, RESUME, RESET, LAP
 }
 
 @Composable
-fun AppButton(type: AppButtonType, modifier: Modifier = Modifier, onClick: () -> Unit) {
+private fun AppButton(type: AppButtonType, modifier: Modifier = Modifier, onClick: () -> Unit) {
     val (icon, color, size) = when (type) {
         AppButtonType.START -> Triple(
             Icons.Outlined.PlayArrow,
@@ -235,7 +230,7 @@ fun AppButton(type: AppButtonType, modifier: Modifier = Modifier, onClick: () ->
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(80.dp)
             .clip(RoundedCornerShape(40.dp))
     ) {
@@ -261,7 +256,7 @@ fun AppButton(type: AppButtonType, modifier: Modifier = Modifier, onClick: () ->
 
 @Preview(showBackground = true)
 @Composable
-fun ButtonStartPreview() {
+private fun ButtonStartPreview() {
     StopwatchTheme {
         Box(
             modifier = Modifier
@@ -275,7 +270,7 @@ fun ButtonStartPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ButtonPausePreview() {
+private fun ButtonPausePreview() {
     StopwatchTheme {
         Box(
             modifier = Modifier
@@ -289,7 +284,7 @@ fun ButtonPausePreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ButtonResumePreview() {
+private fun ButtonResumePreview() {
     StopwatchTheme {
         Box(
             modifier = Modifier
@@ -303,7 +298,7 @@ fun ButtonResumePreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ButtonResetPreview() {
+private fun ButtonResetPreview() {
     StopwatchTheme {
         Box(
             modifier = Modifier
@@ -317,7 +312,7 @@ fun ButtonResetPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ButtonLapPreview() {
+private fun ButtonLapPreview() {
     StopwatchTheme {
         Box(
             modifier = Modifier

@@ -22,13 +22,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rafaeltmbr.stopwatch.presentation.screens.ElapsedTime
 import com.rafaeltmbr.stopwatch.presentation.theme.StopwatchTheme
 
+data class Lap(
+    val index: Int,
+    val time: String,
+    val diff: String,
+)
 
 @Composable
-fun ElapsedTimeSection(
-    elapsedTimes: List<ElapsedTime>,
+fun LapsSection(
+    laps: List<Lap>,
     modifier: Modifier = Modifier,
     onSeeAll: (() -> Unit)? = null,
 ) {
@@ -70,7 +74,7 @@ fun ElapsedTimeSection(
                 .padding(horizontal = 16.dp)
                 .defaultMinSize(minHeight = 180.dp)
         ) {
-            for (e in elapsedTimes) {
+            for (e in laps) {
                 if (e.index > 0) {
                     Spacer(
                         Modifier
@@ -108,10 +112,10 @@ fun ElapsedTimeSection(
 
 @Preview(showBackground = true)
 @Composable
-fun ElapsedTimePreview() {
-    val elapsedTimes = listOf(
-        ElapsedTime(index = 1, time = "01:16:35", diff = ""),
-        ElapsedTime(index = 2, time = "02:15:09", diff = "+0:58.34"),
+private fun LapsSectionPreview() {
+    val laps = listOf(
+        Lap(index = 1, time = "01:16:35", diff = ""),
+        Lap(index = 2, time = "02:15:09", diff = "+0:58.34"),
     )
 
     StopwatchTheme {
@@ -120,18 +124,18 @@ fun ElapsedTimePreview() {
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
-            ElapsedTimeSection(elapsedTimes)
+            LapsSection(laps)
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ElapsedTimeSeeAllPreview() {
-    val elapsedTimes = listOf(
-        ElapsedTime(index = 1, time = "01:16:35", diff = ""),
-        ElapsedTime(index = 2, time = "02:15:09", diff = "+0:58.34"),
-        ElapsedTime(index = 3, time = "02:16:11", diff = "+1:01.02"),
+private fun LapsSectionSeeAllPreview() {
+    val laps = listOf(
+        Lap(index = 1, time = "01:16:35", diff = ""),
+        Lap(index = 2, time = "02:15:09", diff = "+0:58.34"),
+        Lap(index = 3, time = "02:16:11", diff = "+1:01.02"),
     )
 
     StopwatchTheme {
@@ -140,7 +144,7 @@ fun ElapsedTimeSeeAllPreview() {
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
-            ElapsedTimeSection(elapsedTimes) {}
+            LapsSection(laps) {}
         }
     }
 }
