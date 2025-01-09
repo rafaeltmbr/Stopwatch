@@ -6,6 +6,6 @@ Android Stopwatch App
 
 ## Architecture
 
-Unidirectional Dataflow
+App UML diagram of an Unidirectional Dataflow Architecture
 
 ![Architecture Diagram](./docs/assets/images/architecture-diagram.png)
