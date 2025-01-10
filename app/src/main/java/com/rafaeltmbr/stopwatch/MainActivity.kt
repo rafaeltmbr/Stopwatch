@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.rafaeltmbr.stopwatch.presentation.theme.StopwatchTheme
-import com.rafaeltmbr.stopwatch.presentation.views.HomeView
+import com.rafaeltmbr.stopwatch.infra.di.impl.ViewModelFactoryImpl
+import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
+import com.rafaeltmbr.stopwatch.infra.presentation.views.HomeView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             StopwatchTheme {
-                HomeView()
+                HomeView(viewModelFactory = ViewModelFactoryImpl())
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.presentation.views
+package com.rafaeltmbr.stopwatch.infra.presentation.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,6 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,33 +39,39 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rafaeltmbr.stopwatch.presentation.components.Lap
-import com.rafaeltmbr.stopwatch.presentation.components.LapsSection
-import com.rafaeltmbr.stopwatch.presentation.theme.StopwatchTheme
+import com.rafaeltmbr.stopwatch.domain.entities.StopwatchStatus
+import com.rafaeltmbr.stopwatch.infra.di.ViewModelFactory
+import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
+import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSectionLap
+import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
+import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewAction
+import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewLap
+import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewState
+import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewTime
 
-private data class Time(
-    val minutes: List<String>,
-    val seconds: List<String>,
-    val fraction: List<String>,
-)
+
+@Composable
+fun HomeView(
+    modifier: Modifier = Modifier,
+    viewModelFactory: ViewModelFactory,
+) {
+    val viewModel = viewModelFactory.makeHomeViewModel()
+    val state by viewModel.state.collectAsState()
+
+    HomeViewContent(
+        state = state,
+        handleAction = viewModel::handleAction,
+        modifier = modifier
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView(modifier: Modifier = Modifier) {
-    val time = Time(
-        minutes = listOf("0", "2"),
-        seconds = listOf("3", "7"),
-        fraction = listOf("9", "1"),
-    )
-
-    val laps = listOf(
-        Lap(index = 1, time = "01:16:35", diff = ""),
-        Lap(index = 2, time = "02:15:09", diff = "+0:58.34"),
-        Lap(index = 3, time = "02:16:11", diff = "+1:01.02"),
-    )
-
-    val showSeeMore = laps.isNotEmpty()
-
+private fun HomeViewContent(
+    state: HomeViewState,
+    handleAction: (HomeViewAction) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -91,49 +99,98 @@ fun HomeView(modifier: Modifier = Modifier) {
                     .padding(top = 24.dp)
             ) {
                 Count(
-                    minutes = time.minutes,
-                    seconds = time.seconds,
-                    fraction = time.fraction,
+                    time = state.time,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 24.dp)
                 )
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    AppButton(type = AppButtonType.RESET) {}
-                    AppButton(type = AppButtonType.START) {}
+                when (state.status) {
+                    StopwatchStatus.INITIAL ->
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            AppButton(
+                                type = AppButtonType.START,
+                                onClick = { handleAction(HomeViewAction.Start) }
+                            )
+                        }
+
+                    StopwatchStatus.PAUSED ->
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            AppButton(
+                                type = AppButtonType.RESET,
+                                onClick = { handleAction(HomeViewAction.Reset) }
+                            )
+                            AppButton(
+                                type = AppButtonType.RESUME,
+                                onClick = { handleAction(HomeViewAction.Resume) }
+                            )
+                        }
+
+                    StopwatchStatus.RUNNING ->
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            AppButton(
+                                type = AppButtonType.PAUSE,
+                                onClick = { handleAction(HomeViewAction.Pause) }
+                            )
+                            AppButton(
+                                type = AppButtonType.LAP,
+                                onClick = { handleAction(HomeViewAction.Lap) }
+                            )
+                        }
                 }
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (showSeeMore) {
+            if (state.showSeeMore) {
                 LapsSection(
-                    laps,
-                    modifier = Modifier.padding(bottom = 24.dp)
-                ) {}
+                    laps = state.laps.map {
+                        LapsSectionLap(index = it.index, time = it.time, diff = it.diff)
+                    },
+                    modifier = Modifier.padding(bottom = 24.dp),
+                    onSeeAll = { handleAction(HomeViewAction.SeeAll) }
+                )
             }
         }
     }
 }
 
-
 @Preview(showSystemUi = true)
 @Composable
-private fun HomePreview() {
+private fun HomeViewContentPreview() {
     StopwatchTheme {
-        HomeView()
+        HomeViewContent(
+            state = HomeViewState(
+                status = StopwatchStatus.INITIAL,
+                time = HomeViewTime(
+                    minutes = listOf("0", "3"),
+                    seconds = listOf("4", "1"),
+                    fraction = listOf("9", "3")
+                ),
+                laps = listOf(
+                    HomeViewLap(index = 1, time = "01:16.35", diff = ""),
+                    HomeViewLap(index = 2, time = "02:21.52", diff = "+01:05.17"),
+                    HomeViewLap(index = 2, time = "03:20.11", diff = "+00:58.59"),
+                ),
+                showSeeMore = true,
+            ),
+            handleAction = {},
+        )
     }
 }
 
 @Composable
 private fun Count(
-    minutes: List<String>,
-    seconds: List<String>,
-    fraction: List<String>,
+    time: HomeViewTime,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -141,19 +198,19 @@ private fun Count(
         horizontalArrangement = Arrangement.Center,
         modifier = modifier
     ) {
-        for (e in minutes) {
+        for (e in time.minutes) {
             CountLargeText(text = e, modifier = Modifier.width(54.dp))
         }
 
         CountLargeText(text = ":")
 
-        for (e in seconds) {
+        for (e in time.seconds) {
             CountLargeText(text = e, modifier = Modifier.width(54.dp))
         }
 
         CountSmallText(text = ".")
 
-        for (e in fraction) {
+        for (e in time.fraction) {
             CountSmallText(text = e, modifier = Modifier.width(21.dp))
         }
     }
@@ -184,9 +241,11 @@ private fun CountSmallText(text: String, modifier: Modifier = Modifier) {
 private fun CounterPreview() {
     StopwatchTheme {
         Count(
-            minutes = listOf("0", "2"),
-            seconds = listOf("4", "1"),
-            fraction = listOf("9", "3")
+            time = HomeViewTime(
+                minutes = listOf("0", "2"),
+                seconds = listOf("4", "1"),
+                fraction = listOf("9", "3")
+            )
         )
     }
 }

@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.presentation.views
+package com.rafaeltmbr.stopwatch.infra.presentation.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -27,9 +27,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rafaeltmbr.stopwatch.presentation.components.Lap
-import com.rafaeltmbr.stopwatch.presentation.components.LapsSection
-import com.rafaeltmbr.stopwatch.presentation.theme.StopwatchTheme
+import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
+import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSectionLap
+import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
+
+private data class Lap(
+    val index: Int,
+    val time: String,
+    val diff: String
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +43,7 @@ fun LapsView(modifier: Modifier = Modifier) {
     val currentTime = "04:17.98"
     val isRunning = true
 
-    val elapsedTimes = listOf(
+    val laps = listOf(
         Lap(index = 1, time = "01:16:35", diff = ""),
         Lap(index = 2, time = "02:15:09", diff = "+0:58.34"),
         Lap(index = 3, time = "02:16:11", diff = "+1:01.02"),
@@ -98,7 +104,16 @@ fun LapsView(modifier: Modifier = Modifier) {
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            LapsSection(elapsedTimes, modifier = Modifier.padding(vertical = 24.dp))
+            LapsSection(
+                laps = laps.map {
+                    LapsSectionLap(
+                        index = it.index,
+                        time = it.time,
+                        diff = it.diff
+                    )
+                },
+                modifier = Modifier.padding(vertical = 24.dp)
+            )
         }
     }
 }

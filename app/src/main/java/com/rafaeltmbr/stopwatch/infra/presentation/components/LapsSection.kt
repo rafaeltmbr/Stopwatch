@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.presentation.components
+package com.rafaeltmbr.stopwatch.infra.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -22,17 +22,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.rafaeltmbr.stopwatch.presentation.theme.StopwatchTheme
+import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
 
-data class Lap(
+data class LapsSectionLap(
     val index: Int,
     val time: String,
-    val diff: String,
+    val diff: String
 )
 
 @Composable
 fun LapsSection(
-    laps: List<Lap>,
+    laps: List<LapsSectionLap>,
     modifier: Modifier = Modifier,
     onSeeAll: (() -> Unit)? = null,
 ) {
@@ -72,6 +72,7 @@ fun LapsSection(
                 .clip(RoundedCornerShape(24.dp))
                 .background(color = MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 16.dp)
+                .fillMaxWidth()
                 .defaultMinSize(minHeight = 180.dp)
         ) {
             for (e in laps) {
@@ -113,9 +114,9 @@ fun LapsSection(
 @Preview(showBackground = true)
 @Composable
 private fun LapsSectionPreview() {
-    val laps = listOf(
-        Lap(index = 1, time = "01:16:35", diff = ""),
-        Lap(index = 2, time = "02:15:09", diff = "+0:58.34"),
+    val lapsSectionLaps = listOf(
+        LapsSectionLap(index = 1, time = "01:16:35", diff = ""),
+        LapsSectionLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
     )
 
     StopwatchTheme {
@@ -124,7 +125,7 @@ private fun LapsSectionPreview() {
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
-            LapsSection(laps)
+            LapsSection(lapsSectionLaps)
         }
     }
 }
@@ -132,10 +133,10 @@ private fun LapsSectionPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun LapsSectionSeeAllPreview() {
-    val laps = listOf(
-        Lap(index = 1, time = "01:16:35", diff = ""),
-        Lap(index = 2, time = "02:15:09", diff = "+0:58.34"),
-        Lap(index = 3, time = "02:16:11", diff = "+1:01.02"),
+    val lapsSectionLaps = listOf(
+        LapsSectionLap(index = 1, time = "01:16:35", diff = ""),
+        LapsSectionLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
+        LapsSectionLap(index = 3, time = "02:16:11", diff = "+1:01.02"),
     )
 
     StopwatchTheme {
@@ -144,7 +145,7 @@ private fun LapsSectionSeeAllPreview() {
                 .background(color = MaterialTheme.colorScheme.background)
                 .padding(16.dp)
         ) {
-            LapsSection(laps) {}
+            LapsSection(lapsSectionLaps) {}
         }
     }
 }
