@@ -14,7 +14,6 @@ App UML diagram of an Unidirectional Dataflow Architecture
 
 During architecture implementation, some exceptions were found:
 
-- On Android, *ViewModel* depends on the platform because, the `ViewModel` superclass must
-  be extended. Otherwise, coroutine scopes WILL NOT be lifecycle sensitive. This platform dependency
-  prevents the *ViewModel* to be unit tested. Instrumentation tests are an alternative to unit
-  tests.
+- On Android, *ViewModel* depends on platform specific code, because the
+  `androidx.lifecycle.ViewModel` base class must be extended. Otherwise, coroutines won't be
+  lifecycle sensitive, possibly leading to memory leaks or unwanted background process running.
