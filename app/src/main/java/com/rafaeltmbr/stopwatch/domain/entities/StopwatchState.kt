@@ -2,6 +2,6 @@ package com.rafaeltmbr.stopwatch.domain.entities
 
 data class StopwatchState(
     val status: Status,
-    val time: Float,
+    val milliseconds: Long,
     val laps: List<Lap>
 )

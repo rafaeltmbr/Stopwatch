@@ -1,5 +1,5 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.mappers
 
 interface StringTimeMapper {
-    fun mapToStringTime(seconds: Float): String
+    fun mapToStringTime(milliseconds: Long): String
 }
