@@ -1,24 +1,15 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.view_models
 
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchStatus
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
 import kotlinx.coroutines.flow.StateFlow
 
-data class HomeViewTime(
-    val minutes: List<String>,
-    val seconds: List<String>,
-    val fraction: List<String>
-)
-
-data class HomeViewLap(
-    val index: Int,
-    val time: String,
-    val diff: String
-)
 
 data class HomeViewState(
     val status: StopwatchStatus,
-    val time: HomeViewTime,
-    val laps: List<HomeViewLap>,
+    val time: ViewTime,
+    val laps: List<ViewLap>,
     val showSeeMore: Boolean
 )
 

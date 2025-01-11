@@ -22,17 +22,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
-
-data class LapsSectionLap(
-    val index: Int,
-    val time: String,
-    val diff: String
-)
 
 @Composable
 fun LapsSection(
-    laps: List<LapsSectionLap>,
+    laps: List<ViewLap>,
     modifier: Modifier = Modifier,
     onSeeAll: (() -> Unit)? = null,
 ) {
@@ -115,8 +110,8 @@ fun LapsSection(
 @Composable
 private fun LapsSectionPreview() {
     val lapsSectionLaps = listOf(
-        LapsSectionLap(index = 1, time = "01:16:35", diff = ""),
-        LapsSectionLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
+        ViewLap(index = 1, time = "01:16:35", diff = ""),
+        ViewLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
     )
 
     StopwatchTheme {
@@ -134,9 +129,9 @@ private fun LapsSectionPreview() {
 @Composable
 private fun LapsSectionSeeAllPreview() {
     val lapsSectionLaps = listOf(
-        LapsSectionLap(index = 1, time = "01:16:35", diff = ""),
-        LapsSectionLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
-        LapsSectionLap(index = 3, time = "02:16:11", diff = "+1:01.02"),
+        ViewLap(index = 1, time = "01:16:35", diff = ""),
+        ViewLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
+        ViewLap(index = 3, time = "02:16:11", diff = "+1:01.02"),
     )
 
     StopwatchTheme {

@@ -28,14 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
-import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSectionLap
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
 
-private data class Lap(
-    val index: Int,
-    val time: String,
-    val diff: String
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,10 +39,10 @@ fun LapsView(modifier: Modifier = Modifier) {
     val isRunning = true
 
     val laps = listOf(
-        Lap(index = 1, time = "01:16:35", diff = ""),
-        Lap(index = 2, time = "02:15:09", diff = "+0:58.34"),
-        Lap(index = 3, time = "02:16:11", diff = "+1:01.02"),
-        Lap(index = 4, time = "03:15:21", diff = "+0:59.10"),
+        ViewLap(index = 1, time = "01:16:35", diff = ""),
+        ViewLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
+        ViewLap(index = 3, time = "02:16:11", diff = "+1:01.02"),
+        ViewLap(index = 4, time = "03:15:21", diff = "+0:59.10"),
     )
 
     Scaffold(
@@ -105,13 +100,7 @@ fun LapsView(modifier: Modifier = Modifier) {
                 .verticalScroll(rememberScrollState())
         ) {
             LapsSection(
-                laps = laps.map {
-                    LapsSectionLap(
-                        index = it.index,
-                        time = it.time,
-                        diff = it.diff
-                    )
-                },
+                laps = laps,
                 modifier = Modifier.padding(vertical = 24.dp)
             )
         }

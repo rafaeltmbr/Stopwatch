@@ -42,12 +42,11 @@ import androidx.compose.ui.unit.sp
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchStatus
 import com.rafaeltmbr.stopwatch.infra.di.ViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
-import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSectionLap
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewAction
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewState
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewTime
 
 
 @Composable
@@ -153,9 +152,7 @@ private fun HomeViewContent(
 
             if (state.showSeeMore) {
                 LapsSection(
-                    laps = state.laps.map {
-                        LapsSectionLap(index = it.index, time = it.time, diff = it.diff)
-                    },
+                    laps = state.laps,
                     modifier = Modifier.padding(bottom = 24.dp),
                     onSeeAll = { handleAction(HomeViewAction.SeeAll) }
                 )
@@ -171,15 +168,15 @@ private fun HomeViewContentPreview() {
         HomeViewContent(
             state = HomeViewState(
                 status = StopwatchStatus.INITIAL,
-                time = HomeViewTime(
+                time = ViewTime(
                     minutes = listOf("0", "3"),
                     seconds = listOf("4", "1"),
                     fraction = listOf("9", "3")
                 ),
                 laps = listOf(
-                    HomeViewLap(index = 1, time = "01:16.35", diff = ""),
-                    HomeViewLap(index = 2, time = "02:21.52", diff = "+01:05.17"),
-                    HomeViewLap(index = 2, time = "03:20.11", diff = "+00:58.59"),
+                    ViewLap(index = 1, time = "01:16.35", diff = ""),
+                    ViewLap(index = 2, time = "02:21.52", diff = "+01:05.17"),
+                    ViewLap(index = 2, time = "03:20.11", diff = "+00:58.59"),
                 ),
                 showSeeMore = true,
             ),
@@ -190,7 +187,7 @@ private fun HomeViewContentPreview() {
 
 @Composable
 private fun Count(
-    time: HomeViewTime,
+    time: ViewTime,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -241,7 +238,7 @@ private fun CountSmallText(text: String, modifier: Modifier = Modifier) {
 private fun CounterPreview() {
     StopwatchTheme {
         Count(
-            time = HomeViewTime(
+            time = ViewTime(
                 minutes = listOf("0", "2"),
                 seconds = listOf("4", "1"),
                 fraction = listOf("9", "3")
