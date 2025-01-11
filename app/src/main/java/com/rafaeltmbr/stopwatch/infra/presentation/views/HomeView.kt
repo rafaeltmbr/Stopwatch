@@ -39,7 +39,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rafaeltmbr.stopwatch.domain.entities.StopwatchStatus
+import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.di.ViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
@@ -105,7 +105,7 @@ private fun HomeViewContent(
                 )
 
                 when (state.status) {
-                    StopwatchStatus.INITIAL ->
+                    Status.INITIAL ->
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier.fillMaxWidth()
@@ -116,7 +116,7 @@ private fun HomeViewContent(
                             )
                         }
 
-                    StopwatchStatus.PAUSED ->
+                    Status.PAUSED ->
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier.fillMaxWidth()
@@ -131,7 +131,7 @@ private fun HomeViewContent(
                             )
                         }
 
-                    StopwatchStatus.RUNNING ->
+                    Status.RUNNING ->
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             modifier = Modifier.fillMaxWidth()
@@ -167,7 +167,7 @@ private fun HomeViewContentPreview() {
     StopwatchTheme {
         HomeViewContent(
             state = HomeViewState(
-                status = StopwatchStatus.INITIAL,
+                status = Status.INITIAL,
                 time = ViewTime(
                     minutes = listOf("0", "3"),
                     seconds = listOf("4", "1"),

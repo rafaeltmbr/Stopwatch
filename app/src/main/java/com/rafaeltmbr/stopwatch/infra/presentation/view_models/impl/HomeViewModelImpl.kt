@@ -1,7 +1,7 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.view_models.impl
 
 import androidx.lifecycle.ViewModel
-import com.rafaeltmbr.stopwatch.domain.entities.StopwatchStatus
+import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewAction
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 class HomeViewModelImpl : ViewModel(), HomeViewModel {
     private val _state = MutableStateFlow(
         HomeViewState(
-            status = StopwatchStatus.INITIAL,
+            status = Status.INITIAL,
             time = ViewTime(
                 minutes = listOf("0", "0"),
                 seconds = listOf("0", "0"),

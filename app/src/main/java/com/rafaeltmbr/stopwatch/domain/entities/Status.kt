@@ -1,6 +1,6 @@
 package com.rafaeltmbr.stopwatch.domain.entities
 
-enum class StopwatchStatus {
+enum class Status {
     INITIAL,
     RUNNING,
     PAUSED,
