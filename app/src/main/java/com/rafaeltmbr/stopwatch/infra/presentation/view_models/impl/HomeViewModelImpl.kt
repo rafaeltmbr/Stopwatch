@@ -1,17 +1,31 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.view_models.impl
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.domain.entities.Status
+import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
+import com.rafaeltmbr.stopwatch.domain.stores.StateStore
+import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
+import com.rafaeltmbr.stopwatch.infra.presentation.mappers.StringTimeMapper
+import com.rafaeltmbr.stopwatch.infra.presentation.mappers.ViewTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewAction
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class HomeViewModelImpl : ViewModel(), HomeViewModel {
-    private val _state = MutableStateFlow(
+class HomeViewModelImpl(
+    private val startStopwatchUseCase: StartStopwatchUseCase,
+    stopwatchStore: StateStore<StopwatchState>,
+    viewTimeMapper: ViewTimeMapper,
+    stringTimeMapper: StringTimeMapper
+) : ViewModel(), HomeViewModel {
+    private var _state: MutableStateFlow<HomeViewState> = MutableStateFlow(
         HomeViewState(
             status = Status.INITIAL,
             time = ViewTime(
@@ -24,17 +38,40 @@ class HomeViewModelImpl : ViewModel(), HomeViewModel {
         )
     )
 
+    init {
+        viewModelScope.launch {
+            stopwatchStore.state.collect { stopwatchState ->
+                _state.update { currentState ->
+                    currentState.copy(
+                        status = stopwatchState.status,
+                        laps = stopwatchState.laps.map {
+                            ViewLap(
+                                index = it.index,
+                                time = stringTimeMapper.mapToStringTime(it.time),
+                                diff = stringTimeMapper.mapToStringTime(it.diff)
+                            )
+                        },
+                        time = viewTimeMapper.mapToViewTime(stopwatchState.milliseconds),
+                    )
+                }
+            }
+        }
+    }
+
+
     override val state: StateFlow<HomeViewState>
         get() = _state.asStateFlow()
 
     override fun handleAction(action: HomeViewAction) {
-        when (action) {
-            HomeViewAction.Start -> TODO("Implement start")
-            HomeViewAction.Pause -> TODO("Implement pause")
-            HomeViewAction.Resume -> TODO("Implement resume")
-            HomeViewAction.Reset -> TODO("Implement reset")
-            HomeViewAction.Lap -> TODO("Implement lap")
-            HomeViewAction.SeeAll -> TODO("Implement see all")
+        viewModelScope.launch {
+            when (action) {
+                HomeViewAction.Start -> startStopwatchUseCase.execute()
+                HomeViewAction.Pause -> TODO("Implement pause")
+                HomeViewAction.Resume -> TODO("Implement resume")
+                HomeViewAction.Reset -> TODO("Implement reset")
+                HomeViewAction.Lap -> TODO("Implement lap")
+                HomeViewAction.SeeAll -> TODO("Implement see all")
+            }
         }
     }
 }

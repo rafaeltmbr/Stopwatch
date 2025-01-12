@@ -17,7 +17,6 @@ class TimerServiceImpl(
 ) : TimerService {
     private val _state = MutableStateFlow(TimerState(isRunning = false, milliseconds = 0L))
     private var timerJob: Job? = null
-    private var startTime = 0L
 
     override val state: StateFlow<TimerState> = _state.asStateFlow()
 
@@ -25,13 +24,14 @@ class TimerServiceImpl(
         if (_state.value.isRunning) return
 
         _state.update { it.copy(isRunning = true) }
-        startTime = System.currentTimeMillis()
 
         timerJob = coroutineScope.launch {
             while (_state.value.isRunning) {
+                val startTime = System.currentTimeMillis()
                 delay(10)
-                val milliseconds = System.currentTimeMillis() - startTime
-                _state.update { it.copy(milliseconds = milliseconds) }
+
+                val timeDiff = System.currentTimeMillis() - startTime
+                _state.update { it.copy(milliseconds = it.milliseconds + timeDiff) }
             }
         }
     }
