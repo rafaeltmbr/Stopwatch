@@ -38,4 +38,26 @@ class ResetStopwatchUseCaseImplTest {
         Assert.assertEquals(Status.INITIAL, store.state.value.status)
         Assert.assertFalse(service.state.value.isRunning)
     }
+
+    @Test
+    fun reset_shouldNotResetStopwatchIsAlreadyRunning() = runTest {
+        val initial = StopwatchState(
+            status = Status.INITIAL,
+            milliseconds = 0L,
+            laps = emptyList()
+        )
+
+        val store = MutableStateStoreImpl(initial)
+        val service = TimerServiceImpl()
+        val startStopwatch = StartStopwatchUseCaseImpl(store, service)
+        val resetStopwatch = ResetStopwatchUseCaseImpl(store, service)
+
+        startStopwatch.execute()
+        Assert.assertEquals(Status.RUNNING, store.state.value.status)
+        Assert.assertTrue(service.state.value.isRunning)
+
+        resetStopwatch.execute()
+        Assert.assertEquals(Status.RUNNING, store.state.value.status)
+        Assert.assertTrue(service.state.value.isRunning)
+    }
 }

@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.rafaeltmbr.stopwatch.infra.di.impl.ViewModelFactoryImpl
+import androidx.compose.runtime.rememberCoroutineScope
+import com.rafaeltmbr.stopwatch.infra.di.impl.ViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
 import com.rafaeltmbr.stopwatch.infra.presentation.views.HomeView
 
@@ -13,8 +14,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val viewModelFactory = ViewModelFactory(
+                coroutineScope = rememberCoroutineScope()
+            )
+            
             StopwatchTheme {
-                HomeView(viewModelFactory = ViewModelFactoryImpl())
+                HomeView(homeViewModelFactory = viewModelFactory)
             }
         }
     }

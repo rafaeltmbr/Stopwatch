@@ -32,4 +32,21 @@ class PauseStopwatchUseCaseImplTest {
         Assert.assertEquals(Status.PAUSED, store.state.value.status)
         Assert.assertFalse(service.state.value.isRunning)
     }
+
+    @Test
+    fun pause_shouldNotPauseWhenStopwatchIsNotRunning() = runTest {
+        val initial = StopwatchState(
+            status = Status.INITIAL,
+            milliseconds = 0L,
+            laps = emptyList()
+        )
+
+        val store = MutableStateStoreImpl(initial)
+        val service = TimerServiceImpl()
+        val pauseStopwatch = PauseStopwatchUseCaseImpl(store, service)
+
+        pauseStopwatch.execute()
+        Assert.assertEquals(Status.INITIAL, store.state.value.status)
+        Assert.assertFalse(service.state.value.isRunning)
+    }
 }

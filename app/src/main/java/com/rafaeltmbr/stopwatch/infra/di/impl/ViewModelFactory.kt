@@ -11,42 +11,51 @@ import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.PauseStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.ResetStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
-import com.rafaeltmbr.stopwatch.infra.di.ViewModelFactory
+import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.TimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.impl.HomeViewModelImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class ViewModelFactoryImpl(
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
-) : ViewModelFactory {
+class ViewModelFactory(
+    coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+) : HomeViewModelFactory {
+    private val stopwatchStore = MutableStateStoreImpl(
+        StopwatchState(
+            status = Status.INITIAL,
+            milliseconds = 0L,
+            laps = emptyList()
+        )
+    )
+
+    private val timeMapper = TimeMapper()
+    private val timerService = TimerServiceImpl(coroutineScope)
+    private val startStopwatchUseCase = StartStopwatchUseCaseImpl(
+        store = stopwatchStore,
+        timerService = timerService,
+    )
+    private val pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(
+        store = stopwatchStore,
+        timerService = timerService
+    )
+    private val resetStopwatchUseCase = ResetStopwatchUseCaseImpl(
+        store = stopwatchStore,
+        timerService = timerService
+    )
+
+    init {
+        coroutineScope.launch {
+            timerService.state.collect { timerState ->
+                stopwatchStore.update { it.copy(milliseconds = timerState.milliseconds) }
+            }
+        }
+    }
+
     @Composable
     override fun makeHomeViewModel(
     ): HomeViewModel {
-        val stopwatchStore = MutableStateStoreImpl(
-            StopwatchState(
-                status = Status.INITIAL,
-                milliseconds = 0L,
-                laps = emptyList()
-            )
-        )
-
-        val timeMapper = TimeMapper()
-        val timerService = TimerServiceImpl(coroutineScope)
-        val startStopwatchUseCase = StartStopwatchUseCaseImpl(
-            store = stopwatchStore,
-            timerService = timerService,
-            coroutineScope
-        )
-        val pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(
-            store = stopwatchStore,
-            timerService = timerService
-        )
-        val resetStopwatchUseCase = ResetStopwatchUseCaseImpl(
-            store = stopwatchStore,
-            timerService = timerService
-        )
         val factory = viewModelFactory {
             initializer {
                 HomeViewModelImpl(

@@ -40,7 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rafaeltmbr.stopwatch.domain.entities.Status
-import com.rafaeltmbr.stopwatch.infra.di.ViewModelFactory
+import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
@@ -52,9 +52,9 @@ import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewState
 @Composable
 fun HomeView(
     modifier: Modifier = Modifier,
-    viewModelFactory: ViewModelFactory,
+    homeViewModelFactory: HomeViewModelFactory,
 ) {
-    val viewModel = viewModelFactory.makeHomeViewModel()
+    val viewModel = homeViewModelFactory.makeHomeViewModel()
     val state by viewModel.state.collectAsState()
 
     HomeViewContent(

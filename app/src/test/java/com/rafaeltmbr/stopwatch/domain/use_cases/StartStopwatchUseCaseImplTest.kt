@@ -11,21 +11,6 @@ import org.junit.Test
 
 class StartStopwatchUseCaseImplTest {
     @Test
-    fun start_shouldChangeStoreStateAfterExecute() = runTest {
-        val initial = StopwatchState(
-            status = Status.INITIAL,
-            milliseconds = 0L,
-            laps = emptyList()
-        )
-
-        val store = MutableStateStoreImpl(initial.copy())
-        val service = TimerServiceImpl()
-        StartStopwatchUseCaseImpl(store, service)
-
-        Assert.assertEquals(initial, store.state.value)
-    }
-
-    @Test
     fun start_shouldExecuteTimerAndUpdateStateStore() = runTest {
         val initial = StopwatchState(
             status = Status.INITIAL,
@@ -37,11 +22,25 @@ class StartStopwatchUseCaseImplTest {
         val service = TimerServiceImpl()
         val useCase = StartStopwatchUseCaseImpl(store, service)
 
-        Assert.assertEquals(initial, store.state.value)
-        Assert.assertFalse(service.state.value.isRunning)
+        useCase.execute()
+        Assert.assertEquals(Status.RUNNING, store.state.value.status)
+        Assert.assertTrue(service.state.value.isRunning)
+    }
+
+    @Test
+    fun start_shouldIgnoreStartWhenStopwatchIsAlreadyRunning() = runTest {
+        val initial = StopwatchState(
+            status = Status.INITIAL,
+            milliseconds = 0L,
+            laps = emptyList()
+        )
+
+        val store = MutableStateStoreImpl(initial)
+        val service = TimerServiceImpl()
+        val useCase = StartStopwatchUseCaseImpl(store, service)
 
         useCase.execute()
-
+        useCase.execute()
         Assert.assertEquals(Status.RUNNING, store.state.value.status)
         Assert.assertTrue(service.state.value.isRunning)
     }
