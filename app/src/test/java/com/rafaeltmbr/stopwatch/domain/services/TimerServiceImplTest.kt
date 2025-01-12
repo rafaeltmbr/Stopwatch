@@ -23,27 +23,33 @@ class TimerServiceImplTest {
 
     @Test
     fun start_shouldStartTimer() = runTest {
-        val service = TimerServiceImpl(coroutineScope = this)
+        val service = TimerServiceImpl(
+            coroutineScope = this,
+            currentMillisecondsCallback = testScheduler::currentTime
+        )
         service.start()
         Assert.assertTrue(service.state.value.isRunning)
 
-        delay(1_000L)
+        delay(1_050L)
         service.pause()
         runCurrent()
-        Assert.assertTrue(service.state.value.milliseconds > 1L)
+        Assert.assertTrue(service.state.value.milliseconds > 1_000L)
     }
 
     @Test
     fun start_shouldPauseTimer() = runTest {
-        val service = TimerServiceImpl(coroutineScope = this)
+        val service = TimerServiceImpl(
+            coroutineScope = this,
+            currentMillisecondsCallback = testScheduler::currentTime
+        )
 
         service.start()
-        delay(1_000L)
+        delay(1_050L)
         service.pause()
         runCurrent()
 
         Assert.assertFalse(service.state.value.isRunning)
-        Assert.assertTrue(service.state.value.milliseconds > 1L)
+        Assert.assertTrue(service.state.value.milliseconds > 1_000L)
     }
 
     @Test
@@ -62,15 +68,18 @@ class TimerServiceImplTest {
 
     @Test
     fun start_shouldNotResetWhileRunning() = runTest {
-        val service = TimerServiceImpl(coroutineScope = this)
+        val service = TimerServiceImpl(
+            coroutineScope = this,
+            currentMillisecondsCallback = testScheduler::currentTime
+        )
 
         service.start()
-        delay(1_000L)
+        delay(1_050L)
         service.reset()
         Assert.assertTrue(service.state.value.isRunning)
 
         service.pause()
         runCurrent()
-        Assert.assertTrue(service.state.value.milliseconds > 1L)
+        Assert.assertTrue(service.state.value.milliseconds > 1_000L)
     }
 }

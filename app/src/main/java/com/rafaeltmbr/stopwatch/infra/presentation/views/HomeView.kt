@@ -274,7 +274,7 @@ private fun AppButton(type: AppButtonType, modifier: Modifier = Modifier, onClic
 
         AppButtonType.RESET -> Triple(
             Icons.Outlined.Refresh,
-            MaterialTheme.colorScheme.errorContainer,
+            MaterialTheme.colorScheme.tertiaryContainer,
             48.dp
         )
 

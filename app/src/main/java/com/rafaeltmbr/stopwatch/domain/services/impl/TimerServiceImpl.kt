@@ -13,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TimerServiceImpl(
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default),
+    private val currentMillisecondsCallback: () -> Long = System::currentTimeMillis
 ) : TimerService {
     private val _state = MutableStateFlow(TimerState(isRunning = false, milliseconds = 0L))
     private var timerJob: Job? = null
@@ -27,10 +28,10 @@ class TimerServiceImpl(
 
         timerJob = coroutineScope.launch {
             while (_state.value.isRunning) {
-                val startTime = System.currentTimeMillis()
+                val startTime = currentMillisecondsCallback()
                 delay(10)
 
-                val timeDiff = System.currentTimeMillis() - startTime
+                val timeDiff = currentMillisecondsCallback() - startTime
                 _state.update { it.copy(milliseconds = it.milliseconds + timeDiff) }
             }
         }

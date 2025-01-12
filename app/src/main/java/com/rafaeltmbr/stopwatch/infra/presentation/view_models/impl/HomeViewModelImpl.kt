@@ -6,6 +6,7 @@ import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.stores.StateStore
 import com.rafaeltmbr.stopwatch.domain.use_cases.PauseStopwatchUseCase
+import com.rafaeltmbr.stopwatch.domain.use_cases.ResetStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 class HomeViewModelImpl(
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val pauseStopwatchUseCase: PauseStopwatchUseCase,
+    private val resetStopwatchUseCase: ResetStopwatchUseCase,
     stopwatchStore: StateStore<StopwatchState>,
     viewTimeMapper: ViewTimeMapper,
     stringTimeMapper: StringTimeMapper
@@ -70,7 +72,7 @@ class HomeViewModelImpl(
                 HomeViewAction.Start -> startStopwatchUseCase.execute()
                 HomeViewAction.Pause -> pauseStopwatchUseCase.execute()
                 HomeViewAction.Resume -> startStopwatchUseCase.execute()
-                HomeViewAction.Reset -> TODO("Implement reset")
+                HomeViewAction.Reset -> resetStopwatchUseCase.execute()
                 HomeViewAction.Lap -> TODO("Implement lap")
                 HomeViewAction.SeeAll -> TODO("Implement see all")
             }
