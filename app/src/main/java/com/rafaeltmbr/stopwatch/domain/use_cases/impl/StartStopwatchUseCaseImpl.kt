@@ -23,7 +23,7 @@ class StartStopwatchUseCaseImpl(
     }
 
     override suspend fun execute() {
-        if (store.state.value.status == Status.RUNNING) return
+        if (timerService.state.value.isRunning) return
 
         timerService.start()
         store.update { it.copy(status = Status.RUNNING) }

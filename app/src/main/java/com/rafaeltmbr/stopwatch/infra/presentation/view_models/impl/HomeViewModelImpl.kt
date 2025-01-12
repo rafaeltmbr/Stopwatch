@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.stores.StateStore
+import com.rafaeltmbr.stopwatch.domain.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModelImpl(
     private val startStopwatchUseCase: StartStopwatchUseCase,
+    private val pauseStopwatchUseCase: PauseStopwatchUseCase,
     stopwatchStore: StateStore<StopwatchState>,
     viewTimeMapper: ViewTimeMapper,
     stringTimeMapper: StringTimeMapper
@@ -66,8 +68,8 @@ class HomeViewModelImpl(
         viewModelScope.launch {
             when (action) {
                 HomeViewAction.Start -> startStopwatchUseCase.execute()
-                HomeViewAction.Pause -> TODO("Implement pause")
-                HomeViewAction.Resume -> TODO("Implement resume")
+                HomeViewAction.Pause -> pauseStopwatchUseCase.execute()
+                HomeViewAction.Resume -> startStopwatchUseCase.execute()
                 HomeViewAction.Reset -> TODO("Implement reset")
                 HomeViewAction.Lap -> TODO("Implement lap")
                 HomeViewAction.SeeAll -> TODO("Implement see all")

@@ -8,6 +8,7 @@ import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.impl.TimerServiceImpl
 import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.domain.use_cases.impl.PauseStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.infra.di.ViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.TimeMapper
@@ -37,15 +38,19 @@ class ViewModelFactoryImpl(
             timerService = timerService,
             coroutineScope
         )
+        val pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(
+            store = stopwatchStore,
+            timerService = timerService
+        )
         val factory = viewModelFactory {
             initializer {
                 HomeViewModelImpl(
                     viewTimeMapper = timeMapper,
                     stringTimeMapper = timeMapper,
                     stopwatchStore = stopwatchStore,
-                    startStopwatchUseCase = startStopwatchUseCase
+                    startStopwatchUseCase = startStopwatchUseCase,
+                    pauseStopwatchUseCase = pauseStopwatchUseCase
                 )
-
             }
         }
 

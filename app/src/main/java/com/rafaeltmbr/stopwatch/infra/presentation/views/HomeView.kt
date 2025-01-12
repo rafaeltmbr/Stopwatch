@@ -122,12 +122,12 @@ private fun HomeViewContent(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             AppButton(
-                                type = AppButtonType.RESET,
-                                onClick = { handleAction(HomeViewAction.Reset) }
-                            )
-                            AppButton(
                                 type = AppButtonType.RESUME,
                                 onClick = { handleAction(HomeViewAction.Resume) }
+                            )
+                            AppButton(
+                                type = AppButtonType.RESET,
+                                onClick = { handleAction(HomeViewAction.Reset) }
                             )
                         }
 
@@ -268,13 +268,13 @@ private fun AppButton(type: AppButtonType, modifier: Modifier = Modifier, onClic
 
         AppButtonType.RESUME -> Triple(
             Icons.Outlined.PlayArrow,
-            MaterialTheme.colorScheme.surfaceVariant,
+            MaterialTheme.colorScheme.surface,
             60.dp
         )
 
         AppButtonType.RESET -> Triple(
             Icons.Outlined.Refresh,
-            MaterialTheme.colorScheme.surface,
+            MaterialTheme.colorScheme.errorContainer,
             48.dp
         )
 
