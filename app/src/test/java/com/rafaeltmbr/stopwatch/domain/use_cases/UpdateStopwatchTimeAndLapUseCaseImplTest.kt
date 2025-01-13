@@ -85,7 +85,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
     }
 
     @Test
-    fun update_shouldNotClassifyBestWhenItIsTheCurrentLap() = runTest {
+    fun update_shouldNotClassifyBestWhenThereIsOnlyTwoLaps() = runTest {
         val store = MutableStateStoreImpl(
             StopwatchState(
                 status = Status.RUNNING,
@@ -174,7 +174,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
-                    status = LapStatus.BEST
+                    status = LapStatus.DONE
                 )
             )
         )

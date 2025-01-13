@@ -40,9 +40,9 @@ fun LapsView(modifier: Modifier = Modifier) {
     val isRunning = true
 
     val laps = listOf(
-        ViewLap(index = 3, milliseconds = "01:16:11", status = LapStatus.CURRENT),
-        ViewLap(index = 2, milliseconds = "01:15:09", status = LapStatus.BEST),
-        ViewLap(index = 1, milliseconds = "01:16:35", status = LapStatus.WORST)
+        ViewLap(index = 3, time = "01:16:11", status = LapStatus.CURRENT),
+        ViewLap(index = 2, time = "01:15:09", status = LapStatus.BEST),
+        ViewLap(index = 1, time = "01:16:35", status = LapStatus.WORST)
     )
 
     Scaffold(

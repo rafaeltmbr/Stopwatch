@@ -4,6 +4,7 @@ import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.impl.TimerServiceImpl
 import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.domain.use_cases.impl.NewLapUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.PauseStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.ResetStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
@@ -43,6 +44,7 @@ class HomeViewModelImplTest {
             stopwatchStore = store,
             viewTimeMapper = timeMapper,
             stringTimeMapper = timeMapper,
+            newLapUseCase = NewLapUseCaseImpl(store = store)
         )
 
         val expected = HomeViewState(

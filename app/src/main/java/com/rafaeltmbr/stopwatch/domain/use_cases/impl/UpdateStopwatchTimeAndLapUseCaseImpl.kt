@@ -30,38 +30,46 @@ class UpdateStopwatchTimeAndLapUseCaseImpl(
             )
         }
 
-        var best = laps.first()
-        var worst = laps.first()
-        val current = laps.first()
         val currentLapTime = milliseconds - laps.subList(1, laps.size).sumOf { it.milliseconds }
+        val lapsWithTimeUpdated =
+            laps.map { if (it == laps.first()) it.copy(milliseconds = currentLapTime) else it }
+        return updateLapsStatuses(lapsWithTimeUpdated)
+    }
 
-        for (lap in laps) {
-            val lapTime = when (lap) {
-                current -> currentLapTime
-                else -> lap.milliseconds
-            }
-
-            if (lapTime < best.milliseconds && lap != current) {
-                best = lap
-            } else if (lapTime > worst.milliseconds && laps.size > 2) {
-                worst = lap
-            }
-        }
-
-        return laps.map {
-            Lap(
-                index = it.index,
-                milliseconds = when (it) {
-                    current -> currentLapTime
-                    else -> it.milliseconds
-                },
-                status = when (it) {
-                    current -> LapStatus.CURRENT
-                    best -> LapStatus.BEST
-                    worst -> LapStatus.WORST
-                    else -> LapStatus.DONE
+    companion object {
+        fun updateLapsStatuses(laps: List<Lap>): List<Lap> {
+            if (laps.size < 3) {
+                return laps.map {
+                    it.copy(
+                        status = if (it == laps.first()) LapStatus.CURRENT else LapStatus.DONE
+                    )
                 }
-            )
+            }
+
+            val current = laps.first()
+            var best = laps[1]
+            var worst = laps[1]
+
+            for (lap in laps.subList(1, laps.size)) {
+                if (lap.milliseconds < best.milliseconds) {
+                    best = lap
+                } else if (lap.milliseconds > worst.milliseconds && laps.size > 2) {
+                    worst = lap
+                }
+            }
+
+            return laps.map {
+                Lap(
+                    index = it.index,
+                    milliseconds = it.milliseconds,
+                    status = when (it) {
+                        current -> LapStatus.CURRENT
+                        best -> LapStatus.BEST
+                        worst -> LapStatus.WORST
+                        else -> LapStatus.DONE
+                    }
+                )
+            }
         }
     }
 }

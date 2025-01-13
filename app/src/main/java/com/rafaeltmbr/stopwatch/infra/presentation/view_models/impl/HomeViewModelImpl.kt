@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.stores.StateStore
+import com.rafaeltmbr.stopwatch.domain.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.ResetStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
@@ -25,6 +26,7 @@ class HomeViewModelImpl(
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val pauseStopwatchUseCase: PauseStopwatchUseCase,
     private val resetStopwatchUseCase: ResetStopwatchUseCase,
+    private val newLapUseCase: NewLapUseCase,
     stopwatchStore: StateStore<StopwatchState>,
     viewTimeMapper: ViewTimeMapper,
     stringTimeMapper: StringTimeMapper
@@ -51,13 +53,13 @@ class HomeViewModelImpl(
                         status = stopwatchState.status,
                         laps = stopwatchState.laps
                             .subList(
-                                fromIndex = maxOf(stopwatchState.laps.size - 3, 0),
-                                toIndex = stopwatchState.laps.size
+                                fromIndex = 0,
+                                toIndex = minOf(stopwatchState.laps.size, 3)
                             )
                             .map {
                                 ViewLap(
                                     index = it.index,
-                                    milliseconds = stringTimeMapper.mapToStringTime(it.milliseconds),
+                                    time = stringTimeMapper.mapToStringTime(it.milliseconds),
                                     status = it.status
                                 )
                             },
@@ -80,7 +82,7 @@ class HomeViewModelImpl(
                 HomeViewAction.Pause -> pauseStopwatchUseCase.execute()
                 HomeViewAction.Resume -> startStopwatchUseCase.execute()
                 HomeViewAction.Reset -> resetStopwatchUseCase.execute()
-                HomeViewAction.Lap -> TODO("Implement lap")
+                HomeViewAction.Lap -> newLapUseCase.execute()
                 HomeViewAction.SeeAll -> TODO("Implement see all")
             }
         }

@@ -1,6 +1,7 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,7 +44,10 @@ fun LapsSection(
             Spacer(modifier = Modifier.weight(1f))
 
             if (onSeeAll != null) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable(onClick = onSeeAll)
+                ) {
                     Text(
                         text = "See all",
                         style = MaterialTheme.typography.titleLarge
@@ -99,7 +103,7 @@ fun LapsSection(
                         modifier = Modifier.padding(end = 16.dp)
                     )
                     Text(
-                        text = e.milliseconds,
+                        text = e.time,
                         color = color,
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = weight)
                     )
@@ -113,8 +117,8 @@ fun LapsSection(
 @Composable
 private fun LapsSectionPreview() {
     val lapsSectionLaps = listOf(
-        ViewLap(index = 2, milliseconds = "01:15:09", status = LapStatus.CURRENT),
-        ViewLap(index = 1, milliseconds = "01:16:35", status = LapStatus.DONE),
+        ViewLap(index = 2, time = "01:15:09", status = LapStatus.CURRENT),
+        ViewLap(index = 1, time = "01:16:35", status = LapStatus.DONE),
     )
 
     StopwatchTheme {
@@ -132,9 +136,9 @@ private fun LapsSectionPreview() {
 @Composable
 private fun LapsSectionSeeAllPreview() {
     val lapsSectionLaps = listOf(
-        ViewLap(index = 3, milliseconds = "01:16:11", status = LapStatus.CURRENT),
-        ViewLap(index = 2, milliseconds = "01:15:09", status = LapStatus.BEST),
-        ViewLap(index = 1, milliseconds = "01:16:35", status = LapStatus.WORST)
+        ViewLap(index = 3, time = "01:16:11", status = LapStatus.CURRENT),
+        ViewLap(index = 2, time = "01:15:09", status = LapStatus.BEST),
+        ViewLap(index = 1, time = "01:16:35", status = LapStatus.WORST)
     )
 
     StopwatchTheme {

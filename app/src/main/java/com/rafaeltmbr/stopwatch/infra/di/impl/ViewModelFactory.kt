@@ -8,6 +8,7 @@ import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.impl.TimerServiceImpl
 import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.domain.use_cases.impl.NewLapUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.PauseStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.ResetStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
@@ -48,6 +49,9 @@ class ViewModelFactory(
     private val updateStopwatchTimeAndLapUseCase = UpdateStopwatchTimeAndLapUseCaseImpl(
         store = stopwatchStore
     )
+    private val newLapUseCase = NewLapUseCaseImpl(
+        store = stopwatchStore
+    )
 
     init {
         coroutineScope.launch {
@@ -66,7 +70,8 @@ class ViewModelFactory(
                     stopwatchStore = stopwatchStore,
                     startStopwatchUseCase = startStopwatchUseCase,
                     pauseStopwatchUseCase = pauseStopwatchUseCase,
-                    resetStopwatchUseCase = resetStopwatchUseCase
+                    resetStopwatchUseCase = resetStopwatchUseCase,
+                    newLapUseCase = newLapUseCase
                 )
             }
         }

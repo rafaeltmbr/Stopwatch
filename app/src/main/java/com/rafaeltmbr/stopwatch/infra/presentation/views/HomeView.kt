@@ -153,7 +153,7 @@ private fun HomeViewContent(
 
             if (state.showLapsSection) {
                 val onSeeAll = { handleAction(HomeViewAction.SeeAll) }
-                
+
                 LapsSection(
                     laps = state.laps,
                     modifier = Modifier.padding(bottom = 24.dp),
@@ -177,9 +177,9 @@ private fun HomeViewContentPreview() {
                     fraction = listOf("9", "3")
                 ),
                 laps = listOf(
-                    ViewLap(index = 3, milliseconds = "01:16:11", status = LapStatus.CURRENT),
-                    ViewLap(index = 2, milliseconds = "01:15:09", status = LapStatus.BEST),
-                    ViewLap(index = 1, milliseconds = "01:16:35", status = LapStatus.WORST)
+                    ViewLap(index = 3, time = "01:16:11", status = LapStatus.CURRENT),
+                    ViewLap(index = 2, time = "01:15:09", status = LapStatus.BEST),
+                    ViewLap(index = 1, time = "01:16:35", status = LapStatus.WORST)
                 ),
                 showSeeMoreLaps = true,
                 showLapsSection = true
