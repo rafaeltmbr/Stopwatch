@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
@@ -150,11 +151,13 @@ private fun HomeViewContent(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (state.showSeeMore) {
+            if (state.showLapsSection) {
+                val onSeeAll = { handleAction(HomeViewAction.SeeAll) }
+                
                 LapsSection(
                     laps = state.laps,
                     modifier = Modifier.padding(bottom = 24.dp),
-                    onSeeAll = { handleAction(HomeViewAction.SeeAll) }
+                    onSeeAll = if (state.showSeeMoreLaps) onSeeAll else null
                 )
             }
         }
@@ -174,11 +177,12 @@ private fun HomeViewContentPreview() {
                     fraction = listOf("9", "3")
                 ),
                 laps = listOf(
-                    ViewLap(index = 1, time = "01:16.35", diff = ""),
-                    ViewLap(index = 2, time = "02:21.52", diff = "+01:05.17"),
-                    ViewLap(index = 2, time = "03:20.11", diff = "+00:58.59"),
+                    ViewLap(index = 3, milliseconds = "01:16:11", status = LapStatus.CURRENT),
+                    ViewLap(index = 2, milliseconds = "01:15:09", status = LapStatus.BEST),
+                    ViewLap(index = 1, milliseconds = "01:16:35", status = LapStatus.WORST)
                 ),
-                showSeeMore = true,
+                showSeeMoreLaps = true,
+                showLapsSection = true
             ),
             handleAction = {},
         )

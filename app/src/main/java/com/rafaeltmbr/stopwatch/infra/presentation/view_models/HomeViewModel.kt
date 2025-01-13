@@ -10,7 +10,8 @@ data class HomeViewState(
     val status: Status,
     val time: ViewTime,
     val laps: List<ViewLap>,
-    val showSeeMore: Boolean
+    val showLapsSection: Boolean,
+    val showSeeMoreLaps: Boolean
 )
 
 sealed class HomeViewAction {

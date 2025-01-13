@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
@@ -39,10 +40,9 @@ fun LapsView(modifier: Modifier = Modifier) {
     val isRunning = true
 
     val laps = listOf(
-        ViewLap(index = 1, time = "01:16:35", diff = ""),
-        ViewLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
-        ViewLap(index = 3, time = "02:16:11", diff = "+1:01.02"),
-        ViewLap(index = 4, time = "03:15:21", diff = "+0:59.10"),
+        ViewLap(index = 3, milliseconds = "01:16:11", status = LapStatus.CURRENT),
+        ViewLap(index = 2, milliseconds = "01:15:09", status = LapStatus.BEST),
+        ViewLap(index = 1, milliseconds = "01:16:35", status = LapStatus.WORST)
     )
 
     Scaffold(

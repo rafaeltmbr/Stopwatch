@@ -38,7 +38,8 @@ class HomeViewModelImpl(
                 fraction = listOf("0", "0")
             ),
             laps = emptyList(),
-            showSeeMore = false
+            showLapsSection = false,
+            showSeeMoreLaps = false,
         )
     )
 
@@ -48,20 +49,26 @@ class HomeViewModelImpl(
                 _state.update { currentState ->
                     currentState.copy(
                         status = stopwatchState.status,
-                        laps = stopwatchState.laps.map {
-                            ViewLap(
-                                index = it.index,
-                                time = stringTimeMapper.mapToStringTime(it.time),
-                                diff = stringTimeMapper.mapToStringTime(it.diff)
+                        laps = stopwatchState.laps
+                            .subList(
+                                fromIndex = maxOf(stopwatchState.laps.size - 3, 0),
+                                toIndex = stopwatchState.laps.size
                             )
-                        },
+                            .map {
+                                ViewLap(
+                                    index = it.index,
+                                    milliseconds = stringTimeMapper.mapToStringTime(it.milliseconds),
+                                    status = it.status
+                                )
+                            },
                         time = viewTimeMapper.mapToViewTime(stopwatchState.milliseconds),
+                        showLapsSection = stopwatchState.status != Status.INITIAL,
+                        showSeeMoreLaps = stopwatchState.laps.size > 3,
                     )
                 }
             }
         }
     }
-
 
     override val state: StateFlow<HomeViewState>
         get() = _state.asStateFlow()

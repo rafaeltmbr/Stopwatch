@@ -22,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
 
@@ -84,6 +85,13 @@ fun LapsSection(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.height(60.dp)
                 ) {
+                    val (color, weight) = when (e.status) {
+                        LapStatus.CURRENT -> MaterialTheme.colorScheme.onSurface to FontWeight.SemiBold
+                        LapStatus.BEST -> MaterialTheme.colorScheme.primary to FontWeight.Bold
+                        LapStatus.WORST -> MaterialTheme.colorScheme.error to FontWeight.Bold
+                        LapStatus.DONE -> MaterialTheme.colorScheme.onSurface to FontWeight.SemiBold
+                    }
+
                     Text(
                         text = "#${e.index}",
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
@@ -91,14 +99,9 @@ fun LapsSection(
                         modifier = Modifier.padding(end = 16.dp)
                     )
                     Text(
-                        text = e.time,
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Text(
-                        text = e.diff,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                        style = MaterialTheme.typography.bodyLarge,
+                        text = e.milliseconds,
+                        color = color,
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = weight)
                     )
                 }
             }
@@ -110,8 +113,8 @@ fun LapsSection(
 @Composable
 private fun LapsSectionPreview() {
     val lapsSectionLaps = listOf(
-        ViewLap(index = 1, time = "01:16:35", diff = ""),
-        ViewLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
+        ViewLap(index = 2, milliseconds = "01:15:09", status = LapStatus.CURRENT),
+        ViewLap(index = 1, milliseconds = "01:16:35", status = LapStatus.DONE),
     )
 
     StopwatchTheme {
@@ -129,9 +132,9 @@ private fun LapsSectionPreview() {
 @Composable
 private fun LapsSectionSeeAllPreview() {
     val lapsSectionLaps = listOf(
-        ViewLap(index = 1, time = "01:16:35", diff = ""),
-        ViewLap(index = 2, time = "02:15:09", diff = "+0:58.34"),
-        ViewLap(index = 3, time = "02:16:11", diff = "+1:01.02"),
+        ViewLap(index = 3, milliseconds = "01:16:11", status = LapStatus.CURRENT),
+        ViewLap(index = 2, milliseconds = "01:15:09", status = LapStatus.BEST),
+        ViewLap(index = 1, milliseconds = "01:16:35", status = LapStatus.WORST)
     )
 
     StopwatchTheme {

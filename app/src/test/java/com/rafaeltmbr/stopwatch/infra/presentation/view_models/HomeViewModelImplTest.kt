@@ -53,7 +53,8 @@ class HomeViewModelImplTest {
                 fraction = listOf("0", "0"),
             ),
             laps = emptyList(),
-            showSeeMore = false
+            showLapsSection = false,
+            showSeeMoreLaps = false,
         )
 
         Assert.assertEquals(expected, viewModel.state.value)

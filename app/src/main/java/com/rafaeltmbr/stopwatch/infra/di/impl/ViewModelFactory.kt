@@ -11,6 +11,7 @@ import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.PauseStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.ResetStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
+import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapUseCaseImpl
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.TimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
@@ -44,12 +45,13 @@ class ViewModelFactory(
         store = stopwatchStore,
         timerService = timerService
     )
+    private val updateStopwatchTimeAndLapUseCase = UpdateStopwatchTimeAndLapUseCaseImpl(
+        store = stopwatchStore
+    )
 
     init {
         coroutineScope.launch {
-            timerService.state.collect { timerState ->
-                stopwatchStore.update { it.copy(milliseconds = timerState.milliseconds) }
-            }
+            timerService.state.collect(updateStopwatchTimeAndLapUseCase::execute)
         }
     }
 
