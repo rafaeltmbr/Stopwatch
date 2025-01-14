@@ -1,10 +1,9 @@
 package com.rafaeltmbr.stopwatch.domain.use_cases
 
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
-import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.services.TimerState
+import com.rafaeltmbr.stopwatch.domain.services.TimerService
 import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapUseCaseImpl
 import kotlinx.coroutines.test.runTest
@@ -24,7 +23,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
         val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
 
         useCase.execute(
-            timerState = TimerState(
+            timerState = TimerService.State(
                 isRunning = true,
                 milliseconds = 1_000L
             )
@@ -37,7 +36,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
-                    status = LapStatus.CURRENT
+                    status = Lap.Status.CURRENT
                 )
             )
         )
@@ -55,7 +54,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     )
                 )
             )
@@ -63,7 +62,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
         val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
 
         useCase.execute(
-            timerState = TimerState(
+            timerState = TimerService.State(
                 isRunning = true,
                 milliseconds = 2_000L
             )
@@ -76,7 +75,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 Lap(
                     index = 1,
                     milliseconds = 2_000L,
-                    status = LapStatus.CURRENT
+                    status = Lap.Status.CURRENT
                 )
             )
         )
@@ -94,12 +93,12 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
-                        status = LapStatus.DONE
+                        status = Lap.Status.DONE
                     ),
                     Lap(
                         index = 2,
                         milliseconds = 500L,
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     ),
                 )
             )
@@ -107,7 +106,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
         val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
 
         useCase.execute(
-            timerState = TimerState(
+            timerState = TimerService.State(
                 isRunning = true,
                 milliseconds = 1_700L
             )
@@ -120,12 +119,12 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
-                    status = LapStatus.DONE
+                    status = Lap.Status.DONE
                 ),
                 Lap(
                     index = 2,
                     milliseconds = 700L,
-                    status = LapStatus.CURRENT
+                    status = Lap.Status.CURRENT
                 ),
             )
         )
@@ -143,12 +142,12 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
-                        status = LapStatus.DONE
+                        status = Lap.Status.DONE
                     ),
                     Lap(
                         index = 2,
                         milliseconds = 1_500L,
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     ),
                 )
             )
@@ -156,7 +155,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
         val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
 
         useCase.execute(
-            timerState = TimerState(
+            timerState = TimerService.State(
                 isRunning = true,
                 milliseconds = 2_700L
             )
@@ -169,12 +168,12 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
-                    status = LapStatus.DONE
+                    status = Lap.Status.DONE
                 ),
                 Lap(
                     index = 2,
                     milliseconds = 1_700L,
-                    status = LapStatus.CURRENT
+                    status = Lap.Status.CURRENT
                 ),
             )
         )
@@ -192,22 +191,22 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     ),
                     Lap(
                         index = 2,
                         milliseconds = 800L,
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     ),
                     Lap(
                         index = 3,
                         milliseconds = 1_200L,
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     ),
                     Lap(
                         index = 4,
                         milliseconds = 1_100L,
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     ),
                 )
             )
@@ -215,7 +214,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
         val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
 
         useCase.execute(
-            timerState = TimerState(
+            timerState = TimerService.State(
                 isRunning = true,
                 milliseconds = 4_100L
             )
@@ -228,22 +227,22 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
-                    status = LapStatus.DONE
+                    status = Lap.Status.DONE
                 ),
                 Lap(
                     index = 2,
                     milliseconds = 800L,
-                    status = LapStatus.BEST
+                    status = Lap.Status.BEST
                 ),
                 Lap(
                     index = 3,
                     milliseconds = 1_200L,
-                    status = LapStatus.WORST
+                    status = Lap.Status.WORST
                 ),
                 Lap(
                     index = 4,
                     milliseconds = 1_100L,
-                    status = LapStatus.CURRENT
+                    status = Lap.Status.CURRENT
                 ),
             )
         )

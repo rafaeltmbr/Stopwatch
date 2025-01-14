@@ -1,7 +1,6 @@
 package com.rafaeltmbr.stopwatch.domain.services.impl
 
 import com.rafaeltmbr.stopwatch.domain.services.TimerService
-import com.rafaeltmbr.stopwatch.domain.services.TimerState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,10 +15,10 @@ class TimerServiceImpl(
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default),
     private val currentMillisecondsCallback: () -> Long = System::currentTimeMillis
 ) : TimerService {
-    private val _state = MutableStateFlow(TimerState(isRunning = false, milliseconds = 0L))
+    private val _state = MutableStateFlow(TimerService.State(isRunning = false, milliseconds = 0L))
     private var timerJob: Job? = null
 
-    override val state: StateFlow<TimerState> = _state.asStateFlow()
+    override val state: StateFlow<TimerService.State> = _state.asStateFlow()
 
     override fun start() {
         if (_state.value.isRunning) return
@@ -48,6 +47,6 @@ class TimerServiceImpl(
     override fun reset() {
         if (_state.value.isRunning) return
 
-        _state.update { TimerState(isRunning = false, milliseconds = 0L) }
+        _state.update { TimerService.State(isRunning = false, milliseconds = 0L) }
     }
 }

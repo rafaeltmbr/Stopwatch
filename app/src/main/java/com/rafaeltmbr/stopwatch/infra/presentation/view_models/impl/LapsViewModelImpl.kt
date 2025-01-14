@@ -10,9 +10,7 @@ import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.navigation.StackNavigator
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewAction
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewModel
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +25,7 @@ class LapsViewModelImpl(
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val newLapUseCase: NewLapUseCase
 ) : ViewModel(), LapsViewModel {
-    private var _state = MutableStateFlow(LapsViewState())
+    private var _state = MutableStateFlow(LapsViewModel.State())
 
     init {
         viewModelScope.launch {
@@ -35,14 +33,14 @@ class LapsViewModelImpl(
         }
     }
 
-    override val state: StateFlow<LapsViewState> = _state.asStateFlow()
+    override val state: StateFlow<LapsViewModel.State> = _state.asStateFlow()
 
-    override fun handleAction(action: LapsViewAction) {
+    override fun handleAction(action: LapsViewModel.Action) {
         viewModelScope.launch {
             when (action) {
-                LapsViewAction.Resume -> startStopwatchUseCase.execute()
-                LapsViewAction.Lap -> newLapUseCase.execute()
-                LapsViewAction.NavigateBack -> stackNavigator.pop()
+                LapsViewModel.Action.Resume -> startStopwatchUseCase.execute()
+                LapsViewModel.Action.Lap -> newLapUseCase.execute()
+                LapsViewModel.Action.NavigateBack -> stackNavigator.pop()
             }
         }
     }

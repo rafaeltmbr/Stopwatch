@@ -1,16 +1,15 @@
 package com.rafaeltmbr.stopwatch.domain.use_cases.impl
 
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
-import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.services.TimerState
+import com.rafaeltmbr.stopwatch.domain.services.TimerService
 import com.rafaeltmbr.stopwatch.domain.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.domain.use_cases.UpdateStopwatchTimeAndLapUseCase
 
 class UpdateStopwatchTimeAndLapUseCaseImpl(
     private val store: MutableStateStore<StopwatchState>
 ) : UpdateStopwatchTimeAndLapUseCase {
-    override suspend fun execute(timerState: TimerState) {
+    override suspend fun execute(timerState: TimerService.State) {
         store.update {
             it.copy(
                 milliseconds = timerState.milliseconds,
@@ -25,7 +24,7 @@ class UpdateStopwatchTimeAndLapUseCaseImpl(
                 Lap(
                     index = 1,
                     milliseconds = milliseconds,
-                    status = LapStatus.CURRENT
+                    status = Lap.Status.CURRENT
                 )
             )
         }
@@ -41,7 +40,7 @@ class UpdateStopwatchTimeAndLapUseCaseImpl(
             if (laps.size < 3) {
                 return laps.map {
                     it.copy(
-                        status = if (it == laps.last()) LapStatus.CURRENT else LapStatus.DONE
+                        status = if (it == laps.last()) Lap.Status.CURRENT else Lap.Status.DONE
                     )
                 }
             }
@@ -63,10 +62,10 @@ class UpdateStopwatchTimeAndLapUseCaseImpl(
                     index = it.index,
                     milliseconds = it.milliseconds,
                     status = when (it) {
-                        current -> LapStatus.CURRENT
-                        best -> LapStatus.BEST
-                        worst -> LapStatus.WORST
-                        else -> LapStatus.DONE
+                        current -> Lap.Status.CURRENT
+                        best -> Lap.Status.BEST
+                        worst -> Lap.Status.WORST
+                        else -> Lap.Status.DONE
                     }
                 )
             }

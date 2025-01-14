@@ -16,14 +16,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-data class ApplicationContainer(
-    val homeViewModelFactory: HomeViewModelFactory,
-    val lapsViewModelFactory: LapsViewModelFactory,
-    val stackNavigator: StackNavigatorImpl
-)
 
 class Stopwatch : Application() {
-    lateinit var container: ApplicationContainer
+    data class Container(
+        val homeViewModelFactory: HomeViewModelFactory,
+        val lapsViewModelFactory: LapsViewModelFactory,
+        val stackNavigator: StackNavigatorImpl
+    )
+
+    lateinit var container: Container
 
     override fun onCreate() {
         super.onCreate()
@@ -41,7 +42,7 @@ class Stopwatch : Application() {
             timerService.state.collect(updateStopwatchTimeAndLapUseCase::execute)
         }
 
-        container = ApplicationContainer(
+        container = Container(
             homeViewModelFactory = HomeViewModelFactoryImpl(
                 stopwatchStore,
                 presentationStore,

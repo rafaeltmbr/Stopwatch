@@ -2,13 +2,14 @@ package com.rafaeltmbr.stopwatch.domain.services
 
 import kotlinx.coroutines.flow.StateFlow
 
-data class TimerState(
-    val isRunning: Boolean,
-    val milliseconds: Long
-)
 
 interface TimerService {
-    val state: StateFlow<TimerState>
+    data class State(
+        val isRunning: Boolean,
+        val milliseconds: Long
+    )
+
+    val state: StateFlow<State>
 
     fun start()
     fun pause()

@@ -39,15 +39,14 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
+import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewAction
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewState
+import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
 
 
 @Composable
@@ -68,8 +67,8 @@ fun HomeView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Content(
-    state: HomeViewState,
-    onAction: (HomeViewAction) -> Unit,
+    state: HomeViewModel.State,
+    onAction: (HomeViewModel.Action) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -113,7 +112,7 @@ private fun Content(
                         ) {
                             AppButton(
                                 type = AppButtonType.START,
-                                onClick = { onAction(HomeViewAction.Start) }
+                                onClick = { onAction(HomeViewModel.Action.Start) }
                             )
                         }
 
@@ -124,11 +123,11 @@ private fun Content(
                         ) {
                             AppButton(
                                 type = AppButtonType.RESUME,
-                                onClick = { onAction(HomeViewAction.Resume) }
+                                onClick = { onAction(HomeViewModel.Action.Resume) }
                             )
                             AppButton(
                                 type = AppButtonType.RESET,
-                                onClick = { onAction(HomeViewAction.Reset) }
+                                onClick = { onAction(HomeViewModel.Action.Reset) }
                             )
                         }
 
@@ -139,11 +138,11 @@ private fun Content(
                         ) {
                             AppButton(
                                 type = AppButtonType.PAUSE,
-                                onClick = { onAction(HomeViewAction.Pause) }
+                                onClick = { onAction(HomeViewModel.Action.Pause) }
                             )
                             AppButton(
                                 type = AppButtonType.LAP,
-                                onClick = { onAction(HomeViewAction.Lap) }
+                                onClick = { onAction(HomeViewModel.Action.Lap) }
                             )
                         }
                 }
@@ -152,7 +151,7 @@ private fun Content(
             Spacer(modifier = Modifier.weight(1f))
 
             if (state.showLapsSection) {
-                val onSeeAll = { onAction(HomeViewAction.SeeAll) }
+                val onSeeAll = { onAction(HomeViewModel.Action.SeeAll) }
 
                 LapsSection(
                     laps = state.laps,
@@ -169,7 +168,7 @@ private fun Content(
 private fun HomeViewContentPreview() {
     StopwatchTheme {
         Content(
-            state = HomeViewState(
+            state = HomeViewModel.State(
                 status = Status.INITIAL,
                 time = ViewTime(
                     minutes = listOf("0", "3"),
@@ -177,9 +176,9 @@ private fun HomeViewContentPreview() {
                     fraction = listOf("9", "3")
                 ),
                 laps = listOf(
-                    ViewLap(index = 3, time = "01:16:11", status = LapStatus.CURRENT),
-                    ViewLap(index = 2, time = "01:15:09", status = LapStatus.BEST),
-                    ViewLap(index = 1, time = "01:16:35", status = LapStatus.WORST)
+                    ViewLap(index = 3, time = "01:16:11", status = Lap.Status.CURRENT),
+                    ViewLap(index = 2, time = "01:15:09", status = Lap.Status.BEST),
+                    ViewLap(index = 1, time = "01:16:35", status = Lap.Status.WORST)
                 ),
                 showSeeMoreLaps = true,
                 showLapsSection = true

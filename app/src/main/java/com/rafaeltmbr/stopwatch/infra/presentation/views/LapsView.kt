@@ -29,14 +29,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
+import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewAction
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewState
+import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewModel
 
 
 @Composable
@@ -54,8 +53,8 @@ fun LapsView(viewModelFactory: LapsViewModelFactory, modifier: Modifier = Modifi
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Content(
-    state: LapsViewState,
-    onAction: (LapsViewAction) -> Unit,
+    state: LapsViewModel.State,
+    onAction: (LapsViewModel.Action) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -63,7 +62,7 @@ private fun Content(
             TopAppBar(
                 title = { Text(text = "Laps") },
                 navigationIcon = {
-                    IconButton(onClick = { onAction(LapsViewAction.NavigateBack) }) {
+                    IconButton(onClick = { onAction(LapsViewModel.Action.NavigateBack) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = null,
@@ -72,8 +71,13 @@ private fun Content(
                 },
                 actions = {
                     val (icon, iconSize, action) = when (state.status) {
-                        Status.RUNNING -> Triple(Icons.Outlined.Add, 24.dp, LapsViewAction.Lap)
-                        else -> Triple(Icons.Outlined.PlayArrow, 26.dp, LapsViewAction.Resume)
+                        Status.RUNNING -> Triple(
+                            Icons.Outlined.Add,
+                            24.dp,
+                            LapsViewModel.Action.Lap
+                        )
+
+                        else -> Triple(Icons.Outlined.PlayArrow, 26.dp, LapsViewModel.Action.Resume)
                     }
 
                     Row(
@@ -125,29 +129,29 @@ private fun Content(
 private fun ContentPreview() {
     StopwatchTheme {
         Content(
-            state = LapsViewState(
+            state = LapsViewModel.State(
                 status = Status.RUNNING,
                 time = "02:37.84",
                 laps = listOf(
                     ViewLap(
                         index = 1,
                         time = "00:28.49",
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     ),
                     ViewLap(
                         index = 1,
                         time = "01:01.75",
-                        status = LapStatus.DONE
+                        status = Lap.Status.DONE
                     ),
                     ViewLap(
                         index = 2,
                         time = "00:55.31",
-                        status = LapStatus.BEST
+                        status = Lap.Status.BEST
                     ),
                     ViewLap(
                         index = 1,
                         time = "01:37.84",
-                        status = LapStatus.WORST
+                        status = Lap.Status.WORST
                     )
                 )
             ),

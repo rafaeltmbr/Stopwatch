@@ -1,7 +1,6 @@
 package com.rafaeltmbr.stopwatch.domain.use_cases
 
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
-import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
@@ -32,7 +31,7 @@ class NewLapUseCaseImplTest {
                 Lap(
                     index = 1,
                     milliseconds = 0L,
-                    status = LapStatus.CURRENT
+                    status = Lap.Status.CURRENT
                 )
             )
         )
@@ -50,12 +49,12 @@ class NewLapUseCaseImplTest {
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
-                        status = LapStatus.DONE
+                        status = Lap.Status.DONE
                     ),
                     Lap(
                         index = 2,
                         milliseconds = 800L,
-                        status = LapStatus.CURRENT
+                        status = Lap.Status.CURRENT
                     ),
                 ),
             )
@@ -72,17 +71,17 @@ class NewLapUseCaseImplTest {
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
-                    status = LapStatus.WORST
+                    status = Lap.Status.WORST
                 ),
                 Lap(
                     index = 2,
                     milliseconds = 800L,
-                    status = LapStatus.BEST
+                    status = Lap.Status.BEST
                 ),
                 Lap(
                     index = 3,
                     milliseconds = 0L,
-                    status = LapStatus.CURRENT
+                    status = Lap.Status.CURRENT
                 ),
             )
         )

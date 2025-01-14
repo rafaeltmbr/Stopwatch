@@ -13,7 +13,7 @@ class TimerServiceImplTest {
     @Test
     fun state_shouldHaveAValidInitialState() {
         val service = TimerServiceImpl()
-        val expected = TimerState(
+        val expected = TimerService.State(
             isRunning = false,
             milliseconds = 0L
         )

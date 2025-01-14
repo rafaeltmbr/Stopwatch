@@ -15,9 +15,7 @@ import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.ViewTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.navigation.StackNavigator
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewAction
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
-import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -35,7 +33,8 @@ class HomeViewModelImpl(
     stopwatchStore: StateStore<StopwatchState>,
     presentationStore: StateStore<PresentationState>,
 ) : ViewModel(), HomeViewModel {
-    private var _state: MutableStateFlow<HomeViewState> = MutableStateFlow(HomeViewState())
+    private var _state: MutableStateFlow<HomeViewModel.State> =
+        MutableStateFlow(HomeViewModel.State())
 
     init {
         viewModelScope.launch {
@@ -43,18 +42,18 @@ class HomeViewModelImpl(
         }
     }
 
-    override val state: StateFlow<HomeViewState>
+    override val state: StateFlow<HomeViewModel.State>
         get() = _state.asStateFlow()
 
-    override fun handleAction(action: HomeViewAction) {
+    override fun handleAction(action: HomeViewModel.Action) {
         viewModelScope.launch {
             when (action) {
-                HomeViewAction.Start -> startStopwatchUseCase.execute()
-                HomeViewAction.Pause -> pauseStopwatchUseCase.execute()
-                HomeViewAction.Resume -> startStopwatchUseCase.execute()
-                HomeViewAction.Reset -> resetStopwatchUseCase.execute()
-                HomeViewAction.Lap -> newLapUseCase.execute()
-                HomeViewAction.SeeAll -> stackNavigator.push(Screen.Laps)
+                HomeViewModel.Action.Start -> startStopwatchUseCase.execute()
+                HomeViewModel.Action.Pause -> pauseStopwatchUseCase.execute()
+                HomeViewModel.Action.Resume -> startStopwatchUseCase.execute()
+                HomeViewModel.Action.Reset -> resetStopwatchUseCase.execute()
+                HomeViewModel.Action.Lap -> newLapUseCase.execute()
+                HomeViewModel.Action.SeeAll -> stackNavigator.push(Screen.Laps)
             }
         }
     }
