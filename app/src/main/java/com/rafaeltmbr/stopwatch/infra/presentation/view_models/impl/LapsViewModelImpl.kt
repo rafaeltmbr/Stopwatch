@@ -52,6 +52,7 @@ class LapsViewModelImpl(
             currentState.copy(
                 status = stopwatchState.status,
                 laps = stopwatchState.laps
+                    .reversed()
                     .map {
                         ViewLap(
                             index = it.index,

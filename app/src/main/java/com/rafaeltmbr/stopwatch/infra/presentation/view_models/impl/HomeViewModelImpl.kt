@@ -68,6 +68,7 @@ class HomeViewModelImpl(
                         fromIndex = 0,
                         toIndex = minOf(stopwatchState.laps.size, 3)
                     )
+                    .reversed()
                     .map {
                         ViewLap(
                             index = it.index,

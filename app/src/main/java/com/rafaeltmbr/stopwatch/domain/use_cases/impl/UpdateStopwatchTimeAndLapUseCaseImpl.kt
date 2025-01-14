@@ -30,9 +30,9 @@ class UpdateStopwatchTimeAndLapUseCaseImpl(
             )
         }
 
-        val currentLapTime = milliseconds - laps.subList(1, laps.size).sumOf { it.milliseconds }
+        val currentLapTime = milliseconds - laps.subList(0, laps.size - 1).sumOf { it.milliseconds }
         val lapsWithTimeUpdated =
-            laps.map { if (it == laps.first()) it.copy(milliseconds = currentLapTime) else it }
+            laps.map { if (it == laps.last()) it.copy(milliseconds = currentLapTime) else it }
         return updateLapsStatuses(lapsWithTimeUpdated)
     }
 
@@ -41,16 +41,16 @@ class UpdateStopwatchTimeAndLapUseCaseImpl(
             if (laps.size < 3) {
                 return laps.map {
                     it.copy(
-                        status = if (it == laps.first()) LapStatus.CURRENT else LapStatus.DONE
+                        status = if (it == laps.last()) LapStatus.CURRENT else LapStatus.DONE
                     )
                 }
             }
 
-            val current = laps.first()
+            val current = laps.last()
             var best = laps[1]
             var worst = laps[1]
 
-            for (lap in laps.subList(1, laps.size)) {
+            for (lap in laps.subList(0, laps.size - 1)) {
                 if (lap.milliseconds < best.milliseconds) {
                     best = lap
                 } else if (lap.milliseconds > worst.milliseconds && laps.size > 2) {

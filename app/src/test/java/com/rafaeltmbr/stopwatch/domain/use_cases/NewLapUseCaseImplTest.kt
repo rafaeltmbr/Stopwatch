@@ -48,15 +48,15 @@ class NewLapUseCaseImplTest {
                 milliseconds = 1_800L,
                 laps = listOf(
                     Lap(
+                        index = 1,
+                        milliseconds = 1_000L,
+                        status = LapStatus.DONE
+                    ),
+                    Lap(
                         index = 2,
                         milliseconds = 800L,
                         status = LapStatus.CURRENT
                     ),
-                    Lap(
-                        index = 1,
-                        milliseconds = 1_000L,
-                        status = LapStatus.DONE
-                    )
                 ),
             )
         )
@@ -70,9 +70,9 @@ class NewLapUseCaseImplTest {
             milliseconds = 1_800L,
             laps = listOf(
                 Lap(
-                    index = 3,
-                    milliseconds = 0L,
-                    status = LapStatus.CURRENT
+                    index = 1,
+                    milliseconds = 1_000L,
+                    status = LapStatus.WORST
                 ),
                 Lap(
                     index = 2,
@@ -80,10 +80,10 @@ class NewLapUseCaseImplTest {
                     status = LapStatus.BEST
                 ),
                 Lap(
-                    index = 1,
-                    milliseconds = 1_000L,
-                    status = LapStatus.WORST
-                )
+                    index = 3,
+                    milliseconds = 0L,
+                    status = LapStatus.CURRENT
+                ),
             )
         )
 

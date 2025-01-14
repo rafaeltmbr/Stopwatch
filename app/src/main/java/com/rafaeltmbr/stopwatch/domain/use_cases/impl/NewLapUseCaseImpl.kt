@@ -17,7 +17,7 @@ class NewLapUseCaseImpl(
                 status = LapStatus.CURRENT
             )
 
-            val mergedLaps = listOf(newLap) + it.laps
+            val mergedLaps = it.laps + newLap
 
             it.copy(laps = UpdateStopwatchTimeAndLapUseCaseImpl.updateLapsStatuses(mergedLaps))
         }

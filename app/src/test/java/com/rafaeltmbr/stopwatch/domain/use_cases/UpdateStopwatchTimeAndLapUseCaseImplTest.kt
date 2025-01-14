@@ -92,15 +92,15 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 milliseconds = 1_500L,
                 laps = listOf(
                     Lap(
+                        index = 1,
+                        milliseconds = 1_000L,
+                        status = LapStatus.DONE
+                    ),
+                    Lap(
                         index = 2,
                         milliseconds = 500L,
                         status = LapStatus.CURRENT
                     ),
-                    Lap(
-                        index = 1,
-                        milliseconds = 1_000L,
-                        status = LapStatus.DONE
-                    )
                 )
             )
         )
@@ -118,15 +118,15 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
             milliseconds = 1_700L,
             laps = listOf(
                 Lap(
+                    index = 1,
+                    milliseconds = 1_000L,
+                    status = LapStatus.DONE
+                ),
+                Lap(
                     index = 2,
                     milliseconds = 700L,
                     status = LapStatus.CURRENT
                 ),
-                Lap(
-                    index = 1,
-                    milliseconds = 1_000L,
-                    status = LapStatus.DONE
-                )
             )
         )
 
@@ -141,15 +141,15 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 milliseconds = 2_500L,
                 laps = listOf(
                     Lap(
+                        index = 1,
+                        milliseconds = 1_000L,
+                        status = LapStatus.DONE
+                    ),
+                    Lap(
                         index = 2,
                         milliseconds = 1_500L,
                         status = LapStatus.CURRENT
                     ),
-                    Lap(
-                        index = 1,
-                        milliseconds = 1_000L,
-                        status = LapStatus.DONE
-                    )
                 )
             )
         )
@@ -167,15 +167,15 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
             milliseconds = 2_700L,
             laps = listOf(
                 Lap(
+                    index = 1,
+                    milliseconds = 1_000L,
+                    status = LapStatus.DONE
+                ),
+                Lap(
                     index = 2,
                     milliseconds = 1_700L,
                     status = LapStatus.CURRENT
                 ),
-                Lap(
-                    index = 1,
-                    milliseconds = 1_000L,
-                    status = LapStatus.DONE
-                )
             )
         )
 
@@ -190,13 +190,8 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 milliseconds = 4_100L,
                 laps = listOf(
                     Lap(
-                        index = 4,
-                        milliseconds = 1_100L,
-                        status = LapStatus.CURRENT
-                    ),
-                    Lap(
-                        index = 3,
-                        milliseconds = 1_200L,
+                        index = 1,
+                        milliseconds = 1_000L,
                         status = LapStatus.CURRENT
                     ),
                     Lap(
@@ -205,10 +200,15 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                         status = LapStatus.CURRENT
                     ),
                     Lap(
-                        index = 1,
-                        milliseconds = 1_000L,
+                        index = 3,
+                        milliseconds = 1_200L,
                         status = LapStatus.CURRENT
-                    )
+                    ),
+                    Lap(
+                        index = 4,
+                        milliseconds = 1_100L,
+                        status = LapStatus.CURRENT
+                    ),
                 )
             )
         )
@@ -226,14 +226,9 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
             milliseconds = 4_100L,
             laps = listOf(
                 Lap(
-                    index = 4,
-                    milliseconds = 1_100L,
-                    status = LapStatus.CURRENT
-                ),
-                Lap(
-                    index = 3,
-                    milliseconds = 1_200L,
-                    status = LapStatus.WORST
+                    index = 1,
+                    milliseconds = 1_000L,
+                    status = LapStatus.DONE
                 ),
                 Lap(
                     index = 2,
@@ -241,10 +236,15 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                     status = LapStatus.BEST
                 ),
                 Lap(
-                    index = 1,
-                    milliseconds = 1_000L,
-                    status = LapStatus.DONE
-                )
+                    index = 3,
+                    milliseconds = 1_200L,
+                    status = LapStatus.WORST
+                ),
+                Lap(
+                    index = 4,
+                    milliseconds = 1_100L,
+                    status = LapStatus.CURRENT
+                ),
             )
         )
 
