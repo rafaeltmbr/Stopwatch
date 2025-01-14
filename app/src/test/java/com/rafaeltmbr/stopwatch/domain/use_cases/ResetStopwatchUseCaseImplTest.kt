@@ -14,13 +14,7 @@ import org.junit.Test
 class ResetStopwatchUseCaseImplTest {
     @Test
     fun reset_shouldResetTimerAndUpdateStateStore() = runTest {
-        val initial = StopwatchState(
-            status = Status.INITIAL,
-            milliseconds = 0L,
-            laps = emptyList()
-        )
-
-        val store = MutableStateStoreImpl(initial)
+        val store = MutableStateStoreImpl(StopwatchState())
         val service = TimerServiceImpl()
         val startStopwatch = StartStopwatchUseCaseImpl(store, service)
         val pauseStopwatch = PauseStopwatchUseCaseImpl(store, service)
@@ -41,13 +35,7 @@ class ResetStopwatchUseCaseImplTest {
 
     @Test
     fun reset_shouldNotResetStopwatchIsAlreadyRunning() = runTest {
-        val initial = StopwatchState(
-            status = Status.INITIAL,
-            milliseconds = 0L,
-            laps = emptyList()
-        )
-
-        val store = MutableStateStoreImpl(initial)
+        val store = MutableStateStoreImpl(StopwatchState())
         val service = TimerServiceImpl()
         val startStopwatch = StartStopwatchUseCaseImpl(store, service)
         val resetStopwatch = ResetStopwatchUseCaseImpl(store, service)

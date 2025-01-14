@@ -12,13 +12,7 @@ import org.junit.Test
 class StartStopwatchUseCaseImplTest {
     @Test
     fun start_shouldExecuteTimerAndUpdateStateStore() = runTest {
-        val initial = StopwatchState(
-            status = Status.INITIAL,
-            milliseconds = 0L,
-            laps = emptyList()
-        )
-
-        val store = MutableStateStoreImpl(initial)
+        val store = MutableStateStoreImpl(StopwatchState())
         val service = TimerServiceImpl()
         val useCase = StartStopwatchUseCaseImpl(store, service)
 

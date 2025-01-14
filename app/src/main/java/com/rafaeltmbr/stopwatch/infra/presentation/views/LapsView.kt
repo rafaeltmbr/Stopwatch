@@ -22,35 +22,48 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rafaeltmbr.stopwatch.domain.entities.LapStatus
+import com.rafaeltmbr.stopwatch.domain.entities.Status
+import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
+import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewAction
+import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewState
 
+
+@Composable
+fun LapsView(viewModelFactory: LapsViewModelFactory, modifier: Modifier = Modifier) {
+    val viewModel = viewModelFactory.make()
+    val state by viewModel.state.collectAsState()
+
+    Content(
+        state = state,
+        onAction = viewModel::handleAction,
+        modifier = modifier
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LapsView(modifier: Modifier = Modifier) {
-    val currentTime = "04:17.98"
-    val isRunning = true
-
-    val laps = listOf(
-        ViewLap(index = 3, time = "01:16:11", status = LapStatus.CURRENT),
-        ViewLap(index = 2, time = "01:15:09", status = LapStatus.BEST),
-        ViewLap(index = 1, time = "01:16:35", status = LapStatus.WORST)
-    )
-
+private fun Content(
+    state: LapsViewState,
+    onAction: (LapsViewAction) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Laps") },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { onAction(LapsViewAction.NavigateBack) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                             contentDescription = null,
@@ -58,19 +71,19 @@ fun LapsView(modifier: Modifier = Modifier) {
                     }
                 },
                 actions = {
-                    val (text, icon, iconSize) = when (isRunning) {
-                        true -> Triple(currentTime, Icons.Outlined.Add, 24.dp)
-                        false -> Triple("Resume", Icons.Outlined.PlayArrow, 26.dp)
+                    val (icon, iconSize, action) = when (state.status) {
+                        Status.RUNNING -> Triple(Icons.Outlined.Add, 24.dp, LapsViewAction.Lap)
+                        else -> Triple(Icons.Outlined.PlayArrow, 26.dp, LapsViewAction.Resume)
                     }
 
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .padding(end = 8.dp)
-                            .clickable(onClick = {})
+                            .clickable(onClick = { onAction(action) })
                     ) {
                         Text(
-                            text = text,
+                            text = state.time,
                             fontSize = 20.sp
                         )
 
@@ -100,7 +113,7 @@ fun LapsView(modifier: Modifier = Modifier) {
                 .verticalScroll(rememberScrollState())
         ) {
             LapsSection(
-                laps = laps,
+                laps = state.laps,
                 modifier = Modifier.padding(vertical = 24.dp)
             )
         }
@@ -109,8 +122,36 @@ fun LapsView(modifier: Modifier = Modifier) {
 
 @Preview(showSystemUi = true)
 @Composable
-private fun LapsViewPreview() {
+private fun ContentPreview() {
     StopwatchTheme {
-        LapsView()
+        Content(
+            state = LapsViewState(
+                status = Status.RUNNING,
+                time = "02:37.84",
+                laps = listOf(
+                    ViewLap(
+                        index = 1,
+                        time = "00:28.49",
+                        status = LapStatus.CURRENT
+                    ),
+                    ViewLap(
+                        index = 1,
+                        time = "01:01.75",
+                        status = LapStatus.DONE
+                    ),
+                    ViewLap(
+                        index = 2,
+                        time = "00:55.31",
+                        status = LapStatus.BEST
+                    ),
+                    ViewLap(
+                        index = 1,
+                        time = "01:37.84",
+                        status = LapStatus.WORST
+                    )
+                )
+            ),
+            onAction = {},
+        )
     }
 }

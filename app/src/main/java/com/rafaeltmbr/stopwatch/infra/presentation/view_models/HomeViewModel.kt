@@ -7,11 +7,15 @@ import kotlinx.coroutines.flow.StateFlow
 
 
 data class HomeViewState(
-    val status: Status,
-    val time: ViewTime,
-    val laps: List<ViewLap>,
-    val showLapsSection: Boolean,
-    val showSeeMoreLaps: Boolean
+    val status: Status = Status.INITIAL,
+    val time: ViewTime = ViewTime(
+        minutes = listOf("0", "0"),
+        seconds = listOf("0", "0"),
+        fraction = listOf("0", "0")
+    ),
+    val laps: List<ViewLap> = emptyList(),
+    val showLapsSection: Boolean = false,
+    val showSeeMoreLaps: Boolean = false
 )
 
 sealed class HomeViewAction {

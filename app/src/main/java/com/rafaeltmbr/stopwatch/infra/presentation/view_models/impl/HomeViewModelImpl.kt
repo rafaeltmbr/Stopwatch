@@ -9,10 +9,12 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.ResetStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
+import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.ViewTimeMapper
+import com.rafaeltmbr.stopwatch.infra.presentation.navigation.StackNavigator
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewAction
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewState
@@ -27,48 +29,17 @@ class HomeViewModelImpl(
     private val pauseStopwatchUseCase: PauseStopwatchUseCase,
     private val resetStopwatchUseCase: ResetStopwatchUseCase,
     private val newLapUseCase: NewLapUseCase,
+    private val stackNavigator: StackNavigator,
+    private val stringTimeMapper: StringTimeMapper,
+    private val viewTimeMapper: ViewTimeMapper,
     stopwatchStore: StateStore<StopwatchState>,
-    viewTimeMapper: ViewTimeMapper,
-    stringTimeMapper: StringTimeMapper
+    presentationStore: StateStore<PresentationState>,
 ) : ViewModel(), HomeViewModel {
-    private var _state: MutableStateFlow<HomeViewState> = MutableStateFlow(
-        HomeViewState(
-            status = Status.INITIAL,
-            time = ViewTime(
-                minutes = listOf("0", "0"),
-                seconds = listOf("0", "0"),
-                fraction = listOf("0", "0")
-            ),
-            laps = emptyList(),
-            showLapsSection = false,
-            showSeeMoreLaps = false,
-        )
-    )
+    private var _state: MutableStateFlow<HomeViewState> = MutableStateFlow(HomeViewState())
 
     init {
         viewModelScope.launch {
-            stopwatchStore.state.collect { stopwatchState ->
-                _state.update { currentState ->
-                    currentState.copy(
-                        status = stopwatchState.status,
-                        laps = stopwatchState.laps
-                            .subList(
-                                fromIndex = 0,
-                                toIndex = minOf(stopwatchState.laps.size, 3)
-                            )
-                            .map {
-                                ViewLap(
-                                    index = it.index,
-                                    time = stringTimeMapper.mapToStringTime(it.milliseconds),
-                                    status = it.status
-                                )
-                            },
-                        time = viewTimeMapper.mapToViewTime(stopwatchState.milliseconds),
-                        showLapsSection = stopwatchState.status != Status.INITIAL,
-                        showSeeMoreLaps = stopwatchState.laps.size > 3,
-                    )
-                }
-            }
+            stopwatchStore.state.collect(::handleStopwatchStateUpdate)
         }
     }
 
@@ -83,8 +54,31 @@ class HomeViewModelImpl(
                 HomeViewAction.Resume -> startStopwatchUseCase.execute()
                 HomeViewAction.Reset -> resetStopwatchUseCase.execute()
                 HomeViewAction.Lap -> newLapUseCase.execute()
-                HomeViewAction.SeeAll -> TODO("Implement see all")
+                HomeViewAction.SeeAll -> stackNavigator.push(Screen.Laps)
             }
+        }
+    }
+
+    private fun handleStopwatchStateUpdate(stopwatchState: StopwatchState) {
+        _state.update { currentState ->
+            currentState.copy(
+                status = stopwatchState.status,
+                laps = stopwatchState.laps
+                    .subList(
+                        fromIndex = 0,
+                        toIndex = minOf(stopwatchState.laps.size, 3)
+                    )
+                    .map {
+                        ViewLap(
+                            index = it.index,
+                            time = stringTimeMapper.mapToStringTime(it.milliseconds),
+                            status = it.status
+                        )
+                    },
+                time = viewTimeMapper.mapToViewTime(stopwatchState.milliseconds),
+                showLapsSection = stopwatchState.status != Status.INITIAL,
+                showSeeMoreLaps = stopwatchState.laps.size > 3,
+            )
         }
     }
 }

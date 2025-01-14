@@ -5,5 +5,5 @@ import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
 
 interface HomeViewModelFactory {
     @Composable
-    fun makeHomeViewModel(): HomeViewModel
+    fun make(): HomeViewModel
 }

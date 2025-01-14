@@ -53,23 +53,23 @@ import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewState
 @Composable
 fun HomeView(
     modifier: Modifier = Modifier,
-    homeViewModelFactory: HomeViewModelFactory,
+    viewModelFactory: HomeViewModelFactory,
 ) {
-    val viewModel = homeViewModelFactory.makeHomeViewModel()
+    val viewModel = viewModelFactory.make()
     val state by viewModel.state.collectAsState()
 
-    HomeViewContent(
+    Content(
         state = state,
-        handleAction = viewModel::handleAction,
+        onAction = viewModel::handleAction,
         modifier = modifier
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeViewContent(
+private fun Content(
     state: HomeViewState,
-    handleAction: (HomeViewAction) -> Unit,
+    onAction: (HomeViewAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -113,7 +113,7 @@ private fun HomeViewContent(
                         ) {
                             AppButton(
                                 type = AppButtonType.START,
-                                onClick = { handleAction(HomeViewAction.Start) }
+                                onClick = { onAction(HomeViewAction.Start) }
                             )
                         }
 
@@ -124,11 +124,11 @@ private fun HomeViewContent(
                         ) {
                             AppButton(
                                 type = AppButtonType.RESUME,
-                                onClick = { handleAction(HomeViewAction.Resume) }
+                                onClick = { onAction(HomeViewAction.Resume) }
                             )
                             AppButton(
                                 type = AppButtonType.RESET,
-                                onClick = { handleAction(HomeViewAction.Reset) }
+                                onClick = { onAction(HomeViewAction.Reset) }
                             )
                         }
 
@@ -139,11 +139,11 @@ private fun HomeViewContent(
                         ) {
                             AppButton(
                                 type = AppButtonType.PAUSE,
-                                onClick = { handleAction(HomeViewAction.Pause) }
+                                onClick = { onAction(HomeViewAction.Pause) }
                             )
                             AppButton(
                                 type = AppButtonType.LAP,
-                                onClick = { handleAction(HomeViewAction.Lap) }
+                                onClick = { onAction(HomeViewAction.Lap) }
                             )
                         }
                 }
@@ -152,7 +152,7 @@ private fun HomeViewContent(
             Spacer(modifier = Modifier.weight(1f))
 
             if (state.showLapsSection) {
-                val onSeeAll = { handleAction(HomeViewAction.SeeAll) }
+                val onSeeAll = { onAction(HomeViewAction.SeeAll) }
 
                 LapsSection(
                     laps = state.laps,
@@ -168,7 +168,7 @@ private fun HomeViewContent(
 @Composable
 private fun HomeViewContentPreview() {
     StopwatchTheme {
-        HomeViewContent(
+        Content(
             state = HomeViewState(
                 status = Status.INITIAL,
                 time = ViewTime(
@@ -184,7 +184,7 @@ private fun HomeViewContentPreview() {
                 showSeeMoreLaps = true,
                 showLapsSection = true
             ),
-            handleAction = {},
+            onAction = {},
         )
     }
 }

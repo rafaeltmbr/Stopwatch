@@ -1,21 +1,22 @@
-package com.rafaeltmbr.stopwatch
+package com.rafaeltmbr.stopwatch.infra
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.rafaeltmbr.stopwatch.infra.di.impl.ViewModelFactory
-import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
-import com.rafaeltmbr.stopwatch.infra.presentation.views.HomeView
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
-            StopwatchTheme {
-                HomeView(homeViewModelFactory = ViewModelFactory())
-            }
+            val container = (applicationContext as Stopwatch).container
+            container.stackNavigator.NavigationStack(
+                container.homeViewModelFactory,
+                container.lapsViewModelFactory
+            )
         }
     }
 }
