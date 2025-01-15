@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Stopwatch</string>
+    <string name="laps_title">Laps</string>
+    <string name="see_all_button">See All</string>
 </resources>

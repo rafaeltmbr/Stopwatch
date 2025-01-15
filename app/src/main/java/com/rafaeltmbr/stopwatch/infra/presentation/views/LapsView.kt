@@ -26,9 +26,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.rafaeltmbr.stopwatch.R
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
@@ -60,7 +62,7 @@ private fun Content(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Laps") },
+                title = { Text(text = stringResource(R.string.laps_title)) },
                 navigationIcon = {
                     IconButton(onClick = { onAction(LapsViewModel.Action.NavigateBack) }) {
                         Icon(
