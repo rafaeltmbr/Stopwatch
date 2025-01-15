@@ -1,5 +1,6 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.views
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -152,12 +153,13 @@ private fun Content(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (state.showLapsSection) {
+            AnimatedVisibility(state.showLapsSection) {
                 val onSeeAll = { onAction(HomeViewModel.Action.SeeAll) }
 
                 LapsSection(
                     laps = state.laps,
                     modifier = Modifier.padding(bottom = 24.dp),
+                    showTitle = true,
                     onSeeAll = if (state.showSeeMoreLaps) onSeeAll else null
                 )
             }

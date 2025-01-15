@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cronômetro</string>
+    <string name="laps_title">Voltas</string>
+    <string name="see_all_button">Ver todas</string>
+    <string name="best">Melhor</string>
+    <string name="worst">Pior</string>
+</resources>
