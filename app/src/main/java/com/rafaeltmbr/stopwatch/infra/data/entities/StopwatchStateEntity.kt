@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.infra.data.database_entities
+package com.rafaeltmbr.stopwatch.infra.data.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

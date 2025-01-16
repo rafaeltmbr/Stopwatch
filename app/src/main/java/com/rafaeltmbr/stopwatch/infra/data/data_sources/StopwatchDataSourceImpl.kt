@@ -1,13 +1,13 @@
-package com.rafaeltmbr.stopwatch.infra.data.data_source
+package com.rafaeltmbr.stopwatch.infra.data.data_sources
 
+import com.rafaeltmbr.stopwatch.domain.data.data_sources.StopwatchDataSource
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.repositories.impl.StopwatchDataSource
 import com.rafaeltmbr.stopwatch.infra.data.dao.LapsDaoRoom
 import com.rafaeltmbr.stopwatch.infra.data.dao.StopwatchStateDaoRoom
-import com.rafaeltmbr.stopwatch.infra.data.database_entities.LapEntity
-import com.rafaeltmbr.stopwatch.infra.data.database_entities.StopwatchStateEntity
+import com.rafaeltmbr.stopwatch.infra.data.entities.LapEntity
+import com.rafaeltmbr.stopwatch.infra.data.entities.StopwatchStateEntity
 
 class StopwatchDataSourceImpl(
     private val stopwatchStateDao: StopwatchStateDaoRoom,

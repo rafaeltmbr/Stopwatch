@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.domain.stores
+package com.rafaeltmbr.stopwatch.domain.data.stores
 
 import kotlinx.coroutines.flow.StateFlow
 

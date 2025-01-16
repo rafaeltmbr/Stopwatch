@@ -3,7 +3,7 @@ package com.rafaeltmbr.stopwatch.infra.data.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.rafaeltmbr.stopwatch.infra.data.database_entities.LapEntity
+import com.rafaeltmbr.stopwatch.infra.data.entities.LapEntity
 
 @Dao
 interface LapsDaoRoom {

@@ -1,6 +1,6 @@
 package com.rafaeltmbr.stopwatch.domain.stores
 
-import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest

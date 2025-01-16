@@ -4,7 +4,7 @@ import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.TimerService
-import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapUseCaseImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert

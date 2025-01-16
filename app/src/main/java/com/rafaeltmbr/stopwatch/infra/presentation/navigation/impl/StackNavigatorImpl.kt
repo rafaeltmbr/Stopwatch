@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.rafaeltmbr.stopwatch.domain.stores.MutableStateStore
+import com.rafaeltmbr.stopwatch.domain.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState

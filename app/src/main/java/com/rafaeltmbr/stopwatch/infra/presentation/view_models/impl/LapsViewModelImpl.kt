@@ -3,7 +3,7 @@ package com.rafaeltmbr.stopwatch.infra.presentation.view_models.impl
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.stores.StateStore
+import com.rafaeltmbr.stopwatch.domain.data.stores.StateStore
 import com.rafaeltmbr.stopwatch.domain.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState

@@ -1,6 +1,6 @@
-package com.rafaeltmbr.stopwatch.domain.stores.impl
+package com.rafaeltmbr.stopwatch.domain.data.stores.impl
 
-import com.rafaeltmbr.stopwatch.domain.stores.MutableStateStore
+import com.rafaeltmbr.stopwatch.domain.data.stores.MutableStateStore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

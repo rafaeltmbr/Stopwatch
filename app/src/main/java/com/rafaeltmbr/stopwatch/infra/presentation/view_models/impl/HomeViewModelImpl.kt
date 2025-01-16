@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.stores.StateStore
+import com.rafaeltmbr.stopwatch.domain.data.stores.StateStore
 import com.rafaeltmbr.stopwatch.domain.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.ResetStopwatchUseCase

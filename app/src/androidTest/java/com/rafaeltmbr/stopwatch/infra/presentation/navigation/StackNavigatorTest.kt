@@ -1,6 +1,6 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.navigation
 
-import com.rafaeltmbr.stopwatch.domain.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
 import com.rafaeltmbr.stopwatch.infra.presentation.navigation.impl.StackNavigatorImpl

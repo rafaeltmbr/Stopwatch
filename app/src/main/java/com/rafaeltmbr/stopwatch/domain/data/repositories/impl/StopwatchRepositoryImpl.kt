@@ -1,12 +1,9 @@
-package com.rafaeltmbr.stopwatch.domain.repositories.impl
+package com.rafaeltmbr.stopwatch.domain.data.repositories.impl
 
+import com.rafaeltmbr.stopwatch.domain.data.data_sources.StopwatchDataSource
+import com.rafaeltmbr.stopwatch.domain.data.repositories.StopwatchRepository
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.repositories.StopwatchRepository
 
-interface StopwatchDataSource {
-    suspend fun load(): StopwatchState?
-    suspend fun save(state: StopwatchState)
-}
 
 class StopwatchRepositoryImpl(
     private val dao: StopwatchDataSource

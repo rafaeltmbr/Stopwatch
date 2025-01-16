@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.domain.repositories
+package com.rafaeltmbr.stopwatch.domain.data.repositories
 
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 

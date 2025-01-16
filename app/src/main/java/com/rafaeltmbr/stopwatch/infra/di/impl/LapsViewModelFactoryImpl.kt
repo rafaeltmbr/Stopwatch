@@ -6,7 +6,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.TimerService
-import com.rafaeltmbr.stopwatch.domain.stores.MutableStateStore
+import com.rafaeltmbr.stopwatch.domain.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.NewLapUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
