@@ -20,6 +20,10 @@ class TimerServiceImpl(
 
     override val state: StateFlow<TimerService.State> = _state.asStateFlow()
 
+    override fun set(state: TimerService.State) {
+        _state.update { state }
+    }
+
     override fun start() {
         if (_state.value.isRunning) return
 

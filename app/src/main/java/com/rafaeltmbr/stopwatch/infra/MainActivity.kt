@@ -5,6 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -19,6 +22,15 @@ class MainActivity : ComponentActivity() {
                 container.homeViewModelFactory,
                 container.lapsViewModelFactory
             )
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val container = (applicationContext as Stopwatch).container
+            container.saveStopwatchStateUseCase.execute()
         }
     }
 }

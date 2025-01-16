@@ -11,6 +11,7 @@ interface TimerService {
 
     val state: StateFlow<State>
 
+    fun set(state: State)
     fun start()
     fun pause()
     fun reset()
