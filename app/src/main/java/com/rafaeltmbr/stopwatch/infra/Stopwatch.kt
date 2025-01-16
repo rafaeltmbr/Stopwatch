@@ -12,7 +12,7 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.impl.RestoreStopwatchStateUseCa
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.SaveStopwatchStateUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapUseCaseImpl
 import com.rafaeltmbr.stopwatch.infra.data.StopwatchDatabase
-import com.rafaeltmbr.stopwatch.infra.data.adapter.StopwatchDaoAdapter
+import com.rafaeltmbr.stopwatch.infra.data.data_source.StopwatchDataSourceImpl
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.di.impl.HomeViewModelFactoryImpl
@@ -43,7 +43,7 @@ class Stopwatch : Application() {
 
         val database = StopwatchDatabase.getInstance(this)
         val stopwatchRepository = StopwatchRepositoryImpl(
-            StopwatchDaoAdapter(
+            StopwatchDataSourceImpl(
                 database.stopwatchStateDao(),
                 database.lapsDao()
             )

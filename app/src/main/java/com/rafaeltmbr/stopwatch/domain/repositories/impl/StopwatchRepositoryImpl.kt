@@ -3,13 +3,13 @@ package com.rafaeltmbr.stopwatch.domain.repositories.impl
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.repositories.StopwatchRepository
 
-interface StopwatchDao {
+interface StopwatchDataSource {
     suspend fun load(): StopwatchState?
     suspend fun save(state: StopwatchState)
 }
 
 class StopwatchRepositoryImpl(
-    private val dao: StopwatchDao
+    private val dao: StopwatchDataSource
 ) : StopwatchRepository {
     override suspend fun load() = dao.load()
 

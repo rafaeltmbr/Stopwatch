@@ -1,18 +1,18 @@
-package com.rafaeltmbr.stopwatch.infra.data.adapter
+package com.rafaeltmbr.stopwatch.infra.data.data_source
 
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.repositories.impl.StopwatchDao
+import com.rafaeltmbr.stopwatch.domain.repositories.impl.StopwatchDataSource
 import com.rafaeltmbr.stopwatch.infra.data.dao.LapsDaoRoom
 import com.rafaeltmbr.stopwatch.infra.data.dao.StopwatchStateDaoRoom
-import com.rafaeltmbr.stopwatch.infra.data.entities.LapEntity
-import com.rafaeltmbr.stopwatch.infra.data.entities.StopwatchStateEntity
+import com.rafaeltmbr.stopwatch.infra.data.database_entities.LapEntity
+import com.rafaeltmbr.stopwatch.infra.data.database_entities.StopwatchStateEntity
 
-class StopwatchDaoAdapter(
+class StopwatchDataSourceImpl(
     private val stopwatchStateDao: StopwatchStateDaoRoom,
     private val lapsDao: LapsDaoRoom
-) : StopwatchDao {
+) : StopwatchDataSource {
     override suspend fun load(): StopwatchState? {
         val stopwatchState = stopwatchStateDao.load() ?: return null
         val laps = lapsDao.load()

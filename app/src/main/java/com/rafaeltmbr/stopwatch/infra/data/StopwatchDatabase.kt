@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.rafaeltmbr.stopwatch.infra.data.dao.LapsDaoRoom
 import com.rafaeltmbr.stopwatch.infra.data.dao.StopwatchStateDaoRoom
-import com.rafaeltmbr.stopwatch.infra.data.entities.LapEntity
-import com.rafaeltmbr.stopwatch.infra.data.entities.StopwatchStateEntity
+import com.rafaeltmbr.stopwatch.infra.data.database_entities.LapEntity
+import com.rafaeltmbr.stopwatch.infra.data.database_entities.StopwatchStateEntity
 
 @Database(entities = [StopwatchStateEntity::class, LapEntity::class], version = 1)
 abstract class StopwatchDatabase : RoomDatabase() {
