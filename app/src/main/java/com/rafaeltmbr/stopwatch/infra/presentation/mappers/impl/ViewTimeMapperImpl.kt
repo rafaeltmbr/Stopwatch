@@ -1,12 +1,11 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl
 
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
-import com.rafaeltmbr.stopwatch.infra.presentation.mappers.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.ViewTimeMapper
 import kotlin.math.max
 import kotlin.math.round
 
-class TimeMapper : ViewTimeMapper, StringTimeMapper {
+class ViewTimeMapperImpl : ViewTimeMapper {
     override fun mapToViewTime(milliseconds: Long): ViewTime {
         val time = max(milliseconds, 0L)
 
@@ -18,15 +17,6 @@ class TimeMapper : ViewTimeMapper, StringTimeMapper {
             minutes = minutes.split("").filter { it.isNotEmpty() },
             seconds = seconds.split("").filter { it.isNotEmpty() },
             fraction = fraction.split("").filter { it.isNotEmpty() }
-        )
-    }
-
-    override fun mapToStringTime(milliseconds: Long): String {
-        val viewTime: ViewTime = this.mapToViewTime(milliseconds)
-        return "%s:%s.%s".format(
-            viewTime.minutes.joinToString(""),
-            viewTime.seconds.joinToString(""),
-            viewTime.fraction.joinToString("")
         )
     }
 }

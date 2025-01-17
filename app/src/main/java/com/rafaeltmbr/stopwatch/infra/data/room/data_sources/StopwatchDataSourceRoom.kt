@@ -8,9 +8,6 @@ import com.rafaeltmbr.stopwatch.infra.data.room.dao.LapsDao
 import com.rafaeltmbr.stopwatch.infra.data.room.dao.StopwatchStateDao
 import com.rafaeltmbr.stopwatch.infra.data.room.entity.LapEntity
 import com.rafaeltmbr.stopwatch.infra.data.room.entity.StopwatchStateEntity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
 class StopwatchDataSourceRoom(
     private val stopwatchStateDao: StopwatchStateDao,
@@ -33,29 +30,25 @@ class StopwatchDataSourceRoom(
     }
 
     override suspend fun save(state: StopwatchState) {
-        CoroutineScope(coroutineContext).launch {
-            stopwatchStateDao.clear()
-            stopwatchStateDao.save(
-                StopwatchStateEntity(
-                    id = 0,
-                    milliseconds = state.milliseconds,
-                    status = state.status.number
-                )
+        stopwatchStateDao.clear()
+        stopwatchStateDao.save(
+            StopwatchStateEntity(
+                id = 0,
+                milliseconds = state.milliseconds,
+                status = state.status.number
             )
-        }
+        )
 
-        CoroutineScope(coroutineContext).launch {
-            lapsDao.clear()
-            lapsDao.save(
-                state.laps.map {
-                    LapEntity(
-                        index = it.index,
-                        milliseconds = it.milliseconds,
-                        status = it.status.number
-                    )
-                }
-            )
-        }
+        lapsDao.clear()
+        lapsDao.save(
+            state.laps.map {
+                LapEntity(
+                    index = it.index,
+                    milliseconds = it.milliseconds,
+                    status = it.status.number
+                )
+            }
+        )
     }
 }
 

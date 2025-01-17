@@ -1,14 +1,14 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.mappers
 
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
-import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.TimeMapper
+import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.ViewTimeMapperImpl
 import org.junit.Assert
 import org.junit.Test
 
-class ViewTimeMapperTest {
+class ViewViewTimeMapperImplTest {
     @Test
     fun mapToViewTimeFractions_paddingMinutesAndSecondsWithZeros() {
-        val mapper = TimeMapper()
+        val mapper = ViewTimeMapperImpl()
         val milliseconds = 760L
         val expected = ViewTime(
             minutes = listOf("0", "0"),
@@ -21,7 +21,7 @@ class ViewTimeMapperTest {
 
     @Test
     fun mapToViewTimeFractions_roundToClosestHundredthPart() {
-        val mapper = TimeMapper()
+        val mapper = ViewTimeMapperImpl()
         val milliseconds = 477L
         val expected = ViewTime(
             minutes = listOf("0", "0"),
@@ -34,7 +34,7 @@ class ViewTimeMapperTest {
 
     @Test
     fun mapToViewTimeSeconds_paddingMinutesWithZeros() {
-        val mapper = TimeMapper()
+        val mapper = ViewTimeMapperImpl()
         val milliseconds = 21520L
         val expected = ViewTime(
             minutes = listOf("0", "0"),
@@ -47,7 +47,7 @@ class ViewTimeMapperTest {
 
     @Test
     fun mapToViewTimeMinutes_paddingTwoDigitsWithZeros() {
-        val mapper = TimeMapper()
+        val mapper = ViewTimeMapperImpl()
         val milliseconds = 107120L
         val expected = ViewTime(
             minutes = listOf("0", "1"),
@@ -60,7 +60,7 @@ class ViewTimeMapperTest {
 
     @Test
     fun mapToViewTimeMinutes_shouldNotTruncateMinutesIntoHours() {
-        val mapper = TimeMapper()
+        val mapper = ViewTimeMapperImpl()
         val milliseconds = 4107430L
         val expected = ViewTime(
             minutes = listOf("6", "8"),
@@ -73,7 +73,7 @@ class ViewTimeMapperTest {
 
     @Test
     fun mapToViewTimeNegativeTime_shouldSetTimeToZero() {
-        val mapper = TimeMapper()
+        val mapper = ViewTimeMapperImpl()
         val milliseconds = -4107430L
         val expected = ViewTime(
             minutes = listOf("0", "0"),

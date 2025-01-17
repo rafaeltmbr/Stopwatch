@@ -2,9 +2,10 @@ package com.rafaeltmbr.stopwatch.infra.presentation.view_models.impl
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rafaeltmbr.stopwatch.domain.data.stores.StateStore
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.data.stores.StateStore
+import com.rafaeltmbr.stopwatch.domain.services.LoggingService
 import com.rafaeltmbr.stopwatch.domain.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.ResetStopwatchUseCase
@@ -16,22 +17,26 @@ import com.rafaeltmbr.stopwatch.infra.presentation.mappers.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.ViewTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.navigation.StackNavigator
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.HomeViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+private const val TAG = "HomeViewModelImpl"
+
 class HomeViewModelImpl(
+    stopwatchStore: StateStore<StopwatchState>,
+    presentationStore: StateStore<PresentationState>,
+    private val stackNavigator: StackNavigator,
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val pauseStopwatchUseCase: PauseStopwatchUseCase,
     private val resetStopwatchUseCase: ResetStopwatchUseCase,
     private val newLapUseCase: NewLapUseCase,
-    private val stackNavigator: StackNavigator,
-    private val stringTimeMapper: StringTimeMapper,
+    private val loggingService: LoggingService,
     private val viewTimeMapper: ViewTimeMapper,
-    stopwatchStore: StateStore<StopwatchState>,
-    presentationStore: StateStore<PresentationState>,
+    private val stringTimeMapper: StringTimeMapper,
 ) : ViewModel(), HomeViewModel {
     private var _state: MutableStateFlow<HomeViewModel.State> =
         MutableStateFlow(HomeViewModel.State())
@@ -47,13 +52,18 @@ class HomeViewModelImpl(
 
     override fun handleAction(action: HomeViewModel.Action) {
         viewModelScope.launch {
-            when (action) {
-                HomeViewModel.Action.Start -> startStopwatchUseCase.execute()
-                HomeViewModel.Action.Pause -> pauseStopwatchUseCase.execute()
-                HomeViewModel.Action.Resume -> startStopwatchUseCase.execute()
-                HomeViewModel.Action.Reset -> resetStopwatchUseCase.execute()
-                HomeViewModel.Action.Lap -> newLapUseCase.execute()
-                HomeViewModel.Action.SeeAll -> stackNavigator.push(Screen.Laps)
+            try {
+                when (action) {
+                    HomeViewModel.Action.Start -> startStopwatchUseCase.execute()
+                    HomeViewModel.Action.Pause -> pauseStopwatchUseCase.execute()
+                    HomeViewModel.Action.Resume -> startStopwatchUseCase.execute()
+                    HomeViewModel.Action.Reset -> resetStopwatchUseCase.execute()
+                    HomeViewModel.Action.Lap -> newLapUseCase.execute()
+                    HomeViewModel.Action.SeeAll -> stackNavigator.push(Screen.Laps)
+                }
+            } catch (_: CancellationException) {
+            } catch (e: Exception) {
+                loggingService.error(TAG, "Failed to handle action: $action", e)
             }
         }
     }

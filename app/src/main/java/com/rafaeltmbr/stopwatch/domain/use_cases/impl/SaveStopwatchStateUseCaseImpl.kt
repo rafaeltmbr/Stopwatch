@@ -8,7 +8,7 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.SaveStopwatchStateUseCase
 
 class SaveStopwatchStateUseCaseImpl(
     private val store: StateStore<StopwatchState>,
-    private val repository: StopwatchRepository
+    private val repository: StopwatchRepository,
 ) : SaveStopwatchStateUseCase {
     override suspend fun execute() {
         val state = store.state.value
