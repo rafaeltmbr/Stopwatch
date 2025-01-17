@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.infra.presentation.theme
+package com.rafaeltmbr.stopwatch.infra.presentation.compose.theme
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

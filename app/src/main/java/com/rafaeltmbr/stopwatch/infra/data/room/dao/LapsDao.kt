@@ -1,12 +1,12 @@
-package com.rafaeltmbr.stopwatch.infra.data.dao
+package com.rafaeltmbr.stopwatch.infra.data.room.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.rafaeltmbr.stopwatch.infra.data.entities.LapEntity
+import com.rafaeltmbr.stopwatch.infra.data.room.entity.LapEntity
 
 @Dao
-interface LapsDaoRoom {
+interface LapsDao {
     @Query("SELECT * FROM laps")
     suspend fun load(): List<LapEntity>
 

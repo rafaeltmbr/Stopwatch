@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.infra.data.entities
+package com.rafaeltmbr.stopwatch.infra.data.room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,4 +7,5 @@ import androidx.room.PrimaryKey
 data class LapEntity(
     @PrimaryKey val index: Int,
     val milliseconds: Long,
+    val status: Int
 )

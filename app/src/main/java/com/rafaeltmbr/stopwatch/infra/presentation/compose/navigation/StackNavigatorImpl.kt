@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.infra.presentation.navigation.impl
+package com.rafaeltmbr.stopwatch.infra.presentation.compose.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -11,12 +11,12 @@ import androidx.navigation.compose.rememberNavController
 import com.rafaeltmbr.stopwatch.domain.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.theme.StopwatchTheme
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.views.HomeView
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.views.LapsView
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
 import com.rafaeltmbr.stopwatch.infra.presentation.navigation.StackNavigator
-import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
-import com.rafaeltmbr.stopwatch.infra.presentation.views.HomeView
-import com.rafaeltmbr.stopwatch.infra.presentation.views.LapsView
 
 class StackNavigatorImpl(
     private val presentationStore: MutableStateStore<PresentationState>

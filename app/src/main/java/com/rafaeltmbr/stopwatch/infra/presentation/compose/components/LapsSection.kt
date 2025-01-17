@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.infra.presentation.components
+package com.rafaeltmbr.stopwatch.infra.presentation.compose.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,8 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rafaeltmbr.stopwatch.R
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.theme.StopwatchTheme
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
-import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
 
 @Composable
 fun LapsSection(

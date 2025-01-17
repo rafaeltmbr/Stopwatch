@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.infra.presentation.theme
+package com.rafaeltmbr.stopwatch.infra.presentation.compose.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

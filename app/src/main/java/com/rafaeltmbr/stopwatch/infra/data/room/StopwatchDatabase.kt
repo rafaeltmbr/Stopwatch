@@ -1,18 +1,18 @@
-package com.rafaeltmbr.stopwatch.infra.data
+package com.rafaeltmbr.stopwatch.infra.data.room
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.rafaeltmbr.stopwatch.infra.data.dao.LapsDaoRoom
-import com.rafaeltmbr.stopwatch.infra.data.dao.StopwatchStateDaoRoom
-import com.rafaeltmbr.stopwatch.infra.data.entities.LapEntity
-import com.rafaeltmbr.stopwatch.infra.data.entities.StopwatchStateEntity
+import com.rafaeltmbr.stopwatch.infra.data.room.dao.LapsDao
+import com.rafaeltmbr.stopwatch.infra.data.room.dao.StopwatchStateDao
+import com.rafaeltmbr.stopwatch.infra.data.room.entity.LapEntity
+import com.rafaeltmbr.stopwatch.infra.data.room.entity.StopwatchStateEntity
 
 @Database(entities = [StopwatchStateEntity::class, LapEntity::class], version = 1)
 abstract class StopwatchDatabase : RoomDatabase() {
-    abstract fun stopwatchStateDao(): StopwatchStateDaoRoom
-    abstract fun lapsDao(): LapsDaoRoom
+    abstract fun stopwatchStateDao(): StopwatchStateDao
+    abstract fun lapsDao(): LapsDao
 
     companion object {
         private var instance: StopwatchDatabase? = null

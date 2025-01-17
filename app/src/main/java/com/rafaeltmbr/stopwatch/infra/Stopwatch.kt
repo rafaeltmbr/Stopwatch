@@ -3,23 +3,23 @@ package com.rafaeltmbr.stopwatch.infra
 import android.app.Application
 import com.rafaeltmbr.stopwatch.domain.data.repositories.StopwatchRepository
 import com.rafaeltmbr.stopwatch.domain.data.repositories.impl.StopwatchRepositoryImpl
-import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.services.impl.TimerServiceImpl
 import com.rafaeltmbr.stopwatch.domain.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
+import com.rafaeltmbr.stopwatch.domain.services.impl.TimerServiceImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.SaveStopwatchStateUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.RestoreStopwatchStateUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.SaveStopwatchStateUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapUseCaseImpl
-import com.rafaeltmbr.stopwatch.infra.data.StopwatchDatabase
-import com.rafaeltmbr.stopwatch.infra.data.data_sources.StopwatchDataSourceImpl
+import com.rafaeltmbr.stopwatch.infra.data.room.StopwatchDatabase
+import com.rafaeltmbr.stopwatch.infra.data.room.data_sources.StopwatchDataSourceRoom
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.di.impl.HomeViewModelFactoryImpl
 import com.rafaeltmbr.stopwatch.infra.di.impl.LapsViewModelFactoryImpl
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.navigation.StackNavigatorImpl
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
-import com.rafaeltmbr.stopwatch.infra.presentation.navigation.impl.StackNavigatorImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,7 +43,7 @@ class Stopwatch : Application() {
 
         val database = StopwatchDatabase.getInstance(this)
         val stopwatchRepository = StopwatchRepositoryImpl(
-            StopwatchDataSourceImpl(
+            StopwatchDataSourceRoom(
                 database.stopwatchStateDao(),
                 database.lapsDao()
             )

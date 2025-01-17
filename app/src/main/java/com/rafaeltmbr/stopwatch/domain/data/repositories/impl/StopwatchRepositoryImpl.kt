@@ -6,9 +6,9 @@ import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 
 
 class StopwatchRepositoryImpl(
-    private val dao: StopwatchDataSource
+    private val dataSource: StopwatchDataSource
 ) : StopwatchRepository {
-    override suspend fun load() = dao.load()
+    override suspend fun load() = dataSource.load()
 
-    override suspend fun save(state: StopwatchState) = dao.save(state)
+    override suspend fun save(state: StopwatchState) = dataSource.save(state)
 }

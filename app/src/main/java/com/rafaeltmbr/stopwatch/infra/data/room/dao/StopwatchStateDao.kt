@@ -1,12 +1,12 @@
-package com.rafaeltmbr.stopwatch.infra.data.dao
+package com.rafaeltmbr.stopwatch.infra.data.room.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.rafaeltmbr.stopwatch.infra.data.entities.StopwatchStateEntity
+import com.rafaeltmbr.stopwatch.infra.data.room.entity.StopwatchStateEntity
 
 @Dao
-interface StopwatchStateDaoRoom {
+interface StopwatchStateDao {
     @Query("SELECT * FROM stopwatch_state LIMIT 1")
     suspend fun load(): StopwatchStateEntity?
 

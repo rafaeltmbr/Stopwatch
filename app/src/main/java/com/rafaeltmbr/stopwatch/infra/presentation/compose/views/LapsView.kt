@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.infra.presentation.views
+package com.rafaeltmbr.stopwatch.infra.presentation.compose.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -38,9 +38,9 @@ import com.rafaeltmbr.stopwatch.R
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
-import com.rafaeltmbr.stopwatch.infra.presentation.components.LapsSection
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.components.LapsSection
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.theme.StopwatchTheme
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
-import com.rafaeltmbr.stopwatch.infra.presentation.theme.StopwatchTheme
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewModel
 
 
