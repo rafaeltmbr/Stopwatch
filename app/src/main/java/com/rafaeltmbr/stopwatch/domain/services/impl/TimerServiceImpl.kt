@@ -22,22 +22,17 @@ class TimerServiceImpl(
 
     override fun set(state: TimerService.State) {
         _state.update { state }
+
+        if (state.isRunning) {
+            timerLoop()
+        }
     }
 
     override fun start() {
         if (_state.value.isRunning) return
 
         _state.update { it.copy(isRunning = true) }
-
-        timerJob = coroutineScope.launch {
-            while (_state.value.isRunning) {
-                val startTime = currentMillisecondsCallback()
-                delay(10)
-
-                val timeDiff = currentMillisecondsCallback() - startTime
-                _state.update { it.copy(milliseconds = it.milliseconds + timeDiff) }
-            }
-        }
+        timerLoop()
     }
 
     override fun pause() {
@@ -52,5 +47,18 @@ class TimerServiceImpl(
         if (_state.value.isRunning) return
 
         _state.update { TimerService.State(isRunning = false, milliseconds = 0L) }
+    }
+
+    private fun timerLoop() {
+        timerJob?.cancel()
+        timerJob = coroutineScope.launch {
+            while (_state.value.isRunning) {
+                val startTime = currentMillisecondsCallback()
+                delay(10)
+
+                val timeDiff = currentMillisecondsCallback() - startTime
+                _state.update { it.copy(milliseconds = it.milliseconds + timeDiff) }
+            }
+        }
     }
 }
