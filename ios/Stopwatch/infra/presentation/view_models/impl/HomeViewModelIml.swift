@@ -1,25 +1,45 @@
-import Foundation
-import Combine
+import SwiftUI
 
-class HomeViewModelImpl: HomeViewModel {
-    @Published var state = HomeState()
+class HomeViewModelImpl<SS>: HomeViewModel
+where SS: StateStore, SS.State == StopwatchState {
+    @Published private(set) var state = HomeState()
     
-    init() {
-        Task {@MainActor in
-            state = HomeState(status: .running, time: state.time)
-            
-            while (state.status == .running) {
-                try? await Task.sleep(nanoseconds: 10_000)
-                state = HomeState(status: .running, time: state.time + 1)
+    private let stopwatchStore: SS
+    private let startStopwatchUseCase: StartStopwatchUseCase
+    private let pauseStopwatchUseCase: PauseStopwatchUseCase
+    private var subscriptionId: UUID? = nil
+
+    init(
+        _ stopwatchStore: SS,
+        _ startStopwatchUseCase: StartStopwatchUseCase,
+        _ pauseStopwatchUseCase: PauseStopwatchUseCase
+    ) {
+        self.stopwatchStore = stopwatchStore
+        self.startStopwatchUseCase = startStopwatchUseCase
+        self.pauseStopwatchUseCase = pauseStopwatchUseCase
+        
+        subscriptionId = stopwatchStore.events.susbcribe {newState in
+            Task {@MainActor in
+                self.state = HomeState(status: newState.status, time: newState.milliseconds)
             }
         }
     }
     
-    func getState() -> any Publisher<HomeState, Never> {
-        return _state.projectedValue
+    deinit {
+        if let id = subscriptionId {
+            stopwatchStore.events.unsubscribe(id)
+        }
     }
     
-    func handleAction(action: HomeAction) {
+    func handleAction(_ action: HomeAction) {
+        print("Action \(action)")
+        
+        Task {
+            switch action {
+            case .start: await startStopwatchUseCase.execute()
+            case .pause: await pauseStopwatchUseCase.execute()
+            }
+        }
     }
 }
 

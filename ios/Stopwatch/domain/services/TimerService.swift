@@ -1,0 +1,21 @@
+import Foundation
+
+struct TimerState {
+    let isRunning: Bool
+    let milliseconds: Int
+    
+    init(isRunning: Bool = false, milliseconds: Int = 0) {
+        self.isRunning = isRunning
+        self.milliseconds = milliseconds
+    }
+}
+
+protocol TimerService: ObservableObject {
+    associatedtype Events: EventSubscriber where Events.Event == TimerState
+    
+    var state: TimerState { get }
+    var events: Events { get }
+    
+    func start()
+    func pause()
+}

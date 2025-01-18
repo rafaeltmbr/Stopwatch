@@ -1,6 +1,4 @@
 import Foundation
-import Combine
-import SwiftUI
 
 struct HomeState {
     let status: Status
@@ -12,16 +10,12 @@ struct HomeState {
     }
 }
 
-enum Status {
-   case initial, running, paused
-}
-
 enum HomeAction {
-    case start, pause, resume, reset, lap, seeAll
+    case start, pause
 }
 
 protocol HomeViewModel: ObservableObject {
     var state: HomeState { get }
 
-    func handleAction(action: HomeAction)
+    func handleAction(_ action: HomeAction)
 }

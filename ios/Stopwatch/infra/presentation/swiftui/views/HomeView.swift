@@ -7,7 +7,18 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
     var body: some View {
         NavigationView {
             VStack {
-                Text("\(viewModel.state.time) ms").font(.system(size: 40))
+                Text(String(format: "%0.2f s", Float(viewModel.state.time) / 1000.0))
+                    .font(.system(size: 40))
+                    .padding(.bottom)
+            
+                switch (viewModel.state.status) {
+                case .initial, .paused: HStack {
+                    Button("Start") { viewModel.handleAction(.start) }
+                }
+                case .running: HStack {
+                    Button("Pause") { viewModel.handleAction(.pause) }
+                }
+                }
             }
             .padding()
             .navigationTitle("Stopwatch")
@@ -16,5 +27,24 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
 }
 
 #Preview {
-    HomeView(viewModel: HomeViewModelFactoryImpl().make())
+    let timerService = TimerServiceImpl()
+    let stopwatchStore = MutableStateStoreImpl(StopwatchState())
+    let startStopwatchUseCase = StartStopwatchUseCaseImpl(stopwatchStore, timerService)
+    let pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(stopwatchStore, timerService)
+    let homeViewModelFactory = HomeViewModelFactoryImpl(
+        timerService,
+        stopwatchStore,
+        startStopwatchUseCase,
+        pauseStopwatchUseCase
+    )
+    
+    let _ = timerService.events.susbcribe {timerState in
+        Task {
+            await stopwatchStore.update {currentState in
+                return StopwatchState(status: currentState.status, milliseconds: timerState.milliseconds)
+            }
+        }
+    }
+
+    return HomeView(viewModel: homeViewModelFactory.make())
 }
