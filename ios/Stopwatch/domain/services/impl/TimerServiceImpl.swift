@@ -1,10 +1,14 @@
 import Foundation
 
-class TimerServiceImpl: TimerService {
+class TimerServiceImpl<EE>: TimerService where EE: EventEmitter, EE.Event == TimerState {
     private(set) var state: TimerState = TimerState()
-    private(set) var events = EventEmitterImpl<TimerState>()
+    private(set) var events: EE
     
     private var task: Task<(), Never>? = nil
+    
+    init(_ eventEmitter: EE) {
+        self.events = eventEmitter
+    }
     
     func start() {
         guard !state.isRunning else { return }
@@ -27,6 +31,13 @@ class TimerServiceImpl: TimerService {
         
         task?.cancel()
         state = TimerState(isRunning: false, milliseconds: state.milliseconds)
+    }
+    
+    func reset() {
+        guard !state.isRunning else { return }
+        
+        task?.cancel()
+        state = TimerState(isRunning: false, milliseconds: 0)
     }
     
     private func update(_ newState: TimerState) {

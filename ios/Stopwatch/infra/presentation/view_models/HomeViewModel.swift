@@ -11,7 +11,7 @@ struct HomeState {
 }
 
 enum HomeAction {
-    case start, pause
+    case start, pause, resume, reset
 }
 
 protocol HomeViewModel: ObservableObject {

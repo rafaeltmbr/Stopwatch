@@ -11,11 +11,16 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
                 timer.padding(.bottom)
             
                 switch (viewModel.state.status) {
-                case .initial, .paused: HStack {
+                case .initial: HStack {
                     Button("Start") { viewModel.handleAction(.start) }
                 }
                 case .running: HStack {
                     Button("Pause") { viewModel.handleAction(.pause) }
+                }
+                case .paused: HStack(spacing: 30) {
+                    Button("Resume") { viewModel.handleAction(.resume) }
+                    Button("Reset") { viewModel.handleAction(.reset) }
+                        .foregroundStyle(.red)
                 }
                 }
             }
@@ -56,16 +61,18 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
 
 
 #Preview {
-    let timerService = TimerServiceImpl()
-    let stopwatchStore = MutableStateStoreImpl(StopwatchState())
+    let timerService = TimerServiceImpl(EventEmitterImpl())
+    let stopwatchStore = MutableStateStoreImpl(StopwatchState(), EventEmitterImpl())
     let startStopwatchUseCase = StartStopwatchUseCaseImpl(stopwatchStore, timerService)
     let pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(stopwatchStore, timerService)
+    let resetStopwatchUseCase = ResetStopwatchUseCaseImpl(stopwatchStore, timerService)
     let viewTimerMapper = ViewTimerMapperImpl()
     let homeViewModelFactory = HomeViewModelFactoryImpl(
         timerService,
         stopwatchStore,
         startStopwatchUseCase,
         pauseStopwatchUseCase,
+        resetStopwatchUseCase,
         viewTimerMapper
     )
     

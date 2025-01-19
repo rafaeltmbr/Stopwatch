@@ -18,4 +18,5 @@ protocol TimerService: ObservableObject {
     
     func start()
     func pause()
+    func reset()
 }

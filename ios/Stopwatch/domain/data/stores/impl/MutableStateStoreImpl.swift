@@ -1,11 +1,12 @@
 import Foundation
 
-class MutableStateStoreImpl<T>: MutableStateStore {
+class MutableStateStoreImpl<T, EE>: MutableStateStore where EE: EventEmitter, EE.Event == T {
     private(set) var state: T
-    private(set) var events = EventEmitterImpl<T>()
+    private(set) var events: EE
     
-    init(_ initialState: T) {
+    init(_ initialState: T, _ eventEmitter: EE) {
         state = initialState
+        self.events = eventEmitter
     }
     
     func update(_ cb: (T) -> T) async {
