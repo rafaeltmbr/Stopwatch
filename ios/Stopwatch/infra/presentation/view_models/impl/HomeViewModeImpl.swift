@@ -7,20 +7,26 @@ where SS: StateStore, SS.State == StopwatchState {
     private let stopwatchStore: SS
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let pauseStopwatchUseCase: PauseStopwatchUseCase
+    private let viewTimeMapper: ViewTimeMapper
     private var subscriptionId: UUID? = nil
 
     init(
         _ stopwatchStore: SS,
         _ startStopwatchUseCase: StartStopwatchUseCase,
-        _ pauseStopwatchUseCase: PauseStopwatchUseCase
+        _ pauseStopwatchUseCase: PauseStopwatchUseCase,
+        _ viewTimeMapper: ViewTimeMapper
     ) {
         self.stopwatchStore = stopwatchStore
         self.startStopwatchUseCase = startStopwatchUseCase
         self.pauseStopwatchUseCase = pauseStopwatchUseCase
+        self.viewTimeMapper = viewTimeMapper
         
         subscriptionId = stopwatchStore.events.susbcribe {newState in
             Task {@MainActor in
-                self.state = HomeState(status: newState.status, time: newState.milliseconds)
+                self.state = HomeState(
+                    status: newState.status,
+                    time: viewTimeMapper.map(newState.milliseconds)
+                )
             }
         }
     }

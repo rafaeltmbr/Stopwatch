@@ -9,11 +9,13 @@ struct StopwatchApp: App {
             let stopwatchStore = MutableStateStoreImpl(StopwatchState())
             let startStopwatchUseCase = StartStopwatchUseCaseImpl(stopwatchStore, timerService)
             let pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(stopwatchStore, timerService)
+            let viewTimerMapper = ViewTimerMapperImpl()
             let homeViewModelFactory = HomeViewModelFactoryImpl(
                 timerService,
                 stopwatchStore,
                 startStopwatchUseCase,
-                pauseStopwatchUseCase
+                pauseStopwatchUseCase,
+                viewTimerMapper
             )
             
             let _ = timerService.events.susbcribe {timerState in

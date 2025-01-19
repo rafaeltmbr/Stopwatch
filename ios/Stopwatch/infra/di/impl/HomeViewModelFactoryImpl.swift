@@ -9,17 +9,20 @@ where TS: TimerService, SS: MutableStateStore, SS.State == StopwatchState
     private let stopwatchStore: SS
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let pauseStopwatchUseCase: PauseStopwatchUseCase
+    private let viewTimeMapper: ViewTimeMapper
     
     init(
         _ timerService: TS,
         _ stopwatchStore: SS,
         _ startStopwatchUseCase: StartStopwatchUseCase,
-        _ pauseStopwatchUseCase: PauseStopwatchUseCase
+        _ pauseStopwatchUseCase: PauseStopwatchUseCase,
+        _ viewTimerMapper: ViewTimeMapper
     ) {
         self.timerService = timerService
         self.stopwatchStore = stopwatchStore
         self.startStopwatchUseCase = startStopwatchUseCase
         self.pauseStopwatchUseCase = pauseStopwatchUseCase
+        self.viewTimeMapper = viewTimerMapper
     }
     
     deinit {
@@ -29,6 +32,11 @@ where TS: TimerService, SS: MutableStateStore, SS.State == StopwatchState
     }
     
     func make() -> some HomeViewModel {
-        HomeViewModelImpl(stopwatchStore, startStopwatchUseCase, pauseStopwatchUseCase)
+        HomeViewModelImpl(
+            stopwatchStore,
+            startStopwatchUseCase,
+            pauseStopwatchUseCase,
+            viewTimeMapper
+        )
     }
 }

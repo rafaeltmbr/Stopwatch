@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 
 
@@ -7,9 +8,7 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
     var body: some View {
         NavigationView {
             VStack {
-                Text(String(format: "%0.2f s", Float(viewModel.state.time) / 1000.0))
-                    .font(.system(size: 40))
-                    .padding(.bottom)
+                timer.padding(.bottom)
             
                 switch (viewModel.state.status) {
                 case .initial, .paused: HStack {
@@ -24,18 +23,50 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
             .navigationTitle("Stopwatch")
         }
     }
+    
+    var timer: some View {
+        HStack(alignment: .bottom) {
+            let minutes = viewModel.state.time.minutes.enumerated().map { ($0, $1)}
+            ForEach(minutes, id: \.0) {
+                Text($1)
+                    .font(.system(size: 54))
+                    .frame(width: 30)
+            }
+            
+            Text(":").font(.system(size: 54)).padding(.leading, 4)
+
+            let seconds = viewModel.state.time.seconds.enumerated().map { ($0, $1)}
+            ForEach(seconds, id: \.0) {
+                Text($1)
+                    .font(.system(size: 54))
+                    .frame(width: 30)
+            }
+            
+            Text(".").font(.system(size: 60)).padding(.leading, 4)
+            
+            let fraction = viewModel.state.time.fraction.enumerated().map { ($0, $1)}
+            ForEach(fraction, id: \.0) {
+                Text($1)
+                    .font(.system(size: 30)).padding(.bottom, 8)
+                    .frame(width: 18)
+            }
+        }
+    }
 }
+
 
 #Preview {
     let timerService = TimerServiceImpl()
     let stopwatchStore = MutableStateStoreImpl(StopwatchState())
     let startStopwatchUseCase = StartStopwatchUseCaseImpl(stopwatchStore, timerService)
     let pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(stopwatchStore, timerService)
+    let viewTimerMapper = ViewTimerMapperImpl()
     let homeViewModelFactory = HomeViewModelFactoryImpl(
         timerService,
         stopwatchStore,
         startStopwatchUseCase,
-        pauseStopwatchUseCase
+        pauseStopwatchUseCase,
+        viewTimerMapper
     )
     
     let _ = timerService.events.susbcribe {timerState in

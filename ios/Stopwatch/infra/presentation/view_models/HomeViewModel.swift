@@ -2,9 +2,9 @@ import Foundation
 
 struct HomeState {
     let status: Status
-    let time: Int
+    let time: ViewTime
     
-    init(status: Status = .initial, time: Int = 0) {
+    init(status: Status = .initial, time: ViewTime = ViewTime()) {
         self.status = status
         self.time = time
     }
