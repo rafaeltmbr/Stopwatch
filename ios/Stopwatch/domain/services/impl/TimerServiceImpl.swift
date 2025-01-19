@@ -13,12 +13,16 @@ class TimerServiceImpl<EE>: TimerService where EE: EventEmitter, EE.Event == Tim
     func start() {
         guard !state.isRunning else { return }
         
+        let startMilliseconds = state.milliseconds
+        let startEpoch = Date().epochMilliseconds
+        
         update(TimerState(isRunning: true, milliseconds: state.milliseconds))
         task = Task {
             while (state.isRunning) {
                 do {
                     try await Task.sleep(nanoseconds: 10_000_000)
-                    update(TimerState(isRunning: state.isRunning, milliseconds: state.milliseconds + 10))
+                    let milliseconds = Date().epochMilliseconds - startEpoch + startMilliseconds
+                    update(TimerState(isRunning: state.isRunning, milliseconds: milliseconds))
                 } catch {
                     break
                 }
@@ -43,5 +47,11 @@ class TimerServiceImpl<EE>: TimerService where EE: EventEmitter, EE.Event == Tim
     private func update(_ newState: TimerState) {
         state = newState
         events.emit(newState)
+    }
+}
+
+private extension Date {
+    var epochMilliseconds: Int {
+        Int(timeIntervalSince1970 * 1_000)
     }
 }

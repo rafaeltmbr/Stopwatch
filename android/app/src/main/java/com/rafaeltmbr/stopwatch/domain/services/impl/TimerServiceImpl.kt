@@ -50,14 +50,15 @@ class TimerServiceImpl(
     }
 
     private fun timerLoop() {
+        val startMilliseconds = _state.value.milliseconds
+        val startEpoch = currentMillisecondsCallback()
+
         timerJob?.cancel()
         timerJob = coroutineScope.launch {
             while (_state.value.isRunning) {
-                val startTime = currentMillisecondsCallback()
                 delay(10)
-
-                val timeDiff = currentMillisecondsCallback() - startTime
-                _state.update { it.copy(milliseconds = it.milliseconds + timeDiff) }
+                val milliseconds = currentMillisecondsCallback() - startEpoch + startMilliseconds
+                _state.update { it.copy(milliseconds = milliseconds) }
             }
         }
     }
