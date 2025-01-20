@@ -21,7 +21,9 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         let useCases = ApplicationUseCases(
             StartStopwatchUseCaseImpl(stores.stopwatch, services.timer),
             PauseStopwatchUseCaseImpl(stores.stopwatch, services.timer),
-            ResetStopwatchUseCaseImpl(stores.stopwatch, services.timer)
+            ResetStopwatchUseCaseImpl(stores.stopwatch, services.timer),
+            NewLapUseCaseImpl(stores.stopwatch),
+            UpdateStopwatchTimeAndLapsUseCaseImpl(stores.stopwatch)
         )
         let presentation = ApplicationPresentation(
             HomeViewModelFactoryImpl(
@@ -29,6 +31,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
                 useCases.startStopwatch,
                 useCases.pauseStopwatch,
                 useCases.resetStopwatch,
+                useCases.newLap,
                 ViewTimerMapperImpl()
             )
         )

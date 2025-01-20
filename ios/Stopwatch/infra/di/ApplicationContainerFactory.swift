@@ -20,15 +20,21 @@ class ApplicationUseCases {
     let startStopwatch: StartStopwatchUseCase
     let pauseStopwatch: PauseStopwatchUseCase
     let resetStopwatch: ResetStopwatchUseCase
+    let newLap: NewLapUseCase
+    let updateStopwatchTimeAndLaps: UpdateStopwatchTimeAndLapsUseCase
     
     init(
         _ startStopwatch: StartStopwatchUseCase,
         _ pauseStopwatch: PauseStopwatchUseCase,
-        _ resetStopwatch: ResetStopwatchUseCase
+        _ resetStopwatch: ResetStopwatchUseCase,
+        _ newLap: NewLapUseCase,
+        _ updateStopwatchTimeAndLaps: UpdateStopwatchTimeAndLapsUseCase
     ) {
         self.startStopwatch = startStopwatch
         self.pauseStopwatch = pauseStopwatch
         self.resetStopwatch = resetStopwatch
+        self.newLap = newLap
+        self.updateStopwatchTimeAndLaps = updateStopwatchTimeAndLaps
     }
 }
 

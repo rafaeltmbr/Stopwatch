@@ -12,6 +12,6 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, TS: TimerService {
         guard !timer.state.isRunning else { return }
         
         timer.start()
-        await store.update { StopwatchState(status: .running, milliseconds: $0.milliseconds) }
+        await store.update { StopwatchState(status: .running, milliseconds: $0.milliseconds, laps: $0.laps) }
     }
 }

@@ -9,9 +9,7 @@ struct StopwatchApp: App {
         WindowGroup {
             let _ = container.services.timer.events.susbcribe {timerState in
                 Task {
-                    await container.stores.stopwatch.update {currentState in
-                        return StopwatchState(status: currentState.status, milliseconds: timerState.milliseconds)
-                    }
+                    await container.useCases.updateStopwatchTimeAndLaps.execute(timerState)
                 }
             }
 

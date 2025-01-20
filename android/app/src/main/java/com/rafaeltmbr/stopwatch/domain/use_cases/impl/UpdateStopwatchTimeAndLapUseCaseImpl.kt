@@ -1,9 +1,9 @@
 package com.rafaeltmbr.stopwatch.domain.use_cases.impl
 
+import com.rafaeltmbr.stopwatch.domain.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.TimerService
-import com.rafaeltmbr.stopwatch.domain.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.domain.use_cases.UpdateStopwatchTimeAndLapUseCase
 
 class UpdateStopwatchTimeAndLapUseCaseImpl(
@@ -46,8 +46,8 @@ class UpdateStopwatchTimeAndLapUseCaseImpl(
             }
 
             val current = laps.last()
-            var best = laps[1]
-            var worst = laps[1]
+            var best = laps[0]
+            var worst = laps[0]
 
             for (lap in laps.subList(0, laps.size - 1)) {
                 if (lap.milliseconds < best.milliseconds) {

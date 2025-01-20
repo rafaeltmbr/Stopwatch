@@ -7,6 +7,7 @@ where SS: MutableStateStore, SS.State == StopwatchState
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let pauseStopwatchUseCase: PauseStopwatchUseCase
     private let resetStopwatchUseCase: ResetStopwatchUseCase
+    private let newLapUseCase: NewLapUseCase
     private let viewTimeMapper: ViewTimeMapper
     
     init(
@@ -14,12 +15,14 @@ where SS: MutableStateStore, SS.State == StopwatchState
         _ startStopwatchUseCase: StartStopwatchUseCase,
         _ pauseStopwatchUseCase: PauseStopwatchUseCase,
         _ resetStopwatchUseCase: ResetStopwatchUseCase,
+        _ newLapUseCase: NewLapUseCase,
         _ viewTimerMapper: ViewTimeMapper
     ) {
         self.stopwatchStore = stopwatchStore
         self.startStopwatchUseCase = startStopwatchUseCase
         self.pauseStopwatchUseCase = pauseStopwatchUseCase
         self.resetStopwatchUseCase = resetStopwatchUseCase
+        self.newLapUseCase = newLapUseCase
         self.viewTimeMapper = viewTimerMapper
     }
     
@@ -29,6 +32,7 @@ where SS: MutableStateStore, SS.State == StopwatchState
             startStopwatchUseCase,
             pauseStopwatchUseCase,
             resetStopwatchUseCase,
+            newLapUseCase,
             viewTimeMapper
         )
     }
