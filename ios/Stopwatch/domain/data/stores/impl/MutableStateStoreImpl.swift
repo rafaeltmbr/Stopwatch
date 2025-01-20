@@ -6,7 +6,7 @@ class MutableStateStoreImpl<T, EE>: MutableStateStore where EE: EventEmitter, EE
     
     init(_ initialState: T, _ eventEmitter: EE) {
         state = initialState
-        self.events = eventEmitter
+        events = eventEmitter
     }
     
     func update(_ cb: (T) -> T) async {

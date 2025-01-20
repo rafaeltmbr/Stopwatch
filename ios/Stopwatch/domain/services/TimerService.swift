@@ -10,7 +10,7 @@ struct TimerState {
     }
 }
 
-protocol TimerService: ObservableObject {
+protocol TimerService {
     associatedtype Events: EventSubscriber where Events.Event == TimerState
     
     var state: TimerState { get }

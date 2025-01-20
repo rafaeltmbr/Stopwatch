@@ -13,9 +13,9 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.impl.RestoreStopwatchStateUseCa
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.SaveStopwatchStateUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapUseCaseImpl
-import com.rafaeltmbr.stopwatch.infra.Stopwatch.Container
 import com.rafaeltmbr.stopwatch.infra.data.room.StopwatchDatabase
 import com.rafaeltmbr.stopwatch.infra.data.room.data_sources.StopwatchDataSourceRoom
+import com.rafaeltmbr.stopwatch.infra.di.ApplicationContainer
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.navigation.StackNavigatorImpl
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
@@ -23,11 +23,11 @@ import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.ViewTimeMapperImpl
 import com.rafaeltmbr.stopwatch.infra.services.external_resources.AndroidLoggerFacade
 
-class StopwatchContainerFactoryImpl(private val context: Context) {
-    fun make(): Container {
+class ApplicationApplicationContainerFactoryImpl(private val context: Context) {
+    fun make(): ApplicationContainer {
         val database = StopwatchDatabase.getInstance(context)
 
-        val data = Container.Data(
+        val data = ApplicationContainer.Data(
             MutableStateStoreImpl(StopwatchState()),
             MutableStateStoreImpl(PresentationState(screens = listOf(Screen.Home))),
             StopwatchRepositoryImpl(
@@ -38,12 +38,12 @@ class StopwatchContainerFactoryImpl(private val context: Context) {
             )
         )
 
-        val services = Container.Services(
+        val services = ApplicationContainer.Services(
             TimerServiceImpl(),
             LoggingServiceImpl(AndroidLoggerFacade())
         )
 
-        val useCases = Container.UseCases(
+        val useCases = ApplicationContainer.UseCases(
             NewLapUseCaseImpl(data.stopwatchStore),
             PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             ResetStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
@@ -64,7 +64,7 @@ class StopwatchContainerFactoryImpl(private val context: Context) {
         val viewTimeMapper = ViewTimeMapperImpl()
         val stringTimeMapper = StringTimeMapperImpl(ViewTimeMapperImpl())
 
-        val presentation = Container.Presentation(
+        val presentation = ApplicationContainer.Presentation(
             stackNavigator,
             HomeViewModelFactoryImpl(
                 data.stopwatchStore,
@@ -89,7 +89,7 @@ class StopwatchContainerFactoryImpl(private val context: Context) {
             ),
         )
 
-        return Container(
+        return ApplicationContainer(
             data,
             services,
             useCases,

@@ -61,28 +61,15 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
 
 
 #Preview {
-    let timerService = TimerServiceImpl(EventEmitterImpl())
-    let stopwatchStore = MutableStateStoreImpl(StopwatchState(), EventEmitterImpl())
-    let startStopwatchUseCase = StartStopwatchUseCaseImpl(stopwatchStore, timerService)
-    let pauseStopwatchUseCase = PauseStopwatchUseCaseImpl(stopwatchStore, timerService)
-    let resetStopwatchUseCase = ResetStopwatchUseCaseImpl(stopwatchStore, timerService)
-    let viewTimerMapper = ViewTimerMapperImpl()
-    let homeViewModelFactory = HomeViewModelFactoryImpl(
-        timerService,
-        stopwatchStore,
-        startStopwatchUseCase,
-        pauseStopwatchUseCase,
-        resetStopwatchUseCase,
-        viewTimerMapper
-    )
+    let container = ApplicationContainerFactoryImpl().make()
     
-    let _ = timerService.events.susbcribe {timerState in
+    let _ = container.services.timer.events.susbcribe {timerState in
         Task {
-            await stopwatchStore.update {currentState in
+            await container.stores.stopwatch.update {currentState in
                 return StopwatchState(status: currentState.status, milliseconds: timerState.milliseconds)
             }
         }
     }
 
-    return HomeView(viewModel: homeViewModelFactory.make())
+    return HomeView(viewModel: container.presentation.homeViewModelFactory.make())
 }
