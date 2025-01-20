@@ -9,6 +9,7 @@ where SS: MutableStateStore, SS.State == StopwatchState
     private let resetStopwatchUseCase: ResetStopwatchUseCase
     private let newLapUseCase: NewLapUseCase
     private let viewTimeMapper: ViewTimeMapper
+    private let stringTimeMapper: StringTimeMapper
     
     init(
         _ stopwatchStore: SS,
@@ -16,7 +17,8 @@ where SS: MutableStateStore, SS.State == StopwatchState
         _ pauseStopwatchUseCase: PauseStopwatchUseCase,
         _ resetStopwatchUseCase: ResetStopwatchUseCase,
         _ newLapUseCase: NewLapUseCase,
-        _ viewTimerMapper: ViewTimeMapper
+        _ viewTimerMapper: ViewTimeMapper,
+        _ stringTimeMapper: StringTimeMapper
     ) {
         self.stopwatchStore = stopwatchStore
         self.startStopwatchUseCase = startStopwatchUseCase
@@ -24,6 +26,7 @@ where SS: MutableStateStore, SS.State == StopwatchState
         self.resetStopwatchUseCase = resetStopwatchUseCase
         self.newLapUseCase = newLapUseCase
         self.viewTimeMapper = viewTimerMapper
+        self.stringTimeMapper = stringTimeMapper
     }
     
     func make() -> some HomeViewModel {
@@ -33,7 +36,8 @@ where SS: MutableStateStore, SS.State == StopwatchState
             pauseStopwatchUseCase,
             resetStopwatchUseCase,
             newLapUseCase,
-            viewTimeMapper
+            viewTimeMapper,
+            stringTimeMapper
         )
     }
 }

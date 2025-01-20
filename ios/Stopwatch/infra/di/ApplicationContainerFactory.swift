@@ -38,22 +38,33 @@ class ApplicationUseCases {
     }
 }
 
-class ApplicationPresentation<HVMF> where HVMF: HomeViewModelFactory {
+class ApplicationPresentation<HVMF, LVMF>
+where HVMF: HomeViewModelFactory, LVMF: LapsViewModelFactory {
     let homeViewModelFactory: HVMF
+    let lapsViewModelFactory: LVMF
     
-    init(_ homeViewModelFactory: HVMF) {
+    init(_ homeViewModelFactory: HVMF, _ lapsViewModelFactory: LVMF) {
         self.homeViewModelFactory = homeViewModelFactory
+        self.lapsViewModelFactory = lapsViewModelFactory
     }
 }
 
-class ApplicationContainer<Stores, StoresStopwatch, Services, ServicesTimer, Presentation, PresentationHomeVMF>
+class ApplicationContainer<
+    Stores,
+    StoresStopwatch,
+    Services, ServicesTimer,
+    Presentation,
+    PresentationHVMF,
+    PresentationLVMF
+>
 where
     Stores: ApplicationStores<StoresStopwatch>,
     StoresStopwatch: MutableStateStore,
     Services: ApplicationServices<ServicesTimer>,
     ServicesTimer: TimerService,
-    Presentation: ApplicationPresentation<PresentationHomeVMF>,
-    PresentationHomeVMF: HomeViewModelFactory
+    Presentation: ApplicationPresentation<PresentationHVMF, PresentationLVMF>,
+    PresentationHVMF: HomeViewModelFactory,
+    PresentationLVMF: LapsViewModelFactory
 {
     let stores: Stores
     let services: Services
@@ -77,16 +88,18 @@ protocol ApplicationContainerFactory {
     
     associatedtype UseCases: ApplicationUseCases
     
-    associatedtype Presentation: ApplicationPresentation<PresentationHVMF>
+    associatedtype Presentation: ApplicationPresentation<PresentationHVMF, PresentationLVMF>
     associatedtype PresentationHVMF: HomeViewModelFactory
-    
+    associatedtype PresentationLVMF: LapsViewModelFactory
+
     associatedtype Container: ApplicationContainer<
         Stores,
         StoresStopwatch,
         Services,
         ServicesTimer,
         Presentation,
-        PresentationHVMF
+        PresentationHVMF,
+        PresentationLVMF
     >
     
     func make() -> Container

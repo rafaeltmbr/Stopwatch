@@ -1,48 +1,39 @@
+import Foundation
 import SwiftUI
 
-class HomeViewModelImpl<SS>: HomeViewModel
-where SS: StateStore, SS.State == StopwatchState {
-    @Published private(set) var state = HomeState()
+class LapsViewModelImpl<MSS>: ObservableObject, LapsViewModel
+where MSS: MutableStateStore, MSS.State == StopwatchState {
+    @Published private(set) var state: LapsState = LapsState()
     
-    private let stopwatchStore: SS
-    private let startStopwatchUseCase: StartStopwatchUseCase
-    private let pauseStopwatchUseCase: PauseStopwatchUseCase
-    private let resetStopwatchUseCase: ResetStopwatchUseCase
-    private let newLapUseCase: NewLapUseCase
-    private let viewTimeMapper: ViewTimeMapper
-    private let stringTimeMapper: StringTimeMapper
     private var subscriptionId: UUID? = nil
+    private let stopwatchStore: MSS
+    private let startStopwatchUseCase: StartStopwatchUseCase
+    private let newLapUseCase: NewLapUseCase
+    private let stringTimeMapper: StringTimeMapper
     
     init(
-        _ stopwatchStore: SS,
+        _ stopwatchStore: MSS,
         _ startStopwatchUseCase: StartStopwatchUseCase,
-        _ pauseStopwatchUseCase: PauseStopwatchUseCase,
-        _ resetStopwatchUseCase: ResetStopwatchUseCase,
         _ newLapUseCase: NewLapUseCase,
-        _ viewTimeMapper: ViewTimeMapper,
         _ stringTimeMapper: StringTimeMapper
     ) {
         self.stopwatchStore = stopwatchStore
         self.startStopwatchUseCase = startStopwatchUseCase
-        self.pauseStopwatchUseCase = pauseStopwatchUseCase
-        self.resetStopwatchUseCase = resetStopwatchUseCase
         self.newLapUseCase = newLapUseCase
-        self.viewTimeMapper = viewTimeMapper
         self.stringTimeMapper = stringTimeMapper
         
         subscriptionId = stopwatchStore.events.susbcribe {newState in
             Task {@MainActor in
-                self.state = HomeState(
+                self.state = LapsState(
                     status: newState.status,
-                    time: viewTimeMapper.map(newState.milliseconds),
-                    laps: newState.laps.reversed()[0..<min(newState.laps.count, 3)].map {
+                    milliseconds: stringTimeMapper.map(newState.milliseconds),
+                    laps: newState.laps.reversed().map {
                         ViewLap(
                             index: $0.index,
                             time: stringTimeMapper.map($0.milliseconds),
                             status: $0.status
                         )
-                    },
-                    showLaps: !newState.laps.isEmpty
+                    }
                 )
             }
         }
@@ -54,18 +45,15 @@ where SS: StateStore, SS.State == StopwatchState {
         }
     }
     
-    func handleAction(_ action: HomeAction) {
+    func handleAction(_ action: LapsAction) {
         print("Action \(action)")
         
         Task {
-            switch action {
-            case .start: await startStopwatchUseCase.execute()
-            case .pause: await pauseStopwatchUseCase.execute()
+            switch (action) {
             case .resume: await startStopwatchUseCase.execute()
-            case .reset: await resetStopwatchUseCase.execute()
             case .lap: await newLapUseCase.execute()
+            case .back: break
             }
         }
     }
 }
-

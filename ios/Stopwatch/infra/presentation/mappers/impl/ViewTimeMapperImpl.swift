@@ -1,4 +1,4 @@
-class ViewTimerMapperImpl: ViewTimeMapper {
+class ViewTimeMapperImpl: ViewTimeMapper {
     func map(_ milliseconds: Int) -> ViewTime {
         let fraction = String(format: "%02d", milliseconds / 10 % 100).split(separator: "").map { "\($0)"}
         let seconds = String(format: "%02d", (milliseconds / 1_000) % 60).split(separator: "").map { "\($0)"}

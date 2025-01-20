@@ -4,15 +4,17 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
     typealias Services = ApplicationServices<ServicesTimer>
     typealias ServicesTimer = TimerServiceImpl<EventEmitterImpl<TimerState>>
     typealias UseCases = ApplicationUseCases
-    typealias Presentation = ApplicationPresentation<PresentationHVMF>
+    typealias Presentation = ApplicationPresentation<PresentationHVMF, PresentationLVMF>
     typealias PresentationHVMF = HomeViewModelFactoryImpl<MutableStateStoreImpl<StopwatchState, EventEmitterImpl<StopwatchState>>>
+    typealias PresentationLVMF = LapsViewModelFactoryImpl<MutableStateStoreImpl<StopwatchState, EventEmitterImpl<StopwatchState>>>
     typealias Container = ApplicationContainer<
         Stores,
         StoresStopwatch,
         Services,
         ServicesTimer,
         Presentation,
-        PresentationHVMF
+        PresentationHVMF,
+        PresentationLVMF
     >
     
     func make() -> Container {
@@ -25,6 +27,10 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
             NewLapUseCaseImpl(stores.stopwatch),
             UpdateStopwatchTimeAndLapsUseCaseImpl(stores.stopwatch)
         )
+        
+        let viewTimeMapper = ViewTimeMapperImpl()
+        let stringTimeMapper = StringTimeMapperImpl(viewTimeMapper)
+        
         let presentation = ApplicationPresentation(
             HomeViewModelFactoryImpl(
                 stores.stopwatch,
@@ -32,7 +38,14 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
                 useCases.pauseStopwatch,
                 useCases.resetStopwatch,
                 useCases.newLap,
-                ViewTimerMapperImpl()
+                viewTimeMapper,
+                stringTimeMapper
+            ),
+            LapsViewModelFactoryImpl(
+                stores.stopwatch,
+                useCases.startStopwatch,
+                useCases.newLap,
+                stringTimeMapper
             )
         )
 
