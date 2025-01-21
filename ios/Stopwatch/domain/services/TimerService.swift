@@ -16,6 +16,7 @@ protocol TimerService {
     var state: TimerState { get }
     var events: Events { get }
     
+    func set(_ state: TimerState)
     func start()
     func pause()
     func reset()

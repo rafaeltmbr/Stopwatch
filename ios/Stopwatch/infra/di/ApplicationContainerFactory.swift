@@ -1,3 +1,11 @@
+class ApplicationRepositories {
+    let stopwatch: StopwatchRepository
+    
+    init(_ stopwatchRepository: StopwatchRepository) {
+        self.stopwatch = stopwatchRepository
+    }
+}
+
 class ApplicationStores<MSS>
 where MSS: MutableStateStore, MSS.State == StopwatchState {
     let stopwatch: MSS
@@ -22,19 +30,25 @@ class ApplicationUseCases {
     let resetStopwatch: ResetStopwatchUseCase
     let newLap: NewLapUseCase
     let updateStopwatchTimeAndLaps: UpdateStopwatchTimeAndLapsUseCase
+    let saveStopwatchState: SaveStopwatchStateUseCase
+    let restoreStopwatchState: RestoreStopwatchStateUseCase
     
     init(
         _ startStopwatch: StartStopwatchUseCase,
         _ pauseStopwatch: PauseStopwatchUseCase,
         _ resetStopwatch: ResetStopwatchUseCase,
         _ newLap: NewLapUseCase,
-        _ updateStopwatchTimeAndLaps: UpdateStopwatchTimeAndLapsUseCase
+        _ updateStopwatchTimeAndLaps: UpdateStopwatchTimeAndLapsUseCase,
+        _ saveStopwatchState: SaveStopwatchStateUseCase,
+        _ restoreStopwatchState: RestoreStopwatchStateUseCase
     ) {
         self.startStopwatch = startStopwatch
         self.pauseStopwatch = pauseStopwatch
         self.resetStopwatch = resetStopwatch
         self.newLap = newLap
         self.updateStopwatchTimeAndLaps = updateStopwatchTimeAndLaps
+        self.saveStopwatchState = saveStopwatchState
+        self.restoreStopwatchState = restoreStopwatchState
     }
 }
 
@@ -52,6 +66,7 @@ where HVMF: HomeViewModelFactory, LVMF: LapsViewModelFactory {
 class ApplicationContainer<
     Stores,
     StoresStopwatch,
+    Repositories,
     Services, ServicesTimer,
     Presentation,
     PresentationHVMF,
@@ -60,6 +75,7 @@ class ApplicationContainer<
 where
     Stores: ApplicationStores<StoresStopwatch>,
     StoresStopwatch: MutableStateStore,
+    Repositories: ApplicationRepositories,
     Services: ApplicationServices<ServicesTimer>,
     ServicesTimer: TimerService,
     Presentation: ApplicationPresentation<PresentationHVMF, PresentationLVMF>,
@@ -67,12 +83,14 @@ where
     PresentationLVMF: LapsViewModelFactory
 {
     let stores: Stores
+    let repositories: Repositories
     let services: Services
     let useCases: ApplicationUseCases
     let presentation: Presentation
     
-    init(_ stores: Stores, _ services: Services, _ useCases: ApplicationUseCases, _ presentation: Presentation) {
+    init(_ stores: Stores, _ repositories: Repositories, _ services: Services, _ useCases: ApplicationUseCases, _ presentation: Presentation) {
         self.stores = stores
+        self.repositories = repositories
         self.services = services
         self.useCases = useCases
         self.presentation = presentation
@@ -82,6 +100,8 @@ where
 protocol ApplicationContainerFactory {
     associatedtype Stores: ApplicationStores<StoresStopwatch>
     associatedtype StoresStopwatch: MutableStateStore where StoresStopwatch.State == StopwatchState
+    
+    associatedtype Repositories: ApplicationRepositories
     
     associatedtype Services: ApplicationServices<ServicesTimer>
     associatedtype ServicesTimer: TimerService
@@ -95,6 +115,7 @@ protocol ApplicationContainerFactory {
     associatedtype Container: ApplicationContainer<
         Stores,
         StoresStopwatch,
+        Repositories,
         Services,
         ServicesTimer,
         Presentation,

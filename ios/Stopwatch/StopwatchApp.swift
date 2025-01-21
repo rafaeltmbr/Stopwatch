@@ -7,9 +7,19 @@ struct StopwatchApp: App {
     
     var body: some Scene {
         WindowGroup {
+            let _ = Task {
+                await self.container.useCases.restoreStopwatchState.execute()
+            }
+            
             let _ = container.services.timer.events.susbcribe {timerState in
                 Task {
                     await container.useCases.updateStopwatchTimeAndLaps.execute(timerState)
+                }
+            }
+            
+            let _ = container.stores.stopwatch.events.susbcribe {_ in
+                Task {
+                    await container.useCases.saveStopwatchState.execute()
                 }
             }
             

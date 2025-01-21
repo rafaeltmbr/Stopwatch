@@ -10,9 +10,35 @@ class TimerServiceImpl<EE>: TimerService where EE: EventEmitter, EE.Event == Tim
         self.events = eventEmitter
     }
     
+    func set(_ state: TimerState) {
+        self.state = state
+        
+        if (state.isRunning) {
+            loop()
+        }
+    }
+    
     func start() {
         guard !state.isRunning else { return }
         
+        loop()
+    }
+    
+    func pause() {
+        guard state.isRunning else { return }
+        
+        task?.cancel()
+        state = TimerState(isRunning: false, milliseconds: state.milliseconds)
+    }
+    
+    func reset() {
+        guard !state.isRunning else { return }
+        
+        task?.cancel()
+        state = TimerState(isRunning: false, milliseconds: 0)
+    }
+    
+    private func loop() {
         let startMilliseconds = state.milliseconds
         let startEpoch = Date().epochMilliseconds
         
@@ -28,20 +54,6 @@ class TimerServiceImpl<EE>: TimerService where EE: EventEmitter, EE.Event == Tim
                 }
             }
         }
-    }
-    
-    func pause() {
-        guard state.isRunning else { return }
-        
-        task?.cancel()
-        state = TimerState(isRunning: false, milliseconds: state.milliseconds)
-    }
-    
-    func reset() {
-        guard !state.isRunning else { return }
-        
-        task?.cancel()
-        state = TimerState(isRunning: false, milliseconds: 0)
     }
     
     private func update(_ newState: TimerState) {
