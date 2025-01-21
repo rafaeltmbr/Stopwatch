@@ -1,7 +1,7 @@
 import SwiftUI
 
-class HomeViewModelImpl<SS>: HomeViewModel
-where SS: StateStore, SS.State == StopwatchState {
+class HomeViewModelImpl<SS, SN>: HomeViewModel
+where SS: StateStore, SS.State == StopwatchState, SN: StackNavigator {
     @Published private(set) var state = HomeState()
     
     private let stopwatchStore: SS
@@ -11,6 +11,7 @@ where SS: StateStore, SS.State == StopwatchState {
     private let newLapUseCase: NewLapUseCase
     private let viewTimeMapper: ViewTimeMapper
     private let stringTimeMapper: StringTimeMapper
+    private let stackNavigator: SN
     private var subscriptionId: UUID? = nil
     
     init(
@@ -20,7 +21,8 @@ where SS: StateStore, SS.State == StopwatchState {
         _ resetStopwatchUseCase: ResetStopwatchUseCase,
         _ newLapUseCase: NewLapUseCase,
         _ viewTimeMapper: ViewTimeMapper,
-        _ stringTimeMapper: StringTimeMapper
+        _ stringTimeMapper: StringTimeMapper,
+        _ stackNavigator: SN
     ) {
         self.stopwatchStore = stopwatchStore
         self.startStopwatchUseCase = startStopwatchUseCase
@@ -29,6 +31,7 @@ where SS: StateStore, SS.State == StopwatchState {
         self.newLapUseCase = newLapUseCase
         self.viewTimeMapper = viewTimeMapper
         self.stringTimeMapper = stringTimeMapper
+        self.stackNavigator = stackNavigator
         
         subscriptionId = stopwatchStore.events.susbcribe {newState in
             Task {@MainActor in
@@ -42,7 +45,8 @@ where SS: StateStore, SS.State == StopwatchState {
                             status: $0.status
                         )
                     },
-                    showLaps: !newState.laps.isEmpty
+                    showLaps: !newState.laps.isEmpty,
+                    showSeeAll: newState.laps.count > 3
                 )
             }
         }
@@ -64,6 +68,7 @@ where SS: StateStore, SS.State == StopwatchState {
             case .resume: await startStopwatchUseCase.execute()
             case .reset: await resetStopwatchUseCase.execute()
             case .lap: await newLapUseCase.execute()
+            case .seeAll: stackNavigator.push(.laps)
             }
         }
     }

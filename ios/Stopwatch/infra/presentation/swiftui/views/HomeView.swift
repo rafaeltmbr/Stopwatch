@@ -6,19 +6,17 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
     @StateObject var viewModel: ViewModel
     
     var body: some View {
-        NavigationView {
+        VStack {
             VStack {
-                VStack {
-                    timer.padding(.bottom)
-                    buttons
-                }.frame(maxHeight: .infinity)
-                
-                if viewModel.state.showLaps {
-                    laps
-                }
+                timer.padding(.bottom)
+                buttons
+            }.frame(maxHeight: .infinity)
+            
+            if viewModel.state.showLaps {
+                laps
             }
-            .navigationTitle("Stopwatch")
         }
+        .navigationTitle("Stopwatch")
     }
     
     private var timer: some View {
@@ -26,19 +24,19 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
             let minutes = viewModel.state.time.minutes.enumerated().map { ($0, $1)}
             ForEach(minutes, id: \.0) {
                 Text($1)
-                    .font(.system(size: 70, weight: Font.Weight.light))
-                    .frame(width: 40)
+                    .font(.system(size: 80, weight: Font.Weight.light))
+                    .monospaced()
             }
             
             Text(":")
-                .font(.system(size: 70, weight: Font.Weight.light))
+                .font(.system(size: 80, weight: Font.Weight.light))
                 .padding(.leading, 4)
             
             let seconds = viewModel.state.time.seconds.enumerated().map { ($0, $1)}
             ForEach(seconds, id: \.0) {
                 Text($1)
-                    .font(.system(size: 70, weight: Font.Weight.light))
-                    .frame(width: 40)
+                    .font(.system(size: 80, weight: Font.Weight.light))
+                    .monospaced()
             }
             
             Text(".")
@@ -48,8 +46,8 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
             let fraction = viewModel.state.time.fraction.enumerated().map { ($0, $1)}
             ForEach(fraction, id: \.0) {
                 Text($1)
-                    .font(.system(size: 36)).padding(.bottom, 8)
-                    .frame(width: 24)
+                    .font(.system(size: 40)).padding(.bottom, 8)
+                    .monospaced()
             }
         }
     }
@@ -77,14 +75,40 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
     private var laps: some View {
         HStack(alignment: .bottom) {
             VStack(alignment: .leading) {
-                Text("Laps").font(.title2)
+                HStack {
+                    Text("Laps").font(.title2)
+                    Spacer()
+                    if viewModel.state.showSeeAll {
+                        HStack {
+                            Button(action: { viewModel.handleAction(.seeAll)}) {
+                                Text("Sell All")
+                                Image(systemName: "chevron.right")
+                            }
+                        }
+                    }
+                }
                 ForEach(viewModel.state.laps, id: \.index) {lap in
                     HStack {
-                        Text("#\(lap.index)").foregroundStyle(.gray)
-                        Text(lap.time).font(.title2)
+                        let color: Color? = switch lap.status {
+                        case .best: Color.green
+                        case .worst: Color.red
+                        default: nil
+                        }
+                        
+                        Text("#\(lap.index)").foregroundStyle(.gray).monospaced()
+                        
+                        if let color = color {
+                            Text(lap.time).font(.title2).foregroundStyle(color).monospaced()
+                        } else {
+                            Text(lap.time).font(.title2).monospaced()
+                        }
+                        
                         Spacer().frame(maxWidth: .infinity)
-                        Text("\(lap.status)").foregroundStyle(.gray)
-                    }.padding(4)
+                        
+                        if let color = color {
+                            Text("\(lap.status)").foregroundStyle(color)
+                        }
+                    }.padding(.vertical, 2)
                 }
             }
         }.padding().frame(minHeight: 200)
@@ -101,5 +125,7 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
         }
     }
     
-    return HomeView(viewModel: container.presentation.homeViewModelFactory.make())
+    return NavigationStack {
+        HomeView(viewModel: container.presentation.homeViewModelFactory.make(StackNavigatorImpl()))
+    }
 }

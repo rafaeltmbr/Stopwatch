@@ -1,5 +1,6 @@
 protocol HomeViewModelFactory {
     associatedtype ViewModel: HomeViewModel
+    associatedtype Navigator: StackNavigator
     
-    func make() -> ViewModel
+    func make(_ navigator: Navigator) -> ViewModel
 }

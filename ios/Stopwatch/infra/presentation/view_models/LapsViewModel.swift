@@ -13,7 +13,7 @@ struct LapsState {
 }
 
 enum LapsAction {
-    case resume, lap, back
+    case resume, lap
 }
 
 protocol LapsViewModel: ObservableObject {

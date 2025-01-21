@@ -12,8 +12,11 @@ struct StopwatchApp: App {
                     await container.useCases.updateStopwatchTimeAndLaps.execute(timerState)
                 }
             }
-
-            return HomeView(viewModel: container.presentation.homeViewModelFactory.make())
+            
+            ViewsRouter(
+                container.presentation.homeViewModelFactory,
+                container.presentation.lapsViewModelFactory
+            )
         }
     }
 }

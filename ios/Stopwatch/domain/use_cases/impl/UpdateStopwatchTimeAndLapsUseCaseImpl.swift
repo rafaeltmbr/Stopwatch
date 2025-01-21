@@ -18,13 +18,13 @@ where MSS: MutableStateStore, MSS.State == StopwatchState {
     
     private func getNextLaps(_ milliseconds: Int, _ laps: [Lap]) -> [Lap] {
         if laps.count < 2 {
-            return laps.map {
+            return [
                 Lap(
-                    index: $0.index,
+                    index: 1,
                     milliseconds: milliseconds,
                     status: .current
                 )
-            }
+            ]
         }
         
         let currentLap = Lap(

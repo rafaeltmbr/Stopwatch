@@ -1,5 +1,7 @@
 class LapsViewModelFactoryImpl<SS>: LapsViewModelFactory
 where SS: MutableStateStore, SS.State == StopwatchState {
+    typealias Navigator = StackNavigatorImpl
+    
     private let stopwatchStore: SS
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let newLapUseCase: NewLapUseCase
@@ -17,12 +19,13 @@ where SS: MutableStateStore, SS.State == StopwatchState {
         self.stringTimeMapper = stringTimeMapper
     }
     
-    func make() -> some LapsViewModel {
+    func make(_ navigator: Navigator) -> some LapsViewModel {
         return LapsViewModelImpl(
             stopwatchStore,
             startStopwatchUseCase,
             newLapUseCase,
-            stringTimeMapper
+            stringTimeMapper,
+            navigator
         )
     }
 }

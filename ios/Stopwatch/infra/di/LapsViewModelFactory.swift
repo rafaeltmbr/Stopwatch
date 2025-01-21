@@ -1,5 +1,6 @@
 protocol LapsViewModelFactory {
     associatedtype ViewModel: LapsViewModel
+    associatedtype Navigator: StackNavigator
     
-    func make() -> ViewModel
+    func make(_ navigator: Navigator) -> ViewModel
 }

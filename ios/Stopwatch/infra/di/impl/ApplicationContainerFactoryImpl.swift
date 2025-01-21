@@ -5,8 +5,8 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
     typealias ServicesTimer = TimerServiceImpl<EventEmitterImpl<TimerState>>
     typealias UseCases = ApplicationUseCases
     typealias Presentation = ApplicationPresentation<PresentationHVMF, PresentationLVMF>
-    typealias PresentationHVMF = HomeViewModelFactoryImpl<MutableStateStoreImpl<StopwatchState, EventEmitterImpl<StopwatchState>>>
-    typealias PresentationLVMF = LapsViewModelFactoryImpl<MutableStateStoreImpl<StopwatchState, EventEmitterImpl<StopwatchState>>>
+    typealias PresentationHVMF = HomeViewModelFactoryImpl<StoresStopwatch>
+    typealias PresentationLVMF = LapsViewModelFactoryImpl<StoresStopwatch>
     typealias Container = ApplicationContainer<
         Stores,
         StoresStopwatch,
@@ -30,23 +30,25 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         
         let viewTimeMapper = ViewTimeMapperImpl()
         let stringTimeMapper = StringTimeMapperImpl(viewTimeMapper)
-        
+        let homeViewModelFactory = HomeViewModelFactoryImpl(
+            stores.stopwatch,
+            useCases.startStopwatch,
+            useCases.pauseStopwatch,
+            useCases.resetStopwatch,
+            useCases.newLap,
+            viewTimeMapper,
+            stringTimeMapper
+        )
+        let lapsViewModelFactory = LapsViewModelFactoryImpl(
+            stores.stopwatch,
+            useCases.startStopwatch,
+            useCases.newLap,
+            stringTimeMapper
+        )
+
         let presentation = ApplicationPresentation(
-            HomeViewModelFactoryImpl(
-                stores.stopwatch,
-                useCases.startStopwatch,
-                useCases.pauseStopwatch,
-                useCases.resetStopwatch,
-                useCases.newLap,
-                viewTimeMapper,
-                stringTimeMapper
-            ),
-            LapsViewModelFactoryImpl(
-                stores.stopwatch,
-                useCases.startStopwatch,
-                useCases.newLap,
-                stringTimeMapper
-            )
+            homeViewModelFactory,
+            lapsViewModelFactory
         )
 
         let container = ApplicationContainer(

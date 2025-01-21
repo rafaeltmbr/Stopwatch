@@ -3,6 +3,8 @@ import Foundation
 class HomeViewModelFactoryImpl<SS>: HomeViewModelFactory
 where SS: MutableStateStore, SS.State == StopwatchState
 {
+    typealias Navigator = StackNavigatorImpl
+    
     private let stopwatchStore: SS
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let pauseStopwatchUseCase: PauseStopwatchUseCase
@@ -29,7 +31,7 @@ where SS: MutableStateStore, SS.State == StopwatchState
         self.stringTimeMapper = stringTimeMapper
     }
     
-    func make() -> some HomeViewModel {
+    func make(_ navigator: Navigator) -> some HomeViewModel {
         HomeViewModelImpl(
             stopwatchStore,
             startStopwatchUseCase,
@@ -37,7 +39,8 @@ where SS: MutableStateStore, SS.State == StopwatchState
             resetStopwatchUseCase,
             newLapUseCase,
             viewTimeMapper,
-            stringTimeMapper
+            stringTimeMapper,
+            navigator
         )
     }
 }
