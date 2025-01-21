@@ -56,20 +56,36 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
         HStack {
             switch (viewModel.state.status) {
             case .initial: HStack {
-                Button("Start") { viewModel.handleAction(.start) }
+                ButtonView(.start) { viewModel.handleAction(.start) }
             }
-            case .running: HStack(spacing: 40) {
-                Button("Pause") { viewModel.handleAction(.pause) }
-                Button("Lap") { viewModel.handleAction(.lap)}
-                    .foregroundStyle(.green)
+            case .running: HStack {
+                Spacer()
+                HStack {
+                    ButtonView(.pause) { viewModel.handleAction(.pause) }
+                }
+                
+                Spacer()
+                HStack {
+                    ButtonView(.lap) { viewModel.handleAction(.lap)}
+                }
+                
+                Spacer()
             }
-            case .paused: HStack(spacing: 40) {
-                Button("Resume") { viewModel.handleAction(.resume) }
-                Button("Reset") { viewModel.handleAction(.reset) }
-                    .foregroundStyle(.red)
+            case .paused: HStack {
+                Spacer()
+                HStack {
+                    ButtonView(.resume) { viewModel.handleAction(.resume) }
+                }
+                
+                Spacer()
+                HStack {
+                    ButtonView(.reset) { viewModel.handleAction(.reset) }
+                }
+                
+                Spacer()
             }
             }
-        }
+        }.padding(.horizontal)
     }
     
     private var laps: some View {
@@ -128,4 +144,46 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
     return NavigationStack {
         HomeView(viewModel: container.presentation.homeViewModelFactory.make(StackNavigatorImpl()))
     }
+}
+
+
+private enum ButtonType {
+    case start, pause, resume, reset, lap
+}
+
+private struct ButtonView: View {
+    private var type: ButtonType
+    private var onAction: () -> Void
+   
+    init(_ type: ButtonType, _ onAction: @escaping () -> Void) {
+        self.type = type
+        self.onAction = onAction
+    }
+    
+    
+    var body: some View {
+        let (text, image, color) = switch type {
+        case .start: ("start", "play", Color.blue)
+        case .pause: ("pause", "pause", Color.blue)
+        case .resume: ("resume", "play", Color.blue)
+        case .reset: ("reset", "arrow.trianglehead.clockwise", Color.red)
+        case .lap: ("lap", "plus", Color.green)
+        }
+        
+        return Button(action: onAction) {
+            VStack(spacing: 4) {
+                Image(systemName: image).font(.system(size: 24))
+                Text(text).font(.system(size: 13))
+            }
+            .frame(width: 80, height: 80)
+            .background(.ultraThickMaterial)
+            .background(color.opacity(0.5))
+            .foregroundColor(color)
+            .clipShape(Circle())
+        }
+    }
+}
+
+#Preview {
+    ButtonView(.start) {}
 }
