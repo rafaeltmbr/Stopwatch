@@ -1,17 +1,11 @@
-class ApplicationRepositories {
-    let stopwatch: StopwatchRepository
-    
-    init(_ stopwatchRepository: StopwatchRepository) {
-        self.stopwatch = stopwatchRepository
-    }
-}
-
-class ApplicationStores<MSS>
+class ApplicationData<MSS>
 where MSS: MutableStateStore, MSS.State == StopwatchState {
-    let stopwatch: MSS
-    
-    init(_ stopwatch: MSS) {
-        self.stopwatch = stopwatch
+    let stopwatchRepository: StopwatchRepository
+    let stopwatchStore: MSS
+
+    init(_ stopwatch: MSS, _ stopwatchRepository: StopwatchRepository) {
+        self.stopwatchRepository = stopwatchRepository
+        self.stopwatchStore = stopwatch
     }
 }
 
@@ -70,9 +64,8 @@ where
 }
 
 class ApplicationContainer<
-    Stores,
-    StoresStopwatch,
-    Repositories,
+    Data,
+    DataStopwatchStore,
     Services, ServicesTimer,
     Presentation,
     PresentationHVMF,
@@ -80,9 +73,8 @@ class ApplicationContainer<
     PresentationSN
 >
 where
-    Stores: ApplicationStores<StoresStopwatch>,
-    StoresStopwatch: MutableStateStore,
-    Repositories: ApplicationRepositories,
+    Data: ApplicationData<DataStopwatchStore>,
+    DataStopwatchStore: MutableStateStore,
     Services: ApplicationServices<ServicesTimer>,
     ServicesTimer: TimerService,
     Presentation: ApplicationPresentation<PresentationHVMF, PresentationLVMF, PresentationSN>,
@@ -90,15 +82,13 @@ where
     PresentationLVMF: LapsViewModelFactory,
     PresentationSN: StackNavigator
 {
-    let stores: Stores
-    let repositories: Repositories
+    let data: Data
     let services: Services
     let useCases: ApplicationUseCases
     let presentation: Presentation
     
-    init(_ stores: Stores, _ repositories: Repositories, _ services: Services, _ useCases: ApplicationUseCases, _ presentation: Presentation) {
-        self.stores = stores
-        self.repositories = repositories
+    init(_ data: Data, _ services: Services, _ useCases: ApplicationUseCases, _ presentation: Presentation) {
+        self.data = data
         self.services = services
         self.useCases = useCases
         self.presentation = presentation
@@ -106,10 +96,8 @@ where
 }
 
 protocol ApplicationContainerFactory {
-    associatedtype Stores: ApplicationStores<StoresStopwatch>
-    associatedtype StoresStopwatch: MutableStateStore where StoresStopwatch.State == StopwatchState
-    
-    associatedtype Repositories: ApplicationRepositories
+    associatedtype Data: ApplicationData<DataStopwatchStore>
+    associatedtype DataStopwatchStore: MutableStateStore where DataStopwatchStore.State == StopwatchState
     
     associatedtype Services: ApplicationServices<ServicesTimer>
     associatedtype ServicesTimer: TimerService
@@ -122,9 +110,8 @@ protocol ApplicationContainerFactory {
     associatedtype PresentationSN: StackNavigator
 
     associatedtype Container: ApplicationContainer<
-        Stores,
-        StoresStopwatch,
-        Repositories,
+        Data,
+        DataStopwatchStore,
         Services,
         ServicesTimer,
         Presentation,

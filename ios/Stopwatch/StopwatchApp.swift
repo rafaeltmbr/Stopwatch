@@ -17,7 +17,7 @@ struct StopwatchApp: App {
                 }
             }
             
-            let _ = container.stores.stopwatch.events.subscribe {_ in
+            let _ = container.data.stopwatchStore.events.subscribe {_ in
                 Task {
                     await container.useCases.saveStopwatchState.execute()
                 }

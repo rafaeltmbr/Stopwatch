@@ -1,18 +1,17 @@
 class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
-    typealias Stores = ApplicationStores<StoresStopwatch>
-    typealias StoresStopwatch = MutableStateStoreImpl<StopwatchState, EventEmitterImpl<StopwatchState>>
-    typealias Repositories = ApplicationRepositories
+    typealias Data = ApplicationData<DataStopwatchStore>
+    typealias DataStopwatchStore = MutableStateStoreImpl<StopwatchState, EventEmitterImpl<StopwatchState>>
+    typealias Repositories = ApplicationData
     typealias Services = ApplicationServices<ServicesTimer>
     typealias ServicesTimer = TimerServiceImpl<EventEmitterImpl<TimerState>>
     typealias UseCases = ApplicationUseCases
     typealias Presentation = ApplicationPresentation<PresentationHVMF, PresentationLVMF, PresentationSN>
-    typealias PresentationHVMF = HomeViewModelFactoryImpl<StoresStopwatch, PresentationSN>
-    typealias PresentationLVMF = LapsViewModelFactoryImpl<StoresStopwatch, PresentationSN>
+    typealias PresentationHVMF = HomeViewModelFactoryImpl<DataStopwatchStore, PresentationSN>
+    typealias PresentationLVMF = LapsViewModelFactoryImpl<DataStopwatchStore, PresentationSN>
     typealias PresentationSN = StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
     typealias Container = ApplicationContainer<
-        Stores,
-        StoresStopwatch,
-        Repositories,
+        Data,
+        DataStopwatchStore,
         Services,
         ServicesTimer,
         Presentation,
@@ -22,24 +21,26 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
     >
     
     func make() -> Container {
-        let stores = ApplicationStores(MutableStateStoreImpl(StopwatchState(), EventEmitterImpl<StopwatchState>()))
-        let repositories = ApplicationRepositories(StopwatchRepositoryImpl(StopwatchDataSourceFileManager()))
+        let data = ApplicationData(
+            MutableStateStoreImpl(StopwatchState(), EventEmitterImpl<StopwatchState>()),
+            StopwatchRepositoryImpl(StopwatchDataSourceFileManager())
+        )
         let services = ApplicationServices(TimerServiceImpl(EventEmitterImpl()))
         let useCases = ApplicationUseCases(
-            StartStopwatchUseCaseImpl(stores.stopwatch, services.timer),
-            PauseStopwatchUseCaseImpl(stores.stopwatch, services.timer),
-            ResetStopwatchUseCaseImpl(stores.stopwatch, services.timer),
-            NewLapUseCaseImpl(stores.stopwatch),
-            UpdateStopwatchTimeAndLapsUseCaseImpl(stores.stopwatch),
-            SaveStopwatchStateUseCaseImpl(stores.stopwatch, repositories.stopwatch),
-            RestoreStopwatchStateUseCaseImpl(stores.stopwatch, repositories.stopwatch, services.timer)
+            StartStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
+            PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
+            ResetStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
+            NewLapUseCaseImpl(data.stopwatchStore),
+            UpdateStopwatchTimeAndLapsUseCaseImpl(data.stopwatchStore),
+            SaveStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository),
+            RestoreStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository, services.timer)
         )
         
         let viewTimeMapper = ViewTimeMapperImpl()
         let stringTimeMapper = StringTimeMapperImpl(viewTimeMapper)
         let stackNavigator = StackNavigatorImpl(stack: [.home], eventEmitter: EventEmitterImpl())
         let homeViewModelFactory = HomeViewModelFactoryImpl(
-            stores.stopwatch,
+            data.stopwatchStore,
             useCases.startStopwatch,
             useCases.pauseStopwatch,
             useCases.resetStopwatch,
@@ -49,7 +50,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
             stackNavigator
         )
         let lapsViewModelFactory = LapsViewModelFactoryImpl(
-            stores.stopwatch,
+            data.stopwatchStore,
             useCases.startStopwatch,
             useCases.newLap,
             stringTimeMapper,
@@ -63,8 +64,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         )
 
         let container = ApplicationContainer(
-            stores,
-            repositories,
+            data,
             services,
             useCases,
             presentation

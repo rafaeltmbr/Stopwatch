@@ -25,7 +25,7 @@ struct LapsView<ViewModel: LapsViewModel>: View {
     let container = ApplicationContainerFactoryImpl().make()
     
     Task {
-        await container.stores.stopwatch.update {_ in
+        await container.data.stopwatchStore.update {_ in
             StopwatchState(
                 status: .paused,
                 milliseconds: 365823,
