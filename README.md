@@ -1,8 +1,9 @@
 # Stopwatch
 
-Android Stopwatch App
+Stopwatch App
 
-![App](./docs/assets/images/home-screen.png)
+<img src="./docs/assets/images/home-android.png" title="Android app" height=600>
+<img src="./docs/assets/images/home-ios.png" title="iOS app" height=600>
 
 ## Architecture
 
