@@ -1,15 +1,15 @@
 import Foundation
 
-enum StackNavigatorPath {
+enum StackNavigatorScreen {
     case home, laps
 }
 
 protocol StackNavigator{
-    associatedtype Events: EventSubscriber where Events.Event == [StackNavigatorPath]
+    associatedtype Events: EventSubscriber where Events.Event == [StackNavigatorScreen]
     
-    var stack: [StackNavigatorPath] { get }
+    var stack: [StackNavigatorScreen] { get }
     var events: Events { get }
     
-    func push(_ path: StackNavigatorPath)
+    func push(_ screen: StackNavigatorScreen)
     func pop()
 }

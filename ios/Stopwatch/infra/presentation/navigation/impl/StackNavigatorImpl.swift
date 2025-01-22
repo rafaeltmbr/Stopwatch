@@ -1,21 +1,21 @@
 import Foundation
 
 class StackNavigatorImpl<EE> : StackNavigator
-where EE: EventEmitter, EE.Event == [StackNavigatorPath]
+where EE: EventEmitter, EE.Event == [StackNavigatorScreen]
 {
-    private(set) var stack: [StackNavigatorPath]
+    private(set) var stack: [StackNavigatorScreen]
     private(set) var events: EE
     
-    init(stack: [StackNavigatorPath], eventEmitter: EE) {
+    init(stack: [StackNavigatorScreen], eventEmitter: EE) {
         self.stack = stack
         self.events = eventEmitter
     }
     
-    func push(_ navigationPath: StackNavigatorPath) {
-        guard !stack.contains(navigationPath) else { return }
+    func push(_ screen: StackNavigatorScreen) {
+        guard !stack.contains(screen) else { return }
         
         var newStack = stack.map { $0 }
-        newStack.append(navigationPath)
+        newStack.append(screen)
         update(newStack)
     }
     
@@ -27,7 +27,7 @@ where EE: EventEmitter, EE.Event == [StackNavigatorPath]
         update(newStack)
     }
     
-    private func update(_ stack: [StackNavigatorPath]) {
+    private func update(_ stack: [StackNavigatorScreen]) {
         self.stack = stack
         events.emit(stack)
     }

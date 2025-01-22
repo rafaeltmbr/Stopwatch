@@ -4,7 +4,7 @@ struct ViewsRouter<HVMF, LVMF, SN>: View
 where
 HVMF: HomeViewModelFactory,
 LVMF: LapsViewModelFactory,
-SN: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
+SN: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorScreen]>>
 {
     @StateObject var navigatorAdapter: StackNavigatorAdapter
     private(set) var homeViewModelFactory: HVMF
@@ -19,7 +19,7 @@ SN: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
     var body: some View {
         NavigationStack(path: navigatorAdapter.pathBinding) {
             HomeView(viewModel: homeViewModelFactory.make())
-                .navigationDestination(for: StackNavigatorPath.self) { path in
+                .navigationDestination(for: StackNavigatorScreen.self) { path in
                     switch path {
                     case .home: EmptyView()
                     case .laps: LapsView(viewModel: lapsViewModelFactory.make())
@@ -31,10 +31,10 @@ SN: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
 
 class StackNavigatorAdapter: ObservableObject {
     @Published private(set) var path = NavigationPath()
-    let stackNavigator: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
+    let stackNavigator: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorScreen]>>
     private var subscription: UUID? = nil
     
-    init(_ stackNavigator: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>) {
+    init(_ stackNavigator: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorScreen]>>) {
         self.stackNavigator = stackNavigator
         self.subscription = stackNavigator.events.subscribe {stack in
             Task {@MainActor in

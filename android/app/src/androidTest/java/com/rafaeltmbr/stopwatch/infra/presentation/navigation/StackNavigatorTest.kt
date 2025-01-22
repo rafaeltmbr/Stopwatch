@@ -1,9 +1,6 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.navigation
 
-import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.navigation.StackNavigatorImpl
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -14,59 +11,57 @@ import org.junit.runners.JUnit4
 class StackNavigatorTest {
     @Test
     fun push_shouldPushNewScreen() = runTest {
-        val presentationStore = MutableStateStoreImpl(PresentationState(screens = emptyList()))
-        val stackNavigator = StackNavigatorImpl(presentationStore)
+        val stackNavigator = StackNavigatorImpl(emptyList())
 
-        stackNavigator.push(Screen.Home)
+        stackNavigator.push(StackNavigator.Screen.Home)
         Assert.assertEquals(
-            PresentationState(screens = listOf(Screen.Home)),
-            presentationStore.state.value
+            listOf(StackNavigator.Screen.Home),
+            stackNavigator.stack
         )
 
-        stackNavigator.push(Screen.Laps)
+        stackNavigator.push(StackNavigator.Screen.Laps)
         Assert.assertEquals(
-            PresentationState(screens = listOf(Screen.Home, Screen.Laps)),
-            presentationStore.state.value
+            listOf(StackNavigator.Screen.Home, StackNavigator.Screen.Laps),
+            stackNavigator.stack
         )
     }
 
     @Test
     fun push_shouldNotPushScreenIfAlreadyOnStack() = runTest {
-        val presentationStore =
-            MutableStateStoreImpl(PresentationState(screens = listOf(Screen.Home, Screen.Laps)))
-        val stackNavigator = StackNavigatorImpl(presentationStore)
+        val stackNavigator = StackNavigatorImpl(emptyList())
 
-        stackNavigator.push(Screen.Home)
-        stackNavigator.push(Screen.Laps)
+        stackNavigator.push(StackNavigator.Screen.Home)
+        stackNavigator.push(StackNavigator.Screen.Laps)
         Assert.assertEquals(
-            PresentationState(screens = listOf(Screen.Home, Screen.Laps)),
-            presentationStore.state.value
+            listOf(StackNavigator.Screen.Home, StackNavigator.Screen.Laps),
+            stackNavigator.stack
         )
     }
 
     @Test
     fun pop_shouldPopScreen() = runTest {
-        val presentationStore =
-            MutableStateStoreImpl(PresentationState(screens = listOf(Screen.Home, Screen.Laps)))
-        val stackNavigator = StackNavigatorImpl(presentationStore)
+        val stackNavigator = StackNavigatorImpl(
+            listOf(
+                StackNavigator.Screen.Home,
+                StackNavigator.Screen.Laps
+            )
+        )
 
         stackNavigator.pop()
         Assert.assertEquals(
-            PresentationState(screens = listOf(Screen.Home)),
-            presentationStore.state.value
+            listOf(StackNavigator.Screen.Home),
+            stackNavigator.stack
         )
     }
 
     @Test
     fun pop_shouldNotPopScreenIfTheresOnlyOnScreen() = runTest {
-        val presentationStore =
-            MutableStateStoreImpl(PresentationState(screens = listOf(Screen.Home)))
-        val stackNavigator = StackNavigatorImpl(presentationStore)
+        val stackNavigator = StackNavigatorImpl(listOf(StackNavigator.Screen.Home))
 
         stackNavigator.pop()
         Assert.assertEquals(
-            PresentationState(screens = listOf(Screen.Home)),
-            presentationStore.state.value
+            listOf(StackNavigator.Screen.Home),
+            stackNavigator.stack
         )
     }
 }

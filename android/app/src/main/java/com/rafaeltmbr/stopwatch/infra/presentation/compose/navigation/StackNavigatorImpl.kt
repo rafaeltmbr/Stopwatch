@@ -8,36 +8,38 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.rafaeltmbr.stopwatch.domain.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.theme.StopwatchTheme
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.views.HomeView
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.views.LapsView
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
 import com.rafaeltmbr.stopwatch.infra.presentation.navigation.StackNavigator
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
-class StackNavigatorImpl(
-    private val presentationStore: MutableStateStore<PresentationState>
-) : StackNavigator {
+class StackNavigatorImpl(initialStack: List<StackNavigator.Screen>) : StackNavigator {
+    private var _stack = MutableStateFlow(initialStack)
     private var navController: NavHostController? = null
 
-    override suspend fun push(screen: Screen) {
-        presentationStore.update {
-            if (navController == null || it.screens.contains(screen)) return@update it
+    override val stack: StateFlow<List<StackNavigator.Screen>> = _stack.asStateFlow()
+
+    override suspend fun push(screen: StackNavigator.Screen) {
+        _stack.update {
+            if (navController == null || it.contains(screen)) return@update it
 
             navController?.navigate(screen.name)
-            it.copy(screens = it.screens + screen)
+            it + screen
         }
     }
 
     override suspend fun pop() {
-        presentationStore.update {
-            if (navController == null || it.screens.size < 2) return@update it
+        _stack.update {
+            if (navController == null || it.size < 2) return@update it
 
             navController?.popBackStack()
-            it.copy(screens = it.screens.subList(0, it.screens.size - 1))
+            it.subList(0, it.size - 1)
         }
     }
 
@@ -60,7 +62,7 @@ class StackNavigatorImpl(
         StopwatchTheme {
             NavHost(
                 navController = navController,
-                startDestination = Screen.Home.name,
+                startDestination = StackNavigator.Screen.Home.name,
                 enterTransition = {
                     slideIntoContainer(
                         AnimatedContentTransitionScope.SlideDirection.Left,
@@ -86,11 +88,11 @@ class StackNavigatorImpl(
                     )
                 }
             ) {
-                composable(Screen.Home.name) {
+                composable(StackNavigator.Screen.Home.name) {
                     HomeView(viewModelFactory = homeViewModelFactory)
                 }
 
-                composable(Screen.Laps.name) {
+                composable(StackNavigator.Screen.Laps.name) {
                     LapsView(viewModelFactory = lapsViewModelFactory)
                 }
             }

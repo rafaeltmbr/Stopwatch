@@ -13,7 +13,6 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.SaveStopwatchStateUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.UpdateStopwatchTimeAndLapUseCase
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.navigation.StackNavigatorImpl
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
 
 data class ApplicationContainer(
     val data: Data,
@@ -23,7 +22,6 @@ data class ApplicationContainer(
 ) {
     data class Data(
         val stopwatchStore: MutableStateStore<StopwatchState>,
-        val presentationStore: MutableStateStore<PresentationState>,
         val stopwatchRepository: StopwatchRepository,
     )
 

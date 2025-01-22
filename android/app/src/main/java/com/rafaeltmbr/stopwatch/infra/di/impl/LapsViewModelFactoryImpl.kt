@@ -10,7 +10,6 @@ import com.rafaeltmbr.stopwatch.domain.services.LoggingService
 import com.rafaeltmbr.stopwatch.domain.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.navigation.StackNavigator
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewModel
@@ -18,7 +17,6 @@ import com.rafaeltmbr.stopwatch.infra.presentation.view_models.impl.LapsViewMode
 
 class LapsViewModelFactoryImpl(
     private val stopwatchStore: MutableStateStore<StopwatchState>,
-    private val presentationStore: MutableStateStore<PresentationState>,
     private val stackNavigator: StackNavigator,
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val newLapUseCase: NewLapUseCase,
@@ -31,7 +29,6 @@ class LapsViewModelFactoryImpl(
             initializer {
                 LapsViewModelImpl(
                     stopwatchStore,
-                    presentationStore,
                     stackNavigator,
                     startStopwatchUseCase,
                     newLapUseCase,

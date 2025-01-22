@@ -18,10 +18,9 @@ import com.rafaeltmbr.stopwatch.infra.data.room.data_sources.StopwatchDataSource
 import com.rafaeltmbr.stopwatch.infra.di.ApplicationContainer
 import com.rafaeltmbr.stopwatch.infra.di.ApplicationContainerFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.navigation.StackNavigatorImpl
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.StringTimeMapperImpl
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.ViewTimeMapperImpl
+import com.rafaeltmbr.stopwatch.infra.presentation.navigation.StackNavigator
 import com.rafaeltmbr.stopwatch.infra.services.external_resources.AndroidLoggerFacade
 
 class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
@@ -31,7 +30,6 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
 
         val data = ApplicationContainer.Data(
             MutableStateStoreImpl(StopwatchState()),
-            MutableStateStoreImpl(PresentationState(screens = listOf(Screen.Home))),
             StopwatchRepositoryImpl(
                 StopwatchDataSourceRoom(
                     database.stopwatchStateDao(),
@@ -62,7 +60,7 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
             UpdateStopwatchTimeAndLapUseCaseImpl(data.stopwatchStore),
         )
 
-        val stackNavigator = StackNavigatorImpl(data.presentationStore)
+        val stackNavigator = StackNavigatorImpl(listOf(StackNavigator.Screen.Home))
         val viewTimeMapper = ViewTimeMapperImpl()
         val stringTimeMapper = StringTimeMapperImpl(ViewTimeMapperImpl())
 
@@ -70,7 +68,6 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
             stackNavigator,
             HomeViewModelFactoryImpl(
                 data.stopwatchStore,
-                data.presentationStore,
                 stackNavigator,
                 useCases.startStopwatch,
                 useCases.pauseStopwatch,
@@ -82,7 +79,6 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
             ),
             LapsViewModelFactoryImpl(
                 data.stopwatchStore,
-                data.presentationStore,
                 stackNavigator,
                 useCases.startStopwatch,
                 useCases.newLap,

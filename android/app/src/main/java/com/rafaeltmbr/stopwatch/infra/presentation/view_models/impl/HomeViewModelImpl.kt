@@ -10,8 +10,6 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.ResetStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
-import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.ViewTimeMapper
@@ -28,7 +26,6 @@ private const val TAG = "HomeViewModelImpl"
 
 class HomeViewModelImpl(
     stopwatchStore: StateStore<StopwatchState>,
-    presentationStore: StateStore<PresentationState>,
     private val stackNavigator: StackNavigator,
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val pauseStopwatchUseCase: PauseStopwatchUseCase,
@@ -59,7 +56,7 @@ class HomeViewModelImpl(
                     HomeViewModel.Action.Resume -> startStopwatchUseCase.execute()
                     HomeViewModel.Action.Reset -> resetStopwatchUseCase.execute()
                     HomeViewModel.Action.Lap -> newLapUseCase.execute()
-                    HomeViewModel.Action.SeeAll -> stackNavigator.push(Screen.Laps)
+                    HomeViewModel.Action.SeeAll -> stackNavigator.push(StackNavigator.Screen.Laps)
                 }
             } catch (_: CancellationException) {
             } catch (e: Exception) {

@@ -8,7 +8,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
     typealias Presentation = ApplicationPresentation<PresentationHVMF, PresentationLVMF, PresentationSN>
     typealias PresentationHVMF = HomeViewModelFactoryImpl<DataStopwatchStore, PresentationSN>
     typealias PresentationLVMF = LapsViewModelFactoryImpl<DataStopwatchStore, PresentationSN>
-    typealias PresentationSN = StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
+    typealias PresentationSN = StackNavigatorImpl<EventEmitterImpl<[StackNavigatorScreen]>>
     typealias Container = ApplicationContainer<
         Data,
         DataStopwatchStore,
