@@ -16,6 +16,7 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapU
 import com.rafaeltmbr.stopwatch.infra.data.room.StopwatchDatabase
 import com.rafaeltmbr.stopwatch.infra.data.room.data_sources.StopwatchDataSourceRoom
 import com.rafaeltmbr.stopwatch.infra.di.ApplicationContainer
+import com.rafaeltmbr.stopwatch.infra.di.ApplicationContainerFactory
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.navigation.StackNavigatorImpl
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.PresentationState
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.Screen
@@ -23,8 +24,9 @@ import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.StringTimeMapper
 import com.rafaeltmbr.stopwatch.infra.presentation.mappers.impl.ViewTimeMapperImpl
 import com.rafaeltmbr.stopwatch.infra.services.external_resources.AndroidLoggerFacade
 
-class ApplicationApplicationContainerFactoryImpl(private val context: Context) {
-    fun make(): ApplicationContainer {
+class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
+    ApplicationContainerFactory {
+    override fun make(): ApplicationContainer {
         val database = StopwatchDatabase.getInstance(context)
 
         val data = ApplicationContainer.Data(
