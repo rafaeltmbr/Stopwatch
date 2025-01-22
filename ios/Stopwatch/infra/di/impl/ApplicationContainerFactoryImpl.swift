@@ -5,9 +5,10 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
     typealias Services = ApplicationServices<ServicesTimer>
     typealias ServicesTimer = TimerServiceImpl<EventEmitterImpl<TimerState>>
     typealias UseCases = ApplicationUseCases
-    typealias Presentation = ApplicationPresentation<PresentationHVMF, PresentationLVMF>
-    typealias PresentationHVMF = HomeViewModelFactoryImpl<StoresStopwatch>
-    typealias PresentationLVMF = LapsViewModelFactoryImpl<StoresStopwatch>
+    typealias Presentation = ApplicationPresentation<PresentationHVMF, PresentationLVMF, PresentationSN>
+    typealias PresentationHVMF = HomeViewModelFactoryImpl<StoresStopwatch, PresentationSN>
+    typealias PresentationLVMF = LapsViewModelFactoryImpl<StoresStopwatch, PresentationSN>
+    typealias PresentationSN = StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
     typealias Container = ApplicationContainer<
         Stores,
         StoresStopwatch,
@@ -16,7 +17,8 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         ServicesTimer,
         Presentation,
         PresentationHVMF,
-        PresentationLVMF
+        PresentationLVMF,
+        PresentationSN
     >
     
     func make() -> Container {
@@ -35,6 +37,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         
         let viewTimeMapper = ViewTimeMapperImpl()
         let stringTimeMapper = StringTimeMapperImpl(viewTimeMapper)
+        let stackNavigator = StackNavigatorImpl(stack: [.home], eventEmitter: EventEmitterImpl())
         let homeViewModelFactory = HomeViewModelFactoryImpl(
             stores.stopwatch,
             useCases.startStopwatch,
@@ -42,18 +45,21 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
             useCases.resetStopwatch,
             useCases.newLap,
             viewTimeMapper,
-            stringTimeMapper
+            stringTimeMapper,
+            stackNavigator
         )
         let lapsViewModelFactory = LapsViewModelFactoryImpl(
             stores.stopwatch,
             useCases.startStopwatch,
             useCases.newLap,
-            stringTimeMapper
+            stringTimeMapper,
+            stackNavigator
         )
 
         let presentation = ApplicationPresentation(
             homeViewModelFactory,
-            lapsViewModelFactory
+            lapsViewModelFactory,
+            stackNavigator
         )
 
         let container = ApplicationContainer(

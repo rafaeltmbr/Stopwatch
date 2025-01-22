@@ -26,7 +26,7 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
         self.stringTimeMapper = stringTimeMapper
         self.stackNavigator = stackNavigator
         
-        subscriptionId = stopwatchStore.events.susbcribe {stopwatchState in
+        subscriptionId = stopwatchStore.events.subscribe {stopwatchState in
             Task {@MainActor in
                 self.state = Self.getNextState(stopwatchState, stringTimeMapper)
             }

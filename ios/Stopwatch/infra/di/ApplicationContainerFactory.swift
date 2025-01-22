@@ -52,14 +52,20 @@ class ApplicationUseCases {
     }
 }
 
-class ApplicationPresentation<HVMF, LVMF>
-where HVMF: HomeViewModelFactory, LVMF: LapsViewModelFactory {
+class ApplicationPresentation<HVMF, LVMF, SN>
+where
+    HVMF: HomeViewModelFactory,
+    LVMF: LapsViewModelFactory,
+    SN: StackNavigator
+{
     let homeViewModelFactory: HVMF
     let lapsViewModelFactory: LVMF
+    let stackNavigator: SN
     
-    init(_ homeViewModelFactory: HVMF, _ lapsViewModelFactory: LVMF) {
+    init(_ homeViewModelFactory: HVMF, _ lapsViewModelFactory: LVMF, _ stackNavigator: SN) {
         self.homeViewModelFactory = homeViewModelFactory
         self.lapsViewModelFactory = lapsViewModelFactory
+        self.stackNavigator = stackNavigator
     }
 }
 
@@ -70,7 +76,8 @@ class ApplicationContainer<
     Services, ServicesTimer,
     Presentation,
     PresentationHVMF,
-    PresentationLVMF
+    PresentationLVMF,
+    PresentationSN
 >
 where
     Stores: ApplicationStores<StoresStopwatch>,
@@ -78,9 +85,10 @@ where
     Repositories: ApplicationRepositories,
     Services: ApplicationServices<ServicesTimer>,
     ServicesTimer: TimerService,
-    Presentation: ApplicationPresentation<PresentationHVMF, PresentationLVMF>,
+    Presentation: ApplicationPresentation<PresentationHVMF, PresentationLVMF, PresentationSN>,
     PresentationHVMF: HomeViewModelFactory,
-    PresentationLVMF: LapsViewModelFactory
+    PresentationLVMF: LapsViewModelFactory,
+    PresentationSN: StackNavigator
 {
     let stores: Stores
     let repositories: Repositories
@@ -108,9 +116,10 @@ protocol ApplicationContainerFactory {
     
     associatedtype UseCases: ApplicationUseCases
     
-    associatedtype Presentation: ApplicationPresentation<PresentationHVMF, PresentationLVMF>
+    associatedtype Presentation: ApplicationPresentation<PresentationHVMF, PresentationLVMF, PresentationSN>
     associatedtype PresentationHVMF: HomeViewModelFactory
     associatedtype PresentationLVMF: LapsViewModelFactory
+    associatedtype PresentationSN: StackNavigator
 
     associatedtype Container: ApplicationContainer<
         Stores,
@@ -120,7 +129,8 @@ protocol ApplicationContainerFactory {
         ServicesTimer,
         Presentation,
         PresentationHVMF,
-        PresentationLVMF
+        PresentationLVMF,
+        PresentationSN
     >
     
     func make() -> Container

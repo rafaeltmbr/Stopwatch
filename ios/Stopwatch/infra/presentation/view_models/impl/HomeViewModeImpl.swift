@@ -33,7 +33,7 @@ where SS: StateStore, SS.State == StopwatchState, SN: StackNavigator {
         self.stringTimeMapper = stringTimeMapper
         self.stackNavigator = stackNavigator
         
-        subscriptionId = stopwatchStore.events.susbcribe {newState in
+        subscriptionId = stopwatchStore.events.subscribe {newState in
             Task {@MainActor in
                 self.state = HomeState(
                     status: newState.status,
@@ -59,8 +59,6 @@ where SS: StateStore, SS.State == StopwatchState, SN: StackNavigator {
     }
     
     func handleAction(_ action: HomeAction) {
-        print("Action \(action)")
-        
         Task {
             switch action {
             case .start: await startStopwatchUseCase.execute()

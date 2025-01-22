@@ -3,7 +3,7 @@ import Foundation
 class EventEmitterImpl<T>: EventEmitter {
     private(set) var subscriptions: [UUID: (T) -> Void] = [:]
     
-    func susbcribe(_ subscriber: @escaping (T) -> Void) -> UUID {
+    func subscribe(_ subscriber: @escaping (T) -> Void) -> UUID {
         let subscriptionId = UUID()
         subscriptions[subscriptionId] = subscriber
         return subscriptionId

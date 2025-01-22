@@ -11,13 +11,13 @@ struct StopwatchApp: App {
                 await self.container.useCases.restoreStopwatchState.execute()
             }
             
-            let _ = container.services.timer.events.susbcribe {timerState in
+            let _ = container.services.timer.events.subscribe {timerState in
                 Task {
                     await container.useCases.updateStopwatchTimeAndLaps.execute(timerState)
                 }
             }
             
-            let _ = container.stores.stopwatch.events.susbcribe {_ in
+            let _ = container.stores.stopwatch.events.subscribe {_ in
                 Task {
                     await container.useCases.saveStopwatchState.execute()
                 }
@@ -25,7 +25,8 @@ struct StopwatchApp: App {
             
             ViewsRouter(
                 container.presentation.homeViewModelFactory,
-                container.presentation.lapsViewModelFactory
+                container.presentation.lapsViewModelFactory,
+                container.presentation.stackNavigator
             )
         }
     }

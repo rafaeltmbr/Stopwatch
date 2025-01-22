@@ -1,10 +1,8 @@
 import Foundation
 
-class HomeViewModelFactoryImpl<SS>: HomeViewModelFactory
-where SS: MutableStateStore, SS.State == StopwatchState
+class HomeViewModelFactoryImpl<SS, SN>: HomeViewModelFactory
+where SS: MutableStateStore, SS.State == StopwatchState, SN: StackNavigator
 {
-    typealias Navigator = StackNavigatorImpl
-    
     private let stopwatchStore: SS
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let pauseStopwatchUseCase: PauseStopwatchUseCase
@@ -12,6 +10,7 @@ where SS: MutableStateStore, SS.State == StopwatchState
     private let newLapUseCase: NewLapUseCase
     private let viewTimeMapper: ViewTimeMapper
     private let stringTimeMapper: StringTimeMapper
+    private let stackNavigator: SN
     
     init(
         _ stopwatchStore: SS,
@@ -20,7 +19,8 @@ where SS: MutableStateStore, SS.State == StopwatchState
         _ resetStopwatchUseCase: ResetStopwatchUseCase,
         _ newLapUseCase: NewLapUseCase,
         _ viewTimerMapper: ViewTimeMapper,
-        _ stringTimeMapper: StringTimeMapper
+        _ stringTimeMapper: StringTimeMapper,
+        _ stackNavigator: SN
     ) {
         self.stopwatchStore = stopwatchStore
         self.startStopwatchUseCase = startStopwatchUseCase
@@ -29,9 +29,10 @@ where SS: MutableStateStore, SS.State == StopwatchState
         self.newLapUseCase = newLapUseCase
         self.viewTimeMapper = viewTimerMapper
         self.stringTimeMapper = stringTimeMapper
+        self.stackNavigator = stackNavigator
     }
     
-    func make(_ navigator: Navigator) -> some HomeViewModel {
+    func make() -> some HomeViewModel {
         HomeViewModelImpl(
             stopwatchStore,
             startStopwatchUseCase,
@@ -40,7 +41,7 @@ where SS: MutableStateStore, SS.State == StopwatchState
             newLapUseCase,
             viewTimeMapper,
             stringTimeMapper,
-            navigator
+            stackNavigator
         )
     }
 }

@@ -1,26 +1,34 @@
 import Foundation
-import SwiftUI
 
-class StackNavigatorImpl : StackNavigator, ObservableObject {
-    @Published var path = NavigationPath()
+class StackNavigatorImpl<EE> : StackNavigator
+where EE: EventEmitter, EE.Event == [StackNavigatorPath]
+{
+    private(set) var stack: [StackNavigatorPath]
+    private(set) var events: EE
     
-    var size: Int {
-        get { path.count }
-    }
-    
-    var isEmpty: Bool {
-        get { path.isEmpty }
+    init(stack: [StackNavigatorPath], eventEmitter: EE) {
+        self.stack = stack
+        self.events = eventEmitter
     }
     
     func push(_ navigationPath: StackNavigatorPath) {
-        Task{@MainActor in
-            path.append(navigationPath)
-        }
+        guard !stack.contains(navigationPath) else { return }
+        
+        var newStack = stack.map { $0 }
+        newStack.append(navigationPath)
+        update(newStack)
     }
     
     func pop() {
-        Task{@MainActor in
-            path.removeLast()
-        }
+        guard stack.count > 1 else { return }
+        
+        var newStack = stack.map { $0 }
+        newStack.removeLast()
+        update(newStack)
+    }
+    
+    private func update(_ stack: [StackNavigatorPath]) {
+        self.stack = stack
+        events.emit(stack)
     }
 }

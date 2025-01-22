@@ -1,30 +1,70 @@
 import SwiftUI
 
-struct ViewsRouter<HVMF, LVMF>: View
+struct ViewsRouter<HVMF, LVMF, SN>: View
 where
-    HVMF: HomeViewModelFactory,
-    LVMF: LapsViewModelFactory,
-    HVMF.Navigator == StackNavigatorImpl,
-    LVMF.Navigator == StackNavigatorImpl
+HVMF: HomeViewModelFactory,
+LVMF: LapsViewModelFactory,
+SN: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
 {
-    @StateObject var stackNavigator = StackNavigatorImpl()
+    @StateObject var navigatorAdapter: StackNavigatorAdapter
     private(set) var homeViewModelFactory: HVMF
     private(set) var lapsViewModelFactory: LVMF
     
-    init(_ homeViewModelFactory: HVMF, _ lapsViewModelFactory: LVMF) {
+    init(_ homeViewModelFactory: HVMF, _ lapsViewModelFactory: LVMF, _ stackNavigator: SN) {
         self.homeViewModelFactory = homeViewModelFactory
         self.lapsViewModelFactory = lapsViewModelFactory
+        _navigatorAdapter = StateObject(wrappedValue: StackNavigatorAdapter(stackNavigator))
     }
     
     var body: some View {
-        NavigationStack(path: $stackNavigator.path) {
-            HomeView(viewModel: homeViewModelFactory.make(stackNavigator))
+        NavigationStack(path: navigatorAdapter.pathBinding) {
+            HomeView(viewModel: homeViewModelFactory.make())
                 .navigationDestination(for: StackNavigatorPath.self) { path in
                     switch path {
                     case .home: EmptyView()
-                    case .laps: LapsView(viewModel: lapsViewModelFactory.make(stackNavigator))
+                    case .laps: LapsView(viewModel: lapsViewModelFactory.make())
                     }
                 }
+        }
+    }
+}
+
+class StackNavigatorAdapter: ObservableObject {
+    @Published private(set) var path = NavigationPath()
+    let stackNavigator: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>
+    private var subscription: UUID? = nil
+    
+    init(_ stackNavigator: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorPath]>>) {
+        self.stackNavigator = stackNavigator
+        self.subscription = stackNavigator.events.subscribe {stack in
+            Task {@MainActor in
+                if self.path.count < stack.count - 1 {
+                    self.path.append(stack.last!)
+                } else if self.path.count > stack.count - 1 {
+                    self.path.removeLast()
+                }
+            }
+        }
+    }
+    
+    deinit {
+        if let id = subscription {
+            stackNavigator.events.unsubscribe(id)
+        }
+    }
+    
+    var pathBinding: Binding<NavigationPath> {
+        get {
+            Binding<NavigationPath>(
+                get: { self.path },
+                set: {
+                    if $0.count < self.path.count {
+                        self.stackNavigator.pop()
+                    }
+                    
+                    self.path = $0
+                }
+            )
         }
     }
 }
@@ -32,14 +72,15 @@ where
 #Preview {
     let container = ApplicationContainerFactoryImpl().make()
     
-    let _ = container.services.timer.events.susbcribe {timerState in
+    let _ = container.services.timer.events.subscribe {timerState in
         Task {
             await container.useCases.updateStopwatchTimeAndLaps.execute(timerState)
         }
     }
-
+    
     ViewsRouter(
         container.presentation.homeViewModelFactory,
-        container.presentation.lapsViewModelFactory
+        container.presentation.lapsViewModelFactory,
+        container.presentation.stackNavigator
     )
 }

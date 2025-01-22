@@ -4,16 +4,21 @@ import SwiftUI
 
 struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
     @StateObject var viewModel: ViewModel
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
     
     var body: some View {
-        VStack {
-            VStack {
-                timer.padding(.bottom)
-                buttons
-            }.frame(maxHeight: .infinity)
-            
-            if viewModel.state.showLaps {
-                laps
+        GeometryReader {geometry in
+            ScrollView {
+                VStack {
+                    VStack {
+                        timer.padding(.bottom)
+                        buttons
+                    }.frame(maxHeight: .infinity)
+                    
+                    if viewModel.state.showLaps {
+                        laps
+                    }
+                }.frame(maxWidth: .infinity, minHeight: geometry.size.height)
             }
         }
         .navigationTitle("Stopwatch")
@@ -103,7 +108,18 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
                         }
                     }
                 }
+                
                 ForEach(viewModel.state.laps, id: \.index) {lap in
+                    if lap.index != viewModel.state.laps.first?.index {
+                        let opacity = self.colorScheme == .light ? 0.05 : 0.15
+                        
+                        HStack{}
+                            .frame(height: 1)
+                            .frame(maxWidth: .infinity)
+                            .background(Color(UIColor.label).opacity(opacity))
+                            .padding(.vertical, 4)
+                    }
+                    
                     HStack {
                         let color: Color? = switch lap.status {
                         case .best: Color.green
@@ -127,7 +143,7 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
                     }.padding(.vertical, 2)
                 }
             }
-        }.padding().frame(minHeight: 200)
+        }.padding().frame(minHeight: 220)
     }
 }
 
@@ -135,14 +151,14 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
 #Preview {
     let container = ApplicationContainerFactoryImpl().make()
     
-    let _ = container.services.timer.events.susbcribe {timerState in
+    let _ = container.services.timer.events.subscribe {timerState in
         Task {
             await container.useCases.updateStopwatchTimeAndLaps.execute(timerState)
         }
     }
     
     return NavigationStack {
-        HomeView(viewModel: container.presentation.homeViewModelFactory.make(StackNavigatorImpl()))
+        HomeView(viewModel: container.presentation.homeViewModelFactory.make())
     }
 }
 
@@ -154,7 +170,7 @@ private enum ButtonType {
 private struct ButtonView: View {
     private var type: ButtonType
     private var onAction: () -> Void
-   
+    
     init(_ type: ButtonType, _ onAction: @escaping () -> Void) {
         self.type = type
         self.onAction = onAction
@@ -162,17 +178,17 @@ private struct ButtonView: View {
     
     
     var body: some View {
-        let (text, image, color) = switch type {
-        case .start: ("start", "play", Color.blue)
-        case .pause: ("pause", "pause", Color.blue)
-        case .resume: ("resume", "play", Color.blue)
-        case .reset: ("reset", "arrow.trianglehead.clockwise", Color.red)
-        case .lap: ("lap", "plus", Color.green)
+        let (text, image, color, size) = switch type {
+        case .start: ("start", "play", Color.blue, 26.0)
+        case .pause: ("pause", "pause", Color.blue, 22.0)
+        case .resume: ("resume", "play", Color.blue, 22.0)
+        case .reset: ("reset", "arrow.trianglehead.clockwise", Color.red, 20.0)
+        case .lap: ("lap", "plus", Color.green, 22.0)
         }
         
         return Button(action: onAction) {
             VStack(spacing: 4) {
-                Image(systemName: image).font(.system(size: 24))
+                Image(systemName: image).font(.system(size: size))
                 Text(text).font(.system(size: 13))
             }
             .frame(width: 80, height: 80)

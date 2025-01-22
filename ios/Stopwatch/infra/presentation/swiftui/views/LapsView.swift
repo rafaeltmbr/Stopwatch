@@ -2,10 +2,23 @@ import SwiftUI
 
 struct LapsView<ViewModel: LapsViewModel>: View {
     @StateObject var viewModel: ViewModel
+    @Environment(\.colorScheme) var colorScheme: ColorScheme
     
     var body: some View {
         ScrollView {
+            Spacer()
             ForEach(viewModel.state.laps, id: \.index) {lap in
+                if lap.index != viewModel.state.laps.first?.index {
+                    let opacity = self.colorScheme == .light ? 0.05 : 0.15
+                    
+                    HStack{}
+                        .frame(height: 1)
+                        .frame(maxWidth: .infinity)
+                        .background(Color(UIColor.label).opacity(opacity))
+                        .padding(.horizontal)
+                        .padding(.vertical, 4)
+                }
+                
                 HStack {
                     let color: Color? = switch lap.status {
                     case .best: Color.green
@@ -59,13 +72,13 @@ struct LapsView<ViewModel: LapsViewModel>: View {
         }
     }
     
-    let _ = container.services.timer.events.susbcribe {timerState in
+    let _ = container.services.timer.events.subscribe {timerState in
         Task {
             await container.useCases.updateStopwatchTimeAndLaps.execute(timerState)
         }
     }
-
+    
     return NavigationStack {
-        LapsView(viewModel: container.presentation.lapsViewModelFactory.make(StackNavigatorImpl()))
+        LapsView(viewModel: container.presentation.lapsViewModelFactory.make())
     }
 }
