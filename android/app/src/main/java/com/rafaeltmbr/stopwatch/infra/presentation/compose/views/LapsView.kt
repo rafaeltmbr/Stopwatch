@@ -1,5 +1,6 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.compose.views
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -139,6 +140,10 @@ private fun Content(
                 modifier = Modifier.padding(vertical = 24.dp)
             )
         }
+    }
+
+    BackHandler {
+        onAction(LapsViewModel.Action.NavigateBack)
     }
 }
 
