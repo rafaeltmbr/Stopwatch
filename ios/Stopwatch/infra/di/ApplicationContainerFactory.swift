@@ -12,9 +12,11 @@ where MSS: MutableStateStore, MSS.State == StopwatchState {
 class ApplicationServices<TS>
 where TS: TimerService {
     let timer: TS
+    let logging: LoggingService
     
-    init(_ timer: TS) {
+    init(_ timer: TS, _ logging: LoggingService) {
         self.timer = timer
+        self.logging = logging
     }
 }
 

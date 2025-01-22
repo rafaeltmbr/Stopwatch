@@ -21,11 +21,14 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
     >
     
     func make() -> Container {
+        let services = ApplicationServices(
+            TimerServiceImpl(EventEmitterImpl()),
+            LoggingServiceImpl()
+        )
         let data = ApplicationData(
             MutableStateStoreImpl(StopwatchState(), EventEmitterImpl<StopwatchState>()),
-            StopwatchRepositoryImpl(StopwatchDataSourceFileManager())
+            StopwatchRepositoryImpl(StopwatchDataSourceFileManager(services.logging))
         )
-        let services = ApplicationServices(TimerServiceImpl(EventEmitterImpl()))
         let useCases = ApplicationUseCases(
             StartStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
@@ -33,7 +36,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
             NewLapUseCaseImpl(data.stopwatchStore),
             UpdateStopwatchTimeAndLapsUseCaseImpl(data.stopwatchStore),
             SaveStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository),
-            RestoreStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository, services.timer)
+            RestoreStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository, services.timer, services.logging)
         )
         
         let viewTimeMapper = ViewTimeMapperImpl()

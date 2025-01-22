@@ -1,6 +1,12 @@
 import SwiftUI
 
 class StopwatchDataSourceFileManager: StopwatchDataSource {
+    private let loggingService: LoggingService
+    
+    init(_ loggingService: LoggingService) {
+        self.loggingService = loggingService
+    }
+    
     func load() async -> StopwatchState? {
         let task = Task {
             let url = try Self.getFileUrl()
@@ -12,7 +18,11 @@ class StopwatchDataSourceFileManager: StopwatchDataSource {
         do {
             return try await task.value
         } catch {
-            print(error)
+            loggingService.error(
+                tag: "StopwatchDataSourceFileManager",
+                message: "Failed to load state",
+                error: error
+            )
             return nil
         }
     }
@@ -27,7 +37,11 @@ class StopwatchDataSourceFileManager: StopwatchDataSource {
         do {
             try await task.value
         } catch {
-            print(error)
+            loggingService.error(
+                tag: "StopwatchDataSourceFileManager",
+                message: "Failed to save state",
+                error: error
+            )
         }
     }
     
