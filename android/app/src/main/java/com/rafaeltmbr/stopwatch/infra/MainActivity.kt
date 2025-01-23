@@ -33,7 +33,9 @@ class MainActivity : ComponentActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val container = (applicationContext as Stopwatch).container
             try {
+                container.services.logging.debug(TAG, "Saving stopwatch state...")
                 container.useCases.saveStopwatchState.execute()
+                container.services.logging.debug(TAG, "Stopwatch state saved")
             } catch (_: CancellationException) {
             } catch (e: Exception) {
                 container.services.logging.error(TAG, "Failed to save stopwatch state", e)

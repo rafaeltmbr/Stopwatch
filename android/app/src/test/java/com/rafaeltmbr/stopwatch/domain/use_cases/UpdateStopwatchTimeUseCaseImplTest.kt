@@ -1,16 +1,17 @@
 package com.rafaeltmbr.stopwatch.domain.use_cases
 
+import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.TimerService
-import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
-import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapUseCaseImpl
+import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeUseCaseImpl
+import com.rafaeltmbr.stopwatch.domain.utils.impl.CalculateLapsStatusesImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
-class UpdateStopwatchTimeAndLapUseCaseImplTest {
+class UpdateStopwatchTimeUseCaseImplTest {
     @Test
     fun update_shouldCreateFirstLapIfLapsAreEmpty() = runTest {
         val store = MutableStateStoreImpl(
@@ -20,7 +21,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 laps = emptyList()
             )
         )
-        val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
+        val useCase = UpdateStopwatchTimeUseCaseImpl(store, CalculateLapsStatusesImpl())
 
         useCase.execute(
             timerState = TimerService.State(
@@ -59,7 +60,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 )
             )
         )
-        val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
+        val useCase = UpdateStopwatchTimeUseCaseImpl(store, CalculateLapsStatusesImpl())
 
         useCase.execute(
             timerState = TimerService.State(
@@ -103,7 +104,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 )
             )
         )
-        val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
+        val useCase = UpdateStopwatchTimeUseCaseImpl(store, CalculateLapsStatusesImpl())
 
         useCase.execute(
             timerState = TimerService.State(
@@ -152,7 +153,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 )
             )
         )
-        val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
+        val useCase = UpdateStopwatchTimeUseCaseImpl(store, CalculateLapsStatusesImpl())
 
         useCase.execute(
             timerState = TimerService.State(
@@ -211,7 +212,7 @@ class UpdateStopwatchTimeAndLapUseCaseImplTest {
                 )
             )
         )
-        val useCase = UpdateStopwatchTimeAndLapUseCaseImpl(store)
+        val useCase = UpdateStopwatchTimeUseCaseImpl(store, CalculateLapsStatusesImpl())
 
         useCase.execute(
             timerState = TimerService.State(

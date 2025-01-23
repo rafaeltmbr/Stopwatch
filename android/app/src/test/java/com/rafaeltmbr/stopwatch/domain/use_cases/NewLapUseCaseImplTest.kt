@@ -1,10 +1,11 @@
 package com.rafaeltmbr.stopwatch.domain.use_cases
 
+import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.NewLapUseCaseImpl
+import com.rafaeltmbr.stopwatch.domain.utils.impl.CalculateLapsStatusesImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
@@ -20,7 +21,7 @@ class NewLapUseCaseImplTest {
             )
         )
 
-        val useCase = NewLapUseCaseImpl(store)
+        val useCase = NewLapUseCaseImpl(store, CalculateLapsStatusesImpl())
 
         useCase.execute()
 
@@ -60,7 +61,7 @@ class NewLapUseCaseImplTest {
             )
         )
 
-        val useCase = NewLapUseCaseImpl(store)
+        val useCase = NewLapUseCaseImpl(store, CalculateLapsStatusesImpl())
 
         useCase.execute()
 

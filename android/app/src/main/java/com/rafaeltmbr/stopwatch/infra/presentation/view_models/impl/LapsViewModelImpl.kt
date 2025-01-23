@@ -46,6 +46,7 @@ class LapsViewModelImpl(
                     LapsViewModel.Action.Lap -> newLapUseCase.execute()
                     LapsViewModel.Action.NavigateBack -> stackNavigator.pop()
                 }
+                loggingService.debug(TAG, "Action handled: $action")
             } catch (_: CancellationException) {
             } catch (e: Exception) {
                 loggingService.error(TAG, "Failed to handle action: $action", e)

@@ -11,7 +11,7 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.ResetStopwatchUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.RestoreStopwatchStateUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.SaveStopwatchStateUseCase
 import com.rafaeltmbr.stopwatch.domain.use_cases.StartStopwatchUseCase
-import com.rafaeltmbr.stopwatch.domain.use_cases.UpdateStopwatchTimeAndLapUseCase
+import com.rafaeltmbr.stopwatch.domain.use_cases.UpdateStopwatchTimeUseCase
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.navigation.StackNavigatorImpl
 
 data class ApplicationContainer(
@@ -32,7 +32,7 @@ data class ApplicationContainer(
         val restoreStopwatchState: RestoreStopwatchStateUseCase,
         val saveStopwatchState: SaveStopwatchStateUseCase,
         val startStopwatch: StartStopwatchUseCase,
-        val updateStopwatchTimeAndLap: UpdateStopwatchTimeAndLapUseCase,
+        val updateStopwatchTimeAndLap: UpdateStopwatchTimeUseCase,
     )
 
     data class Services(

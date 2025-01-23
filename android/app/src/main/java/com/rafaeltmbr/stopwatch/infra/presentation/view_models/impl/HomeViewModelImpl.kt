@@ -58,6 +58,7 @@ class HomeViewModelImpl(
                     HomeViewModel.Action.Lap -> newLapUseCase.execute()
                     HomeViewModel.Action.SeeAll -> stackNavigator.push(StackNavigator.Screen.Laps)
                 }
+                loggingService.debug(TAG, "Action handled: $action")
             } catch (_: CancellationException) {
             } catch (e: Exception) {
                 loggingService.error(TAG, "Failed to handle action: $action", e)

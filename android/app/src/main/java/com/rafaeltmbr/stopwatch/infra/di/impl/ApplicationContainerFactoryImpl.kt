@@ -12,7 +12,8 @@ import com.rafaeltmbr.stopwatch.domain.use_cases.impl.ResetStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.RestoreStopwatchStateUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.SaveStopwatchStateUseCaseImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
-import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeAndLapUseCaseImpl
+import com.rafaeltmbr.stopwatch.domain.use_cases.impl.UpdateStopwatchTimeUseCaseImpl
+import com.rafaeltmbr.stopwatch.domain.utils.impl.CalculateLapsStatusesImpl
 import com.rafaeltmbr.stopwatch.infra.data.room.StopwatchDatabase
 import com.rafaeltmbr.stopwatch.infra.data.room.data_sources.StopwatchDataSourceRoom
 import com.rafaeltmbr.stopwatch.infra.di.ApplicationContainer
@@ -43,8 +44,9 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
             LoggingServiceImpl(AndroidLoggerFacade())
         )
 
+        val calculateLapsStatuses = CalculateLapsStatusesImpl()
         val useCases = ApplicationContainer.UseCases(
-            NewLapUseCaseImpl(data.stopwatchStore),
+            NewLapUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
             PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             ResetStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             RestoreStopwatchStateUseCaseImpl(
@@ -57,7 +59,7 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
                 data.stopwatchRepository,
             ),
             StartStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
-            UpdateStopwatchTimeAndLapUseCaseImpl(data.stopwatchStore),
+            UpdateStopwatchTimeUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
         )
 
         val stackNavigator = StackNavigatorImpl(listOf(StackNavigator.Screen.Home))

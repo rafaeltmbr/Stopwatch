@@ -24,7 +24,10 @@ class Stopwatch : Application() {
     private fun restoreStopwatchState() {
         CoroutineScope(Dispatchers.Default).launch {
             try {
+                container.services.logging.debug(TAG, "Restoring stopwatch state...")
                 container.useCases.restoreStopwatchState.execute()
+                container.services.logging.debug(TAG, "Stopwatch state restored")
+                
                 container.services.timer.state.collect(
                     container.useCases.updateStopwatchTimeAndLap::execute
                 )
