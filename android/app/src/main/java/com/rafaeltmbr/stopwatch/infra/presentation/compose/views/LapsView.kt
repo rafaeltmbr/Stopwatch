@@ -1,17 +1,19 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.compose.views
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Add
@@ -39,7 +41,7 @@ import com.rafaeltmbr.stopwatch.R
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.di.LapsViewModelFactory
-import com.rafaeltmbr.stopwatch.infra.presentation.compose.components.LapsSection
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.components.LapListItem
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.theme.StopwatchTheme
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.view_models.LapsViewModel
@@ -98,10 +100,7 @@ private fun Content(
                             modifier = Modifier
                                 .padding(vertical = 4.dp, horizontal = 8.dp)
                         ) {
-                            Text(
-                                text = state.time,
-                                fontSize = 20.sp
-                            )
+                            Text(text = state.time, fontSize = 20.sp)
 
                             Spacer(modifier = Modifier.width(4.dp))
 
@@ -129,16 +128,39 @@ private fun Content(
         },
         modifier = modifier
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState())
+        LazyColumn(
+            modifier = modifier
+                .clip(RoundedCornerShape(24.dp))
+                .defaultMinSize(minHeight = 182.dp)
+                .padding(innerPadding),
+            contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
         ) {
-            LapsSection(
-                laps = state.laps,
-                modifier = Modifier.padding(vertical = 24.dp)
-            )
+            for (lap in state.laps) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .then(
+                                when (lap) {
+                                    state.laps.first() -> Modifier.clip(
+                                        RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                                    )
+
+                                    state.laps.last() -> Modifier.clip(
+                                        RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                                    )
+
+                                    else -> Modifier
+                                }
+                            )
+                            .fillMaxWidth()
+                            .background(color = MaterialTheme.colorScheme.surface)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                    ) {
+                        LapListItem(lap = lap)
+                    }
+                }
+            }
         }
     }
 
@@ -157,12 +179,12 @@ private fun ContentPreview() {
                 time = "02:37.84",
                 laps = listOf(
                     ViewLap(
-                        index = 1,
+                        index = 4,
                         time = "00:28.49",
                         status = Lap.Status.CURRENT
                     ),
                     ViewLap(
-                        index = 1,
+                        index = 3,
                         time = "01:01.75",
                         status = Lap.Status.DONE
                     ),

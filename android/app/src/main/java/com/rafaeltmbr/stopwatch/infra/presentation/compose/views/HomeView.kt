@@ -18,6 +18,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -38,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,7 +47,7 @@ import com.rafaeltmbr.stopwatch.R
 import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.infra.di.HomeViewModelFactory
-import com.rafaeltmbr.stopwatch.infra.presentation.compose.components.LapsSection
+import com.rafaeltmbr.stopwatch.infra.presentation.compose.components.LapListItem
 import com.rafaeltmbr.stopwatch.infra.presentation.compose.theme.StopwatchTheme
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewLap
 import com.rafaeltmbr.stopwatch.infra.presentation.entities.ViewTime
@@ -156,12 +158,66 @@ private fun Content(
             AnimatedVisibility(state.showLapsSection) {
                 val onSeeAll = { onAction(HomeViewModel.Action.SeeAll) }
 
-                LapsSection(
-                    laps = state.laps,
-                    modifier = Modifier.padding(bottom = 24.dp),
-                    showTitle = true,
-                    onSeeAll = if (state.showSeeMoreLaps) onSeeAll else null
-                )
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = stringResource(R.string.laps_title),
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(vertical = 4.dp)
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        if (state.showSeeAllLaps) {
+                            Surface(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable(onClick = onSeeAll),
+                                color = MaterialTheme.colorScheme.background
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.see_all_button),
+                                        style = MaterialTheme.typography.titleLarge
+                                            .copy(fontWeight = FontWeight.SemiBold),
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.size(16.dp))
+
+                    Column(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(color = MaterialTheme.colorScheme.surface)
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
+                            .defaultMinSize(minHeight = 182.dp)
+                    ) {
+                        for (lap in state.laps) {
+                            LapListItem(lap = lap)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.size(24.dp))
+                }
             }
         }
     }
@@ -184,7 +240,7 @@ private fun HomeViewContentPreview() {
                     ViewLap(index = 2, time = "01:15:09", status = Lap.Status.BEST),
                     ViewLap(index = 1, time = "01:16:35", status = Lap.Status.WORST)
                 ),
-                showSeeMoreLaps = true,
+                showSeeAllLaps = true,
                 showLapsSection = true
             ),
             onAction = {},

@@ -84,7 +84,7 @@ class HomeViewModelImpl(
                     },
                 time = viewTimeMapper.mapToViewTime(stopwatchState.milliseconds),
                 showLapsSection = stopwatchState.status != Status.INITIAL,
-                showSeeMoreLaps = stopwatchState.laps.size > 3,
+                showSeeAllLaps = stopwatchState.laps.size > 3,
             )
         }
     }

@@ -16,7 +16,7 @@ interface HomeViewModel {
         ),
         val laps: List<ViewLap> = emptyList(),
         val showLapsSection: Boolean = false,
-        val showSeeMoreLaps: Boolean = false
+        val showSeeAllLaps: Boolean = false
     )
 
     sealed class Action {
