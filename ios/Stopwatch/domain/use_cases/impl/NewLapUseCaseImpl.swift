@@ -2,9 +2,11 @@ class NewLapUseCaseImpl<MSS>: NewLapUseCase
 where MSS: MutableStateStore, MSS.State == StopwatchState
 {
     private let store: MSS
+    private let calculateLapsStatuses: CalculateLapsStatuses
     
-    init(_ store: MSS) {
+    init(_ store: MSS, _ calculateLapsStatuses: CalculateLapsStatuses) {
         self.store = store
+        self.calculateLapsStatuses = calculateLapsStatuses
     }
     
     func execute() async {
@@ -22,7 +24,7 @@ where MSS: MutableStateStore, MSS.State == StopwatchState
             return StopwatchState(
                 status: currentState.status,
                 milliseconds: currentState.milliseconds,
-                laps: UpdateStopwatchTimeAndLapsUseCaseImpl<MSS>.updateLapsStatuses(laps)
+                laps: calculateLapsStatuses.execute(laps)
             )
         }
     }

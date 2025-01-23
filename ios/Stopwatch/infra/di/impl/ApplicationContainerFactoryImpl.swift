@@ -29,12 +29,13 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
             MutableStateStoreImpl(StopwatchState(), EventEmitterImpl<StopwatchState>()),
             StopwatchRepositoryImpl(StopwatchDataSourceFileManager(services.logging))
         )
+        let calculateLapsStatuses = CalculateLapsStatusesImpl()
         let useCases = ApplicationUseCases(
             StartStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             ResetStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
-            NewLapUseCaseImpl(data.stopwatchStore),
-            UpdateStopwatchTimeAndLapsUseCaseImpl(data.stopwatchStore),
+            NewLapUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
+            UpdateStopwatchTimeAndLapsUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
             SaveStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository),
             RestoreStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository, services.timer, services.logging)
         )
