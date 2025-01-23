@@ -16,8 +16,9 @@ class NewLapUseCaseImplTest {
         val store = MutableStateStoreImpl(
             StopwatchState(
                 status = Status.RUNNING,
-                milliseconds = 0L,
+                milliseconds = 20L,
                 completedLaps = emptyList(),
+                completedLapsMilliseconds = 0
             )
         )
 
@@ -27,14 +28,15 @@ class NewLapUseCaseImplTest {
 
         val expected = StopwatchState(
             status = Status.RUNNING,
-            milliseconds = 0L,
+            milliseconds = 20L,
             completedLaps = listOf(
                 Lap(
                     index = 1,
-                    milliseconds = 0L,
-                    status = Lap.Status.CURRENT
+                    milliseconds = 20L,
+                    status = Lap.Status.DONE
                 )
-            )
+            ),
+            completedLapsMilliseconds = 20
         )
 
         Assert.assertEquals(expected, store.state.value)
@@ -52,12 +54,8 @@ class NewLapUseCaseImplTest {
                         milliseconds = 1_000L,
                         status = Lap.Status.DONE
                     ),
-                    Lap(
-                        index = 2,
-                        milliseconds = 800L,
-                        status = Lap.Status.CURRENT
-                    ),
                 ),
+                completedLapsMilliseconds = 1_000L
             )
         )
 
@@ -79,12 +77,8 @@ class NewLapUseCaseImplTest {
                     milliseconds = 800L,
                     status = Lap.Status.BEST
                 ),
-                Lap(
-                    index = 3,
-                    milliseconds = 0L,
-                    status = Lap.Status.CURRENT
-                ),
-            )
+            ),
+            completedLapsMilliseconds = 1_800L
         )
 
         Assert.assertEquals(expected, store.state.value)
