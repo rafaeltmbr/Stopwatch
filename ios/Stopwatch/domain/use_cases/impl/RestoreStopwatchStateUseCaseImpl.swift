@@ -20,7 +20,7 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, TS: TimerService
     
     func execute() async {
         if let state = await stopwatchRepository.load() {
-            guard state.milliseconds > 0 && state.completedLaps.count > 1 else { return }
+            guard state.milliseconds > 0 else { return }
             loggingService.info(tag: "StopwatchApp", message: "State restored")
 
             await stopwatchStore.update {_ in
