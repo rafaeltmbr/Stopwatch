@@ -19,7 +19,7 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
         _ stringTimeMapper: StringTimeMapper,
         _ stackNavigator: SN
     ) {
-        self.state = Self.getNextState(stopwatchStore.state, stringTimeMapper)
+        self.state = Self.handleStopwatchStateUpdate(stopwatchStore.state, stringTimeMapper)
         self.stopwatchStore = stopwatchStore
         self.startStopwatchUseCase = startStopwatchUseCase
         self.newLapUseCase = newLapUseCase
@@ -28,36 +28,16 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
         
         subscriptionId = stopwatchStore.events.subscribe {stopwatchState in
             Task {@MainActor in
-                self.state = Self.getNextState(stopwatchState, stringTimeMapper)
+                self.state = Self.handleStopwatchStateUpdate(stopwatchState, stringTimeMapper)
             }
         }
     }
     
-    private static func getNextState(_ stopwatchState: StopwatchState, _ stringTimeMapper: StringTimeMapper) -> LapsState {
-        var laps = stopwatchState.completedLaps.map {
-            ViewLap(
-                index: $0.index,
-                time: stringTimeMapper.map($0.milliseconds),
-                status: $0.status
-            )
-        }
-        
-        laps.append(
-            ViewLap(
-                index: stopwatchState.completedLaps.count + 1,
-                time: stringTimeMapper.map(
-                    stopwatchState.milliseconds - stopwatchState.completedLapsMilliseconds
-                ),
-                status: .current
-            )
-        )
-        
-        laps.reverse()
-        
-        return LapsState(
+    private static func handleStopwatchStateUpdate(_ stopwatchState: StopwatchState, _ stringTimeMapper: StringTimeMapper) -> LapsState {
+        LapsState(
             status: stopwatchState.status,
             milliseconds: stringTimeMapper.map(stopwatchState.milliseconds),
-            laps: laps
+            lapsCount: stopwatchState.completedLaps.count + 1
         )
     }
     
@@ -74,5 +54,25 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
             case .lap: await newLapUseCase.execute()
             }
         }
+    }
+    
+    func getViewLapByReversedArrayIndex(_ index: Int) -> ViewLap {
+        let computedIndex = stopwatchStore.state.completedLaps.count - index
+        if computedIndex >= stopwatchStore.state.completedLaps.count {
+            return ViewLap(
+                index: stopwatchStore.state.completedLaps.count + 1,
+                time: stringTimeMapper.map(
+                    stopwatchStore.state.milliseconds - stopwatchStore.state.completedLapsMilliseconds
+                ),
+                status: .current
+            )
+        }
+        
+        let lap = stopwatchStore.state.completedLaps[computedIndex]
+        return ViewLap(
+            index: lap.index,
+            time: stringTimeMapper.map(lap.milliseconds),
+            status: lap.status
+        )
     }
 }

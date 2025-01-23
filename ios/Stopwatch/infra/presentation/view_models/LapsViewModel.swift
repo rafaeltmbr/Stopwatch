@@ -3,12 +3,12 @@ import Foundation
 struct LapsState {
     let status: Status
     let milliseconds: String
-    let laps: [ViewLap]
+    let lapsCount: Int
     
-    init(status: Status = .initial, milliseconds: String = "00:00.00", laps: [ViewLap] = []) {
+    init(status: Status = .initial, milliseconds: String = "00:00.00", lapsCount: Int = 0) {
         self.status = status
         self.milliseconds = milliseconds
-        self.laps = laps
+        self.lapsCount = lapsCount
     }
 }
 
@@ -20,4 +20,5 @@ protocol LapsViewModel: ObservableObject {
     var state: LapsState { get }
     
     func handleAction(_ action: LapsAction)
+    func getViewLapByReversedArrayIndex(_ index: Int) -> ViewLap
 }

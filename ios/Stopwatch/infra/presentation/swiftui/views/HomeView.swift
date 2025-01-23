@@ -109,7 +109,11 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
                     }
                 }
                 
-                LapsList(laps: viewModel.state.laps).padding(.top, 4)
+                VStack {
+                    ForEach(viewModel.state.laps, id: \.index) {lap in
+                        LapsListItem(lap: lap, isFirst: lap.status == .current)
+                    }
+                }.padding(.top, 4)
             }
         }.padding().frame(minHeight: 220)
     }

@@ -7,7 +7,14 @@ struct LapsView<ViewModel: LapsViewModel>: View {
     var body: some View {
         ScrollView {
             Spacer()
-            LapsList(laps: viewModel.state.laps).padding(.vertical, 2).padding(.horizontal)
+            LazyVStack {
+                ForEach(0..<viewModel.state.lapsCount, id: \.self) {index in
+                    let lap = viewModel.getViewLapByReversedArrayIndex(index)
+                    LapsListItem(lap: lap, isFirst: index == 0)
+                }
+            }
+            .padding(.vertical, 2)
+            .padding(.horizontal)
         }
         .navigationTitle("Laps")
         .toolbar {
