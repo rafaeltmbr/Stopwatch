@@ -3,6 +3,7 @@ package com.rafaeltmbr.stopwatch.infra.presentation.view_models.impl
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.domain.data.stores.StateStore
+import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.LoggingService
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.math.max
 
 private const val TAG = "HomeViewModelImpl"
 
@@ -68,24 +70,36 @@ class HomeViewModelImpl(
 
     private fun handleStopwatchStateUpdate(stopwatchState: StopwatchState) {
         _state.update { currentState ->
-            currentState.copy(
-                status = stopwatchState.status,
-                laps = stopwatchState.laps
-                    .reversed()
+            val completedLaps =
+                stopwatchState.completedLaps
                     .subList(
-                        fromIndex = 0,
-                        toIndex = minOf(stopwatchState.laps.size, 3)
+                        fromIndex = max(0, stopwatchState.completedLaps.size - 2),
+                        toIndex = stopwatchState.completedLaps.size
                     )
                     .map {
                         ViewLap(
                             index = it.index,
-                            time = stringTimeMapper.mapToStringTime(it.milliseconds),
+                            time = stringTimeMapper.map(it.milliseconds),
                             status = it.status
                         )
-                    },
-                time = viewTimeMapper.mapToViewTime(stopwatchState.milliseconds),
+                    }
+
+            val currentLap = ViewLap(
+                index = stopwatchState.completedLaps.size + 1,
+                status = Lap.Status.CURRENT,
+                time = stringTimeMapper.map(
+                    stopwatchState.milliseconds - stopwatchState.completedLapsMilliseconds
+                )
+            )
+
+            val laps = (completedLaps + currentLap).reversed()
+
+            currentState.copy(
+                status = stopwatchState.status,
+                time = viewTimeMapper.map(stopwatchState.milliseconds),
+                laps = laps,
                 showLapsSection = stopwatchState.status != Status.INITIAL,
-                showSeeAllLaps = stopwatchState.laps.size > 3,
+                showSeeAllLaps = stopwatchState.completedLaps.size > 2,
             )
         }
     }

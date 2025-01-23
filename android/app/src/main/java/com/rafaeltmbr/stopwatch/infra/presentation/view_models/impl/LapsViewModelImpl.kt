@@ -3,6 +3,7 @@ package com.rafaeltmbr.stopwatch.infra.presentation.view_models.impl
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.domain.data.stores.StateStore
+import com.rafaeltmbr.stopwatch.domain.entities.Lap
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.LoggingService
 import com.rafaeltmbr.stopwatch.domain.use_cases.NewLapUseCase
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 private const val TAG = "LapsViewModelImpl"
+
 
 class LapsViewModelImpl(
     private val stopwatchStore: StateStore<StopwatchState>,
@@ -54,20 +56,28 @@ class LapsViewModelImpl(
         }
     }
 
+    override fun getViewLapByReversedArrayIndex(index: Int): ViewLap {
+        val stopwatchState = stopwatchStore.state.value
+        val computedIndex = stopwatchState.completedLaps.size - index
+        val lap = stopwatchState.completedLaps.getOrNull(computedIndex) ?: Lap(
+            index = stopwatchState.completedLaps.size + 1,
+            milliseconds = stopwatchState.milliseconds - stopwatchState.completedLapsMilliseconds,
+            status = Lap.Status.CURRENT
+        )
+
+        return ViewLap(
+            index = lap.index,
+            time = stringTimeMapper.map(lap.milliseconds),
+            status = lap.status
+        )
+    }
+
     private fun handleStopwatchStateUpdate(stopwatchState: StopwatchState) {
         _state.update { currentState ->
             currentState.copy(
                 status = stopwatchState.status,
-                laps = stopwatchState.laps
-                    .reversed()
-                    .map {
-                        ViewLap(
-                            index = it.index,
-                            time = stringTimeMapper.mapToStringTime(it.milliseconds),
-                            status = it.status
-                        )
-                    },
-                time = stringTimeMapper.mapToStringTime(stopwatchState.milliseconds),
+                lapsCount = stopwatchState.completedLaps.size + 1,
+                time = stringTimeMapper.map(stopwatchState.milliseconds),
             )
         }
     }

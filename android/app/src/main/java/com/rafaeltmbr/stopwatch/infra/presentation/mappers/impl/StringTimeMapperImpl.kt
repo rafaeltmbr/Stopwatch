@@ -7,8 +7,8 @@ import com.rafaeltmbr.stopwatch.infra.presentation.mappers.ViewTimeMapper
 class StringTimeMapperImpl(
     private val viewTimerMapper: ViewTimeMapper
 ) : StringTimeMapper {
-    override fun mapToStringTime(milliseconds: Long): String {
-        val viewTime: ViewTime = viewTimerMapper.mapToViewTime(milliseconds)
+    override fun map(milliseconds: Long): String {
+        val viewTime: ViewTime = viewTimerMapper.map(milliseconds)
         return "%s:%s.%s".format(
             viewTime.minutes.joinToString(""),
             viewTime.seconds.joinToString(""),

@@ -6,7 +6,7 @@ import kotlin.math.max
 import kotlin.math.round
 
 class ViewTimeMapperImpl : ViewTimeMapper {
-    override fun mapToViewTime(milliseconds: Long): ViewTime {
+    override fun map(milliseconds: Long): ViewTime {
         val time = max(milliseconds, 0L)
 
         val fraction = "%02d".format((round(time / 10f).toInt() % 100).toInt())

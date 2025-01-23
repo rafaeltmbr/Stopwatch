@@ -19,6 +19,7 @@ class Stopwatch : Application() {
 
         container = ApplicationApplicationContainerFactoryImpl(this).make()
         restoreStopwatchState()
+        handleTimerUpdate()
     }
 
     private fun restoreStopwatchState() {
@@ -27,13 +28,22 @@ class Stopwatch : Application() {
                 container.services.logging.debug(TAG, "Restoring stopwatch state...")
                 container.useCases.restoreStopwatchState.execute()
                 container.services.logging.debug(TAG, "Stopwatch state restored")
-                
-                container.services.timer.state.collect(
-                    container.useCases.updateStopwatchTimeAndLap::execute
-                )
             } catch (_: CancellationException) {
             } catch (e: Exception) {
                 container.services.logging.error(TAG, "Failed to restore stopwatch state", e)
+            }
+        }
+    }
+
+    private fun handleTimerUpdate() {
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                container.services.timer.state.collect(
+                    container.useCases.updateStopwatchTime::execute
+                )
+            } catch (_: CancellationException) {
+            } catch (e: Exception) {
+                container.services.logging.error(TAG, "Failed handle timer update", e)
             }
         }
     }

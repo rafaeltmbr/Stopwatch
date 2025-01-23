@@ -55,6 +55,7 @@ fun LapsView(viewModelFactory: LapsViewModelFactory, modifier: Modifier = Modifi
     Content(
         state = state,
         onAction = viewModel::handleAction,
+        getViewLapByReversedArrayIndex = viewModel::getViewLapByReversedArrayIndex,
         modifier = modifier
     )
 }
@@ -64,6 +65,7 @@ fun LapsView(viewModelFactory: LapsViewModelFactory, modifier: Modifier = Modifi
 private fun Content(
     state: LapsViewModel.State,
     onAction: (LapsViewModel.Action) -> Unit,
+    getViewLapByReversedArrayIndex: (index: Int) -> ViewLap,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -135,30 +137,30 @@ private fun Content(
                 .padding(innerPadding),
             contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
         ) {
-            for (lap in state.laps) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .then(
-                                when (lap) {
-                                    state.laps.first() -> Modifier.clip(
-                                        RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                                    )
+            items(state.lapsCount) {
+                val lap = getViewLapByReversedArrayIndex(it)
 
-                                    state.laps.last() -> Modifier.clip(
-                                        RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
-                                    )
+                Box(
+                    modifier = Modifier
+                        .then(
+                            when (it) {
+                                0 -> Modifier.clip(
+                                    RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                                )
 
-                                    else -> Modifier
-                                }
-                            )
-                            .fillMaxWidth()
-                            .background(color = MaterialTheme.colorScheme.surface)
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                    ) {
-                        LapListItem(lap = lap)
-                    }
+                                state.lapsCount - 1 -> Modifier.clip(
+                                    RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp)
+                                )
+
+                                else -> Modifier
+                            }
+                        )
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colorScheme.surface)
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                ) {
+                    LapListItem(lap = lap)
                 }
             }
         }
@@ -173,33 +175,36 @@ private fun Content(
 @Composable
 private fun ContentPreview() {
     StopwatchTheme {
+        val laps = listOf(
+            ViewLap(
+                index = 4,
+                time = "01:37.84",
+                status = Lap.Status.WORST
+            ),
+            ViewLap(
+                index = 3,
+                time = "00:55.31",
+                status = Lap.Status.BEST
+            ),
+            ViewLap(
+                index = 4,
+                time = "01:01.75",
+                status = Lap.Status.DONE
+            ),
+            ViewLap(
+                index = 1,
+                time = "00:28.49",
+                status = Lap.Status.CURRENT
+            )
+        )
+
         Content(
             state = LapsViewModel.State(
                 status = Status.RUNNING,
+                lapsCount = laps.size,
                 time = "02:37.84",
-                laps = listOf(
-                    ViewLap(
-                        index = 4,
-                        time = "00:28.49",
-                        status = Lap.Status.CURRENT
-                    ),
-                    ViewLap(
-                        index = 3,
-                        time = "01:01.75",
-                        status = Lap.Status.DONE
-                    ),
-                    ViewLap(
-                        index = 2,
-                        time = "00:55.31",
-                        status = Lap.Status.BEST
-                    ),
-                    ViewLap(
-                        index = 1,
-                        time = "01:37.84",
-                        status = Lap.Status.WORST
-                    )
-                )
             ),
+            getViewLapByReversedArrayIndex = { laps[it] },
             onAction = {},
         )
     }

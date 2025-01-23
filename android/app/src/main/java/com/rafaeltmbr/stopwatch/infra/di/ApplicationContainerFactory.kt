@@ -32,7 +32,7 @@ data class ApplicationContainer(
         val restoreStopwatchState: RestoreStopwatchStateUseCase,
         val saveStopwatchState: SaveStopwatchStateUseCase,
         val startStopwatch: StartStopwatchUseCase,
-        val updateStopwatchTimeAndLap: UpdateStopwatchTimeUseCase,
+        val updateStopwatchTime: UpdateStopwatchTimeUseCase,
     )
 
     data class Services(

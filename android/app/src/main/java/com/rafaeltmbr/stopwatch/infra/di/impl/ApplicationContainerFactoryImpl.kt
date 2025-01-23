@@ -59,7 +59,7 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
                 data.stopwatchRepository,
             ),
             StartStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
-            UpdateStopwatchTimeUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
+            UpdateStopwatchTimeUseCaseImpl(data.stopwatchStore),
         )
 
         val stackNavigator = StackNavigatorImpl(listOf(StackNavigator.Screen.Home))

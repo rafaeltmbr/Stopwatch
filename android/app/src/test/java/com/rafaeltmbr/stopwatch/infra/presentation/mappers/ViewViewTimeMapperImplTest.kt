@@ -7,7 +7,7 @@ import org.junit.Test
 
 class ViewViewTimeMapperImplTest {
     @Test
-    fun mapToViewTimeFractions_paddingMinutesAndSecondsWithZeros() {
+    fun mapFractions_paddingMinutesAndSecondsWithZeros() {
         val mapper = ViewTimeMapperImpl()
         val milliseconds = 760L
         val expected = ViewTime(
@@ -15,7 +15,7 @@ class ViewViewTimeMapperImplTest {
             seconds = listOf("0", "0"),
             fraction = listOf("7", "6")
         )
-        val viewTime = mapper.mapToViewTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
@@ -28,12 +28,12 @@ class ViewViewTimeMapperImplTest {
             seconds = listOf("0", "0"),
             fraction = listOf("4", "8")
         )
-        val viewTime = mapper.mapToViewTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
     @Test
-    fun mapToViewTimeSeconds_paddingMinutesWithZeros() {
+    fun mapSeconds_paddingMinutesWithZeros() {
         val mapper = ViewTimeMapperImpl()
         val milliseconds = 21520L
         val expected = ViewTime(
@@ -41,12 +41,12 @@ class ViewViewTimeMapperImplTest {
             seconds = listOf("2", "1"),
             fraction = listOf("5", "2")
         )
-        val viewTime = mapper.mapToViewTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
     @Test
-    fun mapToViewTimeMinutes_paddingTwoDigitsWithZeros() {
+    fun mapMinutes_paddingTwoDigitsWithZeros() {
         val mapper = ViewTimeMapperImpl()
         val milliseconds = 107120L
         val expected = ViewTime(
@@ -54,12 +54,12 @@ class ViewViewTimeMapperImplTest {
             seconds = listOf("4", "7"),
             fraction = listOf("1", "2")
         )
-        val viewTime = mapper.mapToViewTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
     @Test
-    fun mapToViewTimeMinutes_shouldNotTruncateMinutesIntoHours() {
+    fun mapMinutes_shouldNotTruncateMinutesIntoHours() {
         val mapper = ViewTimeMapperImpl()
         val milliseconds = 4107430L
         val expected = ViewTime(
@@ -67,7 +67,7 @@ class ViewViewTimeMapperImplTest {
             seconds = listOf("2", "7"),
             fraction = listOf("4", "3")
         )
-        val viewTime = mapper.mapToViewTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
@@ -80,7 +80,7 @@ class ViewViewTimeMapperImplTest {
             seconds = listOf("0", "0"),
             fraction = listOf("0", "0")
         )
-        val viewTime = mapper.mapToViewTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 }

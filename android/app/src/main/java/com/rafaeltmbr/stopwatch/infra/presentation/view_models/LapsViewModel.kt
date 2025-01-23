@@ -9,7 +9,7 @@ interface LapsViewModel {
     data class State(
         val status: Status = Status.INITIAL,
         val time: String = "00:00.00",
-        val laps: List<ViewLap> = emptyList(),
+        val lapsCount: Int = 0
     )
 
     sealed class Action {
@@ -20,4 +20,5 @@ interface LapsViewModel {
 
     val state: StateFlow<State>
     fun handleAction(action: Action)
+    fun getViewLapByReversedArrayIndex(index: Int): ViewLap
 }

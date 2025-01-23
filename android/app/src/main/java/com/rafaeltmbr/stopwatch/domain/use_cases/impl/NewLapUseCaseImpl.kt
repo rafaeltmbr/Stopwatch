@@ -13,14 +13,17 @@ class NewLapUseCaseImpl(
     override suspend fun execute() {
         store.update {
             val newLap = Lap(
-                index = it.laps.size + 1,
-                milliseconds = 0L,
-                status = Lap.Status.CURRENT
+                index = it.completedLaps.size + 1,
+                milliseconds = it.milliseconds - it.completedLapsMilliseconds,
+                status = Lap.Status.DONE
             )
 
-            val mergedLaps = it.laps + newLap
+            val mergedLaps = it.completedLaps + newLap
 
-            it.copy(laps = calculateLapsStatuses.execute(mergedLaps))
+            it.copy(
+                completedLaps = calculateLapsStatuses.execute(mergedLaps),
+                completedLapsMilliseconds = it.milliseconds
+            )
         }
     }
 }

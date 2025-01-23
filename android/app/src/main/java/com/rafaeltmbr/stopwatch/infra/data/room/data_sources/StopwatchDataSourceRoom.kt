@@ -20,20 +20,22 @@ class StopwatchDataSourceRoom(
         return StopwatchState(
             status = stopwatchState.status.stopwatchStatus ?: return null,
             milliseconds = stopwatchState.milliseconds,
-            laps = laps.map {
+            completedLaps = laps.map {
                 Lap(
                     index = it.index,
                     milliseconds = it.milliseconds,
                     status = it.status.lapStatus ?: return@load null
                 )
-            })
+            },
+            completedLapsMilliseconds = laps.sumOf { it.milliseconds }
+        )
     }
 
     override suspend fun save(state: StopwatchState) {
         stopwatchStateDao.clear()
         stopwatchStateDao.save(
             StopwatchStateEntity(
-                id = 0,
+                id = 1,
                 milliseconds = state.milliseconds,
                 status = state.status.number
             )
@@ -41,7 +43,7 @@ class StopwatchDataSourceRoom(
 
         lapsDao.clear()
         lapsDao.save(
-            state.laps.map {
+            state.completedLaps.map {
                 LapEntity(
                     index = it.index,
                     milliseconds = it.milliseconds,

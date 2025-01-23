@@ -17,7 +17,7 @@ class NewLapUseCaseImplTest {
             StopwatchState(
                 status = Status.RUNNING,
                 milliseconds = 0L,
-                laps = emptyList(),
+                completedLaps = emptyList(),
             )
         )
 
@@ -28,7 +28,7 @@ class NewLapUseCaseImplTest {
         val expected = StopwatchState(
             status = Status.RUNNING,
             milliseconds = 0L,
-            laps = listOf(
+            completedLaps = listOf(
                 Lap(
                     index = 1,
                     milliseconds = 0L,
@@ -46,7 +46,7 @@ class NewLapUseCaseImplTest {
             StopwatchState(
                 status = Status.RUNNING,
                 milliseconds = 1_800L,
-                laps = listOf(
+                completedLaps = listOf(
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
@@ -68,7 +68,7 @@ class NewLapUseCaseImplTest {
         val expected = StopwatchState(
             status = Status.RUNNING,
             milliseconds = 1_800L,
-            laps = listOf(
+            completedLaps = listOf(
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,

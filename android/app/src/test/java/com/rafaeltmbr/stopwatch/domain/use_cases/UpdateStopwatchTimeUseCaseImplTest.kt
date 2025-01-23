@@ -18,7 +18,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
             StopwatchState(
                 status = Status.RUNNING,
                 milliseconds = 0L,
-                laps = emptyList()
+                completedLaps = emptyList()
             )
         )
         val useCase = UpdateStopwatchTimeUseCaseImpl(store, CalculateLapsStatusesImpl())
@@ -33,7 +33,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
         val expected = StopwatchState(
             status = Status.RUNNING,
             milliseconds = 1_000L,
-            laps = listOf(
+            completedLaps = listOf(
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
@@ -51,7 +51,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
             StopwatchState(
                 status = Status.RUNNING,
                 milliseconds = 1_000L,
-                laps = listOf(
+                completedLaps = listOf(
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
@@ -72,7 +72,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
         val expected = StopwatchState(
             status = Status.RUNNING,
             milliseconds = 2_000L,
-            laps = listOf(
+            completedLaps = listOf(
                 Lap(
                     index = 1,
                     milliseconds = 2_000L,
@@ -90,7 +90,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
             StopwatchState(
                 status = Status.RUNNING,
                 milliseconds = 1_500L,
-                laps = listOf(
+                completedLaps = listOf(
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
@@ -116,7 +116,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
         val expected = StopwatchState(
             status = Status.RUNNING,
             milliseconds = 1_700L,
-            laps = listOf(
+            completedLaps = listOf(
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
@@ -139,7 +139,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
             StopwatchState(
                 status = Status.RUNNING,
                 milliseconds = 2_500L,
-                laps = listOf(
+                completedLaps = listOf(
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
@@ -165,7 +165,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
         val expected = StopwatchState(
             status = Status.RUNNING,
             milliseconds = 2_700L,
-            laps = listOf(
+            completedLaps = listOf(
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,
@@ -188,7 +188,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
             StopwatchState(
                 status = Status.RUNNING,
                 milliseconds = 4_100L,
-                laps = listOf(
+                completedLaps = listOf(
                     Lap(
                         index = 1,
                         milliseconds = 1_000L,
@@ -224,7 +224,7 @@ class UpdateStopwatchTimeUseCaseImplTest {
         val expected = StopwatchState(
             status = Status.RUNNING,
             milliseconds = 4_100L,
-            laps = listOf(
+            completedLaps = listOf(
                 Lap(
                     index = 1,
                     milliseconds = 1_000L,

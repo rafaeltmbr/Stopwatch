@@ -1,9 +1,9 @@
 package com.rafaeltmbr.stopwatch.domain.use_cases
 
+import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.entities.Status
 import com.rafaeltmbr.stopwatch.domain.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.domain.services.impl.TimerServiceImpl
-import com.rafaeltmbr.stopwatch.domain.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.domain.use_cases.impl.StartStopwatchUseCaseImpl
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -26,7 +26,7 @@ class StartStopwatchUseCaseImplTest {
         val initial = StopwatchState(
             status = Status.INITIAL,
             milliseconds = 0L,
-            laps = emptyList()
+            completedLaps = emptyList()
         )
 
         val store = MutableStateStoreImpl(initial)

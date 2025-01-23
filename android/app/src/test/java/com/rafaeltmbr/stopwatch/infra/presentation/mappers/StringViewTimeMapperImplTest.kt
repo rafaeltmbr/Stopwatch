@@ -7,11 +7,11 @@ import org.junit.Test
 
 class StringStringTimeMapperImplTest {
     @Test
-    fun mapToStringTimeFractions_paddingMinutesAndSecondsWithZeros() {
+    fun mapFractions_paddingMinutesAndSecondsWithZeros() {
         val mapper = StringTimeMapperImpl(ViewTimeMapperImpl())
         val milliseconds = 760L
         val expected = "00:00.76"
-        val viewTime = mapper.mapToStringTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
@@ -20,34 +20,34 @@ class StringStringTimeMapperImplTest {
         val mapper = StringTimeMapperImpl(ViewTimeMapperImpl())
         val milliseconds = 477L
         val expected = "00:00.48"
-        val viewTime = mapper.mapToStringTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
     @Test
-    fun mapToStringTimeSeconds_paddingMinutesWithZeros() {
+    fun mapSeconds_paddingMinutesWithZeros() {
         val mapper = StringTimeMapperImpl(ViewTimeMapperImpl())
         val milliseconds = 21520L
         val expected = "00:21.52"
-        val viewTime = mapper.mapToStringTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
     @Test
-    fun mapToStringTimeMinutes_paddingTwoDigitsWithZeros() {
+    fun mapMinutes_paddingTwoDigitsWithZeros() {
         val mapper = StringTimeMapperImpl(ViewTimeMapperImpl())
         val milliseconds = 107120L
         val expected = "01:47.12"
-        val viewTime = mapper.mapToStringTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
     @Test
-    fun mapToStringTimeMinutes_shouldNotTruncateMinutesIntoHours() {
+    fun mapMinutes_shouldNotTruncateMinutesIntoHours() {
         val mapper = StringTimeMapperImpl(ViewTimeMapperImpl())
         val milliseconds = 4107430L
         val expected = "68:27.43"
-        val viewTime = mapper.mapToStringTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 
@@ -56,7 +56,7 @@ class StringStringTimeMapperImplTest {
         val mapper = StringTimeMapperImpl(ViewTimeMapperImpl())
         val milliseconds = -4107430L
         val expected = "00:00.00"
-        val viewTime = mapper.mapToStringTime(milliseconds)
+        val viewTime = mapper.map(milliseconds)
         Assert.assertEquals(expected, viewTime)
     }
 }
