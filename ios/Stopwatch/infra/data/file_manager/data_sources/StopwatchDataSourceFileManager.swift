@@ -66,7 +66,7 @@ private extension StopwatchState {
         return StopwatchStateJson(
             status: status,
             milliseconds: milliseconds,
-            laps: laps.map { $0.toJson() }
+            laps: completedLaps.map { $0.toJson() }
         )
     }
 }
@@ -87,7 +87,8 @@ private extension StopwatchStateJson {
         return StopwatchState(
             status: status,
             milliseconds: milliseconds,
-            laps: try laps.map { try $0.toDomainEntity() }
+            completedLaps: try laps.map { try $0.toDomainEntity() },
+            completedLapsMilliseconds: laps.reduce(0) {acc, lap in acc + lap.milliseconds }
         )
     }
 }

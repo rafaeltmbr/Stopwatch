@@ -35,18 +35,34 @@ where SS: StateStore, SS.State == StopwatchState, SN: StackNavigator {
         
         subscriptionId = stopwatchStore.events.subscribe {newState in
             Task {@MainActor in
-                self.state = HomeState(
-                    status: newState.status,
-                    time: viewTimeMapper.map(newState.milliseconds),
-                    laps: newState.laps.reversed()[0..<min(newState.laps.count, 3)].map {
+                var laps = newState
+                    .completedLaps[max(0, newState.completedLaps.count - 2)..<newState.completedLaps.count]
+                    .map {
                         ViewLap(
                             index: $0.index,
                             time: stringTimeMapper.map($0.milliseconds),
                             status: $0.status
                         )
-                    },
-                    showLaps: !newState.laps.isEmpty,
-                    showSeeAll: newState.laps.count > 3
+                    }
+                
+                laps.append(
+                    ViewLap(
+                        index: newState.completedLaps.count + 1,
+                        time: stringTimeMapper.map(
+                            newState.milliseconds - newState.completedLapsMilliseconds
+                        ),
+                        status: .current
+                    )
+                )
+                
+                laps.reverse()
+                
+                self.state = HomeState(
+                    status: newState.status,
+                    time: viewTimeMapper.map(newState.milliseconds),
+                    laps: laps,
+                    showLaps: newState.status != .initial,
+                    showSeeAll: newState.completedLaps.count > 2
                 )
             }
         }

@@ -25,7 +25,7 @@ class ApplicationUseCases {
     let pauseStopwatch: PauseStopwatchUseCase
     let resetStopwatch: ResetStopwatchUseCase
     let newLap: NewLapUseCase
-    let updateStopwatchTimeAndLaps: UpdateStopwatchTimeAndLapsUseCase
+    let updateStopwatchTimeAndLaps: UpdateStopwatchTimeUseCase
     let saveStopwatchState: SaveStopwatchStateUseCase
     let restoreStopwatchState: RestoreStopwatchStateUseCase
     
@@ -34,7 +34,7 @@ class ApplicationUseCases {
         _ pauseStopwatch: PauseStopwatchUseCase,
         _ resetStopwatch: ResetStopwatchUseCase,
         _ newLap: NewLapUseCase,
-        _ updateStopwatchTimeAndLaps: UpdateStopwatchTimeAndLapsUseCase,
+        _ updateStopwatchTimeAndLaps: UpdateStopwatchTimeUseCase,
         _ saveStopwatchState: SaveStopwatchStateUseCase,
         _ restoreStopwatchState: RestoreStopwatchStateUseCase
     ) {

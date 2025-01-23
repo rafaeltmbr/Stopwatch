@@ -11,20 +11,21 @@ where MSS: MutableStateStore, MSS.State == StopwatchState
     
     func execute() async {
         await store.update {currentState in
-            var laps = currentState.laps.map { $0 }
+            var laps = currentState.completedLaps.map { $0 }
             
             laps.append(
                 Lap(
-                    index: currentState.laps.count + 1,
-                    milliseconds: 0,
-                    status: .current
+                    index: currentState.completedLaps.count + 1,
+                    milliseconds: currentState.milliseconds - currentState.completedLapsMilliseconds,
+                    status: .done
                 )
             )
 
             return StopwatchState(
                 status: currentState.status,
                 milliseconds: currentState.milliseconds,
-                laps: calculateLapsStatuses.execute(laps)
+                completedLaps: calculateLapsStatuses.execute(laps),
+                completedLapsMilliseconds: currentState.milliseconds
             )
         }
     }

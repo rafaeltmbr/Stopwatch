@@ -11,7 +11,14 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, TS: TimerService {
     func execute() async {
         guard !timer.state.isRunning else { return }
         
+        await store.update {
+            StopwatchState(
+                status: .running,
+                milliseconds: $0.milliseconds,
+                completedLaps: $0.completedLaps,
+                completedLapsMilliseconds: $0.completedLapsMilliseconds
+            )
+        }
         timer.start()
-        await store.update { StopwatchState(status: .running, milliseconds: $0.milliseconds, laps: $0.laps) }
     }
 }

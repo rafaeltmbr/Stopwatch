@@ -1,11 +1,18 @@
 struct StopwatchState {
     let status: Status
     let milliseconds: Int
-    let laps: [Lap]
+    let completedLaps: [Lap]
+    let completedLapsMilliseconds: Int
     
-    init(status: Status = .initial, milliseconds: Int = 0, laps: [Lap] = []) {
+    init(
+        status: Status = .initial,
+        milliseconds: Int = 0,
+        completedLaps: [Lap] = [],
+        completedLapsMilliseconds: Int = 0
+    ) {
         self.status = status
         self.milliseconds = milliseconds
-        self.laps = laps
+        self.completedLaps = completedLaps
+        self.completedLapsMilliseconds = completedLapsMilliseconds
     }
 }

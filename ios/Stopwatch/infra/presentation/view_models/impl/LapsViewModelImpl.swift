@@ -34,17 +34,31 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
     }
     
     private static func getNextState(_ stopwatchState: StopwatchState, _ stringTimeMapper: StringTimeMapper) -> LapsState {
-            LapsState(
-                status: stopwatchState.status,
-                milliseconds: stringTimeMapper.map(stopwatchState.milliseconds),
-                laps: stopwatchState.laps.reversed().map {
-                    ViewLap(
-                        index: $0.index,
-                        time: stringTimeMapper.map($0.milliseconds),
-                        status: $0.status
-                    )
-                }
+        var laps = stopwatchState.completedLaps.map {
+            ViewLap(
+                index: $0.index,
+                time: stringTimeMapper.map($0.milliseconds),
+                status: $0.status
             )
+        }
+        
+        laps.append(
+            ViewLap(
+                index: stopwatchState.completedLaps.count + 1,
+                time: stringTimeMapper.map(
+                    stopwatchState.milliseconds - stopwatchState.completedLapsMilliseconds
+                ),
+                status: .current
+            )
+        )
+        
+        laps.reverse()
+        
+        return LapsState(
+            status: stopwatchState.status,
+            milliseconds: stringTimeMapper.map(stopwatchState.milliseconds),
+            laps: laps
+        )
     }
     
     deinit {

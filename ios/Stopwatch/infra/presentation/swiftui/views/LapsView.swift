@@ -29,12 +29,13 @@ struct LapsView<ViewModel: LapsViewModel>: View {
             StopwatchState(
                 status: .paused,
                 milliseconds: 365823,
-                laps: [
+                completedLaps: [
                     Lap(index: 1, milliseconds: 3571, status: .worst),
                     Lap(index: 2, milliseconds: 1123, status: .best),
                     Lap(index: 3, milliseconds: 1139, status: .done),
                     Lap(index: 4, milliseconds: 242, status: .current),
-                ]
+                ],
+                completedLapsMilliseconds: 6075
             )
         }
     }

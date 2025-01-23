@@ -35,7 +35,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
             PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             ResetStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             NewLapUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
-            UpdateStopwatchTimeAndLapsUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
+            UpdateStopwatchTimeUseCaseImpl(data.stopwatchStore),
             SaveStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository),
             RestoreStopwatchStateUseCaseImpl(data.stopwatchStore, data.stopwatchRepository, services.timer, services.logging)
         )
