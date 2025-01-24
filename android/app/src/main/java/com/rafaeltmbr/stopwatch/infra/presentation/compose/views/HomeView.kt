@@ -1,5 +1,6 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.compose.views
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,9 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.filled.Pause
@@ -87,147 +86,71 @@ private fun Content(
             )
         }, modifier = modifier
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background)
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-                .defaultMinSize(minHeight = LocalConfiguration.current.screenHeightDp.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
+        val orientation = LocalConfiguration.current.orientation
 
-            Column(
-                modifier = Modifier
-                    .padding(vertical = 48.dp)
-                    .padding(top = 24.dp)
-            ) {
-                Count(
-                    time = state.time,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 24.dp)
+        when (orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                LandscapeContent(
+                    state = state,
+                    onAction = onAction,
+                    modifier = Modifier.padding(innerPadding)
                 )
-
-                when (state.status) {
-                    Status.INITIAL ->
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            AppButton(
-                                type = AppButtonType.START,
-                                onClick = { onAction(HomeViewModel.Action.Start) }
-                            )
-                        }
-
-                    Status.PAUSED ->
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            AppButton(
-                                type = AppButtonType.RESUME,
-                                onClick = { onAction(HomeViewModel.Action.Resume) }
-                            )
-                            AppButton(
-                                type = AppButtonType.RESET,
-                                onClick = { onAction(HomeViewModel.Action.Reset) }
-                            )
-                        }
-
-                    Status.RUNNING ->
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            AppButton(
-                                type = AppButtonType.PAUSE,
-                                onClick = { onAction(HomeViewModel.Action.Pause) }
-                            )
-                            AppButton(
-                                type = AppButtonType.LAP,
-                                onClick = { onAction(HomeViewModel.Action.Lap) }
-                            )
-                        }
-                }
             }
 
-            Spacer(modifier = Modifier.weight(1f))
-
-            AnimatedVisibility(state.showLapsSection) {
-                val onSeeAll = { onAction(HomeViewModel.Action.SeeAll) }
-
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = stringResource(R.string.laps_title),
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-                            color = MaterialTheme.colorScheme.onBackground,
-                            modifier = Modifier.padding(vertical = 4.dp)
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        if (state.showSeeAllLaps) {
-                            Surface(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .clickable(onClick = onSeeAll),
-                                color = MaterialTheme.colorScheme.background
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.see_all_button),
-                                        style = MaterialTheme.typography.titleLarge
-                                            .copy(fontWeight = FontWeight.SemiBold),
-                                        color = MaterialTheme.colorScheme.primary
-                                    )
-
-                                    Spacer(modifier = Modifier.width(8.dp))
-
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.size(16.dp))
-
-                    Column(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(color = MaterialTheme.colorScheme.surface)
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                            .defaultMinSize(minHeight = 182.dp)
-                    ) {
-                        for (lap in state.laps) {
-                            LapListItem(lap = lap)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.size(24.dp))
-                }
+            else -> {
+                PortraitContent(
+                    state = state,
+                    onAction = onAction,
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
         }
     }
 }
 
-@Preview(showSystemUi = true)
 @Composable
-private fun HomeViewContentPreview() {
+private fun LandscapeContent(
+    state: HomeViewModel.State,
+    onAction: (HomeViewModel.Action) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier
+            .background(color = MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp)
+            .fillMaxSize()
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .fillMaxWidth(0.5f)
+        ) {
+            Count(
+                time = state.time,
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+            )
+
+            Buttons(state, onAction, modifier = Modifier.fillMaxWidth())
+        }
+
+        AnimatedVisibility(state.showLapsSection) {
+            LapsContainer(state, onAction)
+        }
+    }
+}
+
+@Preview(
+    showSystemUi = true,
+    device = "spec:width=411dp,height=891dp,dpi=420,isRound=false,chinSize=0dp,orientation=landscape"
+)
+@Composable
+private fun LandscapeContentPreview() {
     StopwatchTheme {
-        Content(
+        LandscapeContent(
             state = HomeViewModel.State(
                 status = Status.INITIAL,
                 time = ViewTime(
@@ -245,6 +168,186 @@ private fun HomeViewContentPreview() {
             ),
             onAction = {},
         )
+    }
+}
+
+@Composable
+private fun PortraitContent(
+    state: HomeViewModel.State,
+    onAction: (HomeViewModel.Action) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .background(color = MaterialTheme.colorScheme.background)
+            .padding(horizontal = 16.dp)
+            .padding(bottom = 24.dp)
+    ) {
+        Spacer(modifier = Modifier.weight(1f))
+
+        Column(
+            modifier = Modifier
+                .padding(vertical = 48.dp)
+                .padding(top = 24.dp)
+        ) {
+            Count(
+                time = state.time,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp)
+            )
+
+            Buttons(state, onAction, modifier = Modifier.fillMaxWidth())
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        AnimatedVisibility(state.showLapsSection) {
+            LapsContainer(state, onAction)
+        }
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun PortraitContentPreview() {
+    StopwatchTheme {
+        PortraitContent(
+            state = HomeViewModel.State(
+                status = Status.INITIAL,
+                time = ViewTime(
+                    minutes = listOf("0", "3"),
+                    seconds = listOf("4", "1"),
+                    fraction = listOf("9", "3")
+                ),
+                laps = listOf(
+                    ViewLap(index = 3, time = "01:16:11", status = Lap.Status.CURRENT),
+                    ViewLap(index = 2, time = "01:15:09", status = Lap.Status.BEST),
+                    ViewLap(index = 1, time = "01:16:35", status = Lap.Status.WORST)
+                ),
+                showSeeAllLaps = true,
+                showLapsSection = true
+            ),
+            onAction = {},
+        )
+    }
+}
+
+@Composable
+private fun Buttons(
+    state: HomeViewModel.State,
+    onAction: (HomeViewModel.Action) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when (state.status) {
+        Status.INITIAL ->
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = modifier
+            ) {
+                AppButton(
+                    type = AppButtonType.START,
+                    onClick = { onAction(HomeViewModel.Action.Start) }
+                )
+            }
+
+        Status.PAUSED ->
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = modifier
+            ) {
+                AppButton(
+                    type = AppButtonType.RESUME,
+                    onClick = { onAction(HomeViewModel.Action.Resume) }
+                )
+                AppButton(
+                    type = AppButtonType.RESET,
+                    onClick = { onAction(HomeViewModel.Action.Reset) }
+                )
+            }
+
+        Status.RUNNING ->
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = modifier
+            ) {
+                AppButton(
+                    type = AppButtonType.PAUSE,
+                    onClick = { onAction(HomeViewModel.Action.Pause) }
+                )
+                AppButton(
+                    type = AppButtonType.LAP,
+                    onClick = { onAction(HomeViewModel.Action.Lap) }
+                )
+            }
+    }
+}
+
+@Composable
+private fun LapsContainer(
+    state: HomeViewModel.State,
+    onAction: (HomeViewModel.Action) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val onSeeAll = { onAction(HomeViewModel.Action.SeeAll) }
+
+    Column(modifier = modifier) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = stringResource(R.string.laps_title),
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            if (state.showSeeAllLaps) {
+                Surface(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .clickable(onClick = onSeeAll),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(4.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.see_all_button),
+                            style = MaterialTheme.typography.titleLarge
+                                .copy(fontWeight = FontWeight.SemiBold),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.size(16.dp))
+
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(24.dp))
+                .background(color = MaterialTheme.colorScheme.surface)
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .defaultMinSize(minHeight = 182.dp)
+        ) {
+            for (lap in state.laps) {
+                LapListItem(lap = lap)
+            }
+        }
     }
 }
 
