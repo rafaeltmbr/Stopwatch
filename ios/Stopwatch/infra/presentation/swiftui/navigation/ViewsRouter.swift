@@ -7,18 +7,18 @@ LVMF: LapsViewModelFactory,
 SN: StackNavigatorImpl<EventEmitterImpl<[StackNavigatorScreen]>>
 {
     @StateObject var navigatorAdapter: StackNavigatorAdapter
-    private(set) var homeViewModelFactory: HVMF
-    private(set) var lapsViewModelFactory: LVMF
+    private let lapsViewModelFactory: LVMF
+    private let homeViewModel: HVMF.ViewModel
     
     init(_ homeViewModelFactory: HVMF, _ lapsViewModelFactory: LVMF, _ stackNavigator: SN) {
-        self.homeViewModelFactory = homeViewModelFactory
-        self.lapsViewModelFactory = lapsViewModelFactory
         _navigatorAdapter = StateObject(wrappedValue: StackNavigatorAdapter(stackNavigator))
+        self.lapsViewModelFactory = lapsViewModelFactory
+        homeViewModel = homeViewModelFactory.make()
     }
     
     var body: some View {
         NavigationStack(path: navigatorAdapter.pathBinding) {
-            HomeView(viewModel: homeViewModelFactory.make())
+            HomeView(viewModel: homeViewModel)
                 .navigationDestination(for: StackNavigatorScreen.self) { path in
                     switch path {
                     case .home: EmptyView()
