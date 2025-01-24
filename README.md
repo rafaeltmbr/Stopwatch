@@ -1,9 +1,8 @@
 # Stopwatch
 
-Stopwatch App
 
-<img src="./docs/assets/images/home-android.png" title="Android app" height=600>
-<img src="./docs/assets/images/home-ios.png" title="iOS app" height=600>
+<img src="./docs/assets/images/android-mockups.png" title="Android app" style="max-height: 600px">
+<img src="./docs/assets/images/ios-mockups.png" title="iOS app" style="max-height: 600px">
 
 ## Architecture
 
