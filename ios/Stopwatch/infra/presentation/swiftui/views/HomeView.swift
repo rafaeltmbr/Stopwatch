@@ -8,20 +8,40 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
     
     var body: some View {
         GeometryReader {geometry in
-            ScrollView {
-                VStack {
-                    VStack {
-                        timer.padding(.bottom)
-                        buttons
-                    }.frame(maxHeight: .infinity)
-                    
-                    if viewModel.state.showLaps {
-                        laps
-                    }
-                }.frame(maxWidth: .infinity, minHeight: geometry.size.height)
+            let isLandscape = geometry.size.width > geometry.size.height
+            
+            switch isLandscape {
+            case true: landscapeLayout
+            case false: portraitLayout
             }
         }
         .navigationTitle("Stopwatch")
+    }
+    
+    private var landscapeLayout: some View {
+        HStack {
+            VStack {
+                timer.padding(.bottom)
+                buttons
+            }.frame(maxHeight: .infinity)
+            
+            if viewModel.state.showLaps {
+                laps
+            }
+        }.frame(maxWidth: .infinity)
+    }
+    
+    private var portraitLayout: some View {
+        VStack {
+            VStack {
+                timer.padding(.bottom)
+                buttons
+            }.frame(maxHeight: .infinity)
+            
+            if viewModel.state.showLaps {
+                laps
+            }
+        }.frame(maxWidth: .infinity)
     }
     
     private var timer: some View {
