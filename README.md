@@ -1,14 +1,20 @@
 # Stopwatch
 
-
 <img src="./docs/assets/images/android-mockups.png" title="Android app" style="max-height: 600px">
 <img src="./docs/assets/images/ios-mockups.png" title="iOS app" style="max-height: 600px">
 
 ## Architecture
 
+### Data Flow
+
+<img src="./docs/assets/images/data-flow-diagram.png" title="Data Flow" style="max-height: 700px">
+
+
+### Architecture UML Diagram
 App UML diagram of an Unidirectional Dataflow Architecture
 
 ![Architecture Diagram](./docs/assets/images/architecture-diagram.png)
+
 
 ## Implementation
 
