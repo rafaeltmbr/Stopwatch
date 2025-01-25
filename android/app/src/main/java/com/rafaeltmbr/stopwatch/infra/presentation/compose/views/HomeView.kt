@@ -75,18 +75,28 @@ private fun Content(
     onAction: (HomeViewModel.Action) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val orientation = LocalConfiguration.current.orientation
+
+    val toolbarColors = when (orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.onBackground
+        )
+
+        else -> TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = stringResource(R.string.app_name)) },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                colors = toolbarColors
             )
         }, modifier = modifier
     ) { innerPadding ->
-        val orientation = LocalConfiguration.current.orientation
 
         when (orientation) {
             Configuration.ORIENTATION_LANDSCAPE -> {
@@ -115,11 +125,11 @@ private fun LandscapeContent(
     modifier: Modifier = Modifier
 ) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = modifier
             .background(color = MaterialTheme.colorScheme.background)
             .padding(horizontal = 16.dp)
+            .padding(top = 8.dp)
             .fillMaxSize()
     ) {
         Column(

@@ -1,5 +1,6 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.compose.views
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -68,6 +70,24 @@ private fun Content(
     getViewLapByReversedArrayIndex: (index: Int) -> ViewLap,
     modifier: Modifier = Modifier
 ) {
+    val orientation = LocalConfiguration.current.orientation
+
+    val toolbarColors = when (orientation) {
+        Configuration.ORIENTATION_LANDSCAPE -> TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            titleContentColor = MaterialTheme.colorScheme.onBackground,
+            navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+            actionIconContentColor = MaterialTheme.colorScheme.onBackground
+        )
+
+        else -> TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -95,7 +115,7 @@ private fun Content(
                         modifier = Modifier
                             .clip(RoundedCornerShape(16.dp))
                             .clickable { onAction(action) },
-                        color = MaterialTheme.colorScheme.primary
+                        color = toolbarColors.containerColor
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
@@ -120,22 +140,27 @@ private fun Content(
 
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                colors = toolbarColors
             )
         },
         modifier = modifier
     ) { innerPadding ->
+        val topPadding = when (orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> 8.dp
+            else -> 24.dp
+        }
+
         LazyColumn(
             modifier = modifier
                 .clip(RoundedCornerShape(24.dp))
                 .defaultMinSize(minHeight = 182.dp)
                 .padding(innerPadding),
-            contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
+            contentPadding = PaddingValues(
+                top = topPadding,
+                bottom = 24.dp,
+                start = 16.dp,
+                end = 16.dp
+            )
         ) {
             items(state.lapsCount) {
                 val lap = getViewLapByReversedArrayIndex(it)
