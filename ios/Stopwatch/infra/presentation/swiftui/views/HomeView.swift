@@ -26,11 +26,12 @@ struct HomeView<ViewModel>: View where ViewModel: HomeViewModel {
             }.frame(maxHeight: .infinity)
             
             if viewModel.state.showLaps {
-                laps
+                laps.transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }.frame(maxWidth: .infinity)
+            .animation(.default, value: viewModel.state.showLaps)
     }
-    
+
     private var portraitLayout: some View {
         VStack {
             VStack {
