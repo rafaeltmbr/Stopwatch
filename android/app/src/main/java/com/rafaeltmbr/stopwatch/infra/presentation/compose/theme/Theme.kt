@@ -1,11 +1,14 @@
 package com.rafaeltmbr.stopwatch.infra.presentation.compose.theme
 
 import android.app.Activity
+import android.content.res.Configuration
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -99,9 +102,15 @@ fun StopwatchTheme(
 
     if (!view.isInEditMode) {
         val window = (view.context as Activity).window
+        val isLandscape =
+            LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
         WindowCompat.getInsetsController(window, view)
-            .isAppearanceLightStatusBars = false
+            .isAppearanceLightStatusBars = !darkTheme && isLandscape
+        
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
     }
 
     MaterialTheme(
