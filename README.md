@@ -14,9 +14,9 @@ The user interface (UI) is presented through Views, which are responsible for di
 
 #### 2. ViewModel and Action Handling
 The ViewModel acts as an intermediary between the View and the application logic. It receives Action events from the View and processes them accordingly. The ViewModel is responsible for:
-Executing relevant Use Cases based on the received Action.
-Instructing the Navigator to transition between different Views.
-Updating the View State to reflect changes in the application's data.
+- Executing relevant Use Cases based on the received Action.
+- Instructing the Navigator to transition between different Views.
+- Updating the View State to reflect changes in the application's data.
 
 #### 3. Navigation with the Navigator
 The Navigator handles all screen navigation within the application. It interacts directly with the UI framework and libraries to manage View transitions and rendering. The ViewModel directs the Navigator to navigate to specific Views based on user actions or application logic.
