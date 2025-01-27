@@ -2,7 +2,11 @@
 
 Table of contents
 1. [Overview](#1-overview)
-
+    - [1.1. Platform-Agnostic](#11---platform-agnostic)
+    - [1.2. Layers](#12---layers)
+      - [1.2.1. Domain](#121---domain)
+      - [1.2.2. Infrastructure (Infra)](#122---infrastructure-infra)
+      - [1.2.3. External](#123---external)
 2. [Data Flow](#2-data-flow)
     - [2.1. User Interaction and View](#21-user-interaction-and-view)
     - [2.2. ViewModel and Action Handling](#22-viewmodel-and-action-handling)
@@ -53,9 +57,44 @@ Table of contents
       - [7.6.4. Command](#764-command)
 
 ## 1. Overview
-Despite its seemingly straightforward functionality, a stopwatch application presents a significant challenge in managing a high volume of events within short timeframes. The proposed implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a [Unidirectional Data Flow (UDF)](#74-unidirectional-data-flow-udf) architecture.
+While seemingly simple, a stopwatch application poses a significant challenge in managing a high volume of rapidly occurring events. The implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a Unidirectional Data Flow (UDF) pattern, ensuring predictable and efficient state management.
+Platform-Agnostic Architecture
 
-The presented architecture is designed to be platform-agnostic. To validate this design principle, the architecture was implemented on both Android and iOS platforms, demonstrating its adaptability and portability across different environments.
+### 1.1 - Platform-Agnostic
+The architecture is designed to be platform-agnostic, promoting code reusability and maintainability across different platforms. This design principle was validated by implementing the architecture on both Android and iOS, demonstrating its adaptability and portability.
+
+### 1.2 - Layers
+The architecture divides the application into three distinct layers: Domain, Infrastructure and External.
+
+#### 1.2.1 - Domain
+The Domain layer contains the core business logic and entities of the application, independent of any specific platform or framework. It represents the pure, platform-agnostic essence of the stopwatch functionality.
+
+Elements present in the Domain layer: 
+- Domain Entities
+- Use Cases
+- Services
+- State Stores
+- Data Repositories
+
+#### 1.2.2 - Infrastructure (Infra)
+The Infrastructure layer houses platform-specific implementations and dependencies on frameworks and libraries. It bridges the gap between the Domain layer and the external environment, providing platform-specific adaptations. 
+
+Elements present in the Infra layer: 
+- Views
+- ViewModels
+- Navigators
+- UI Mappers
+- Data Sources
+
+#### 1.2.3 - External
+The External layer encompasses the underlying platform, frameworks, and libraries upon which the application relies. It represents the external environment with which the application interacts.
+
+Elements present in the External layer:
+- Android or iOS Operating System
+- Databases
+- Network Interfaces
+- UI Framework
+- Third-Party Libraries
 
 ## 2. Data Flow
 The application's data flow usually begins with user interactions on the Graphical User Interface (GUI). These interactions trigger a series of processing steps, which result in data visualizations being presented back to the user through the GUI. This cyclical process is illustrated in the following diagram and described in detail by the subsequent sections:
