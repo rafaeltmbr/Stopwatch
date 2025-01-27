@@ -1,6 +1,6 @@
 # Stopwatch
 
-Stopwatch native Android and iOS application implementing the same [architecture](#architecture).
+Stopwatch native Android and iOS applications implementing the same [architecture](#architecture).
 
 <img src="./docs/assets/images/android-mockups.png" style="max-height: 600px">
 <img src="./docs/assets/images/ios-mockups.png" style="max-height: 600px">

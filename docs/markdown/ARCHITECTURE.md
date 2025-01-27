@@ -55,6 +55,8 @@ Table of contents
 ## 1. Overview
 Despite its seemingly straightforward functionality, a stopwatch application presents a significant challenge in managing a high volume of events within short timeframes. The proposed implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a [Unidirectional Data Flow (UDF)](#74-unidirectional-data-flow-udf) architecture.
 
+The presented architecture is designed to be platform-agnostic. To validate this design principle, the architecture was implemented on both Android and iOS platforms, demonstrating its adaptability and portability across different environments.
+
 ## 2. Data Flow
 The application's data flow usually begins with user interactions on the Graphical User Interface (GUI). These interactions trigger a series of processing steps, which result in data visualizations being presented back to the user through the GUI. This cyclical process is illustrated in the following diagram and described in detail by the subsequent sections:
 
@@ -92,6 +94,9 @@ The Android and iOS applications were developed independently, utilizing the rec
 
 ## 5. Tests
 Unit tests were implemented for Use Cases, ViewModels, and UI Mappers, leveraging the respective testing frameworks for Android (i.e., JUnit) and iOS (i.e., XCTest). The testing strategy focused on covering critical logic within these components, prioritizing areas with higher potential for errors. This approach aims to ensure the quality and reliability of core application functionalities.
+For more information about unit testing on a specific platform, check the following guides:
+- [Unit tests on Android](https://developer.android.com/training/testing/local-tests)
+- [Unit test on iOS](https://developer.apple.com/documentation/xcode/adding-tests-to-your-xcode-project)
 
 ## 6. Implementation Details
 During architecture implementation, some exceptions were found:
