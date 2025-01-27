@@ -42,19 +42,19 @@ Table of contents
 5. [Tests](#6-tests)
 6. [Implementation Details](#5-implementation-details)
 7. [References](#7-references)
-    - 7.1. Unified Modeling Language (UML)
-    - 7.2. Hexagonal Architecture 
-    - 7.3. Clean Architecture
-    - 7.4. Unidirectional Data Flow (UDF)
-    - 7.5. Dependency Inversion Principle (DIP)
-    - 7.6. Design Patterns 
-      - 7.6.1. Abstract Factory
-      - 7.6.2. Facade
-      - 7.6.3. Observer
-      - 7.6.4. Command
+    - [7.1. Unified Modeling Language (UML)](#71-unified-modeling-language-uml)
+    - [7.2. Hexagonal Architecture](#72-hexagonal-architecture)
+    - [7.3. Clean Architecture](#73-clean-architecture)
+    - [7.4. Unidirectional Data Flow (UDF)](#74-unidirectional-data-flow-udf)
+    - [7.5. Dependency Inversion Principle (DIP)](#75-dependency-inversion-principle-dip)
+    - [7.6. Design Patterns](#76-design-patterns)
+      - [7.6.1. Abstract Factory](#761-abstract-factory)
+      - [7.6.2. Facade](#762-facade)
+      - [7.6.3. Observer](#763-observer)
+      - [7.6.4. Command](#764-command)
 
 ## 1. Overview
-Despite its seemingly straightforward functionality, a stopwatch application presents a significant challenge in managing a high volume of events within short timeframes. The proposed implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a Unidirectional Data Flow (UDF) architecture.
+Despite its seemingly straightforward functionality, a stopwatch application presents a significant challenge in managing a high volume of events within short timeframes. The proposed implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a [Unidirectional Data Flow (UDF)](#74-unidirectional-data-flow-udf) architecture.
 
 ## 2. Data Flow
 The application's data flow usually begins with user interactions on the Graphical User Interface (GUI). These interactions trigger a series of processing steps, which result in data visualizations being presented back to the user through the GUI. This cyclical process is illustrated in the following diagram and described in detail by the subsequent sections:
@@ -74,16 +74,16 @@ The ViewModel acts as an intermediary between the View and the application logic
 The Navigator handles all screen navigation within the application. It interacts directly with the UI framework and libraries to manage View transitions and rendering. The ViewModel directs the Navigator to navigate to specific Views based on user actions or application logic.
 
 ### 2.4. Business Logic and Use Cases
-Use Cases encapsulate the core business logic of the application. They may delegate tasks to Services for accessing external resources (via the [Facade Pattern](https://refactoring.guru/design-patterns/facade)) or performing specialized operations. Use Cases utilize Data Repositories to persist data beyond the application's lifecycle. During execution, Use Cases may update the application's state by emitting a new Domain State to the Domain State Store.
+Use Cases encapsulate the core business logic of the application. They may delegate tasks to Services for performing specilized operations or accessing external resources though the [Facade Pattern](#762-facade). Use Cases utilize Data Repositories to persist data beyond the application's lifecycle. During execution, Use Cases may update the application's state by emitting a new Domain State to the Domain State Store using the [Command Pattern](#764-command).
 
 ### 2.5. Domain State Store: The Single Source of Truth
-The Domain State Store serves as the central repository for the application's state. Components interested in state changes can subscribe to updates using the [Observer Pattern](https://refactoring.guru/design-patterns/observer). This ensures that all parts of the application have a consistent view of the current state.
+The Domain State Store serves as the central repository for the application's state. Components interested in state changes can subscribe to updates using the [Observer Pattern](#763-observer). This ensures that all parts of the application have a consistent view of the current state.
 
 ### 2.6. View State Updates and UI Mappers
-The ViewModel subscribes to Domain State changes and updates the View State accordingly. To transform Domain State into a format suitable for display, the ViewModel utilizes UI Mappers. These mappers handle data transformations and ensure the View State is optimized for UI rendering. The View, also subscribing to View State changes, receives updates via the [Observer Pattern](https://refactoring.guru/design-patterns/observer) and refreshes its display.
+The ViewModel subscribes to Domain State changes and updates the View State accordingly. To transform Domain State into a format suitable for display, the ViewModel utilizes UI Mappers. These mappers handle data transformations and ensure the View State is optimized for UI rendering. The View, also subscribing to View State changes, receives updates via the [Observer Pattern](#763-observer) and refreshes its display.
 
 ## 3. Dependency Diagram
-To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core domain logic and entities. When the flow of control goes against the this dependency direction, the Dependency Inversion Principle (DIP) is employed. The relationships between application components are visualized in the following UML diagram:
+To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core domain logic and entities. When the flow of control goes against the expected dependency direction, the Dependency Inversion Principle (DIP) is employed. The relationships between application components are visualized in the following UML diagram:
 
 ![Dependency Diagram](../assets/images/dependency-diagram.png)
 
@@ -102,3 +102,23 @@ During architecture implementation, some exceptions were found:
   Thanks to closure, all command parameters can be implied from the lambda creation context.
 
 ## 7. References
+
+### 7.1. Unified Modeling Language (UML)
+
+### 7.2. Hexagonal Architecture 
+
+### 7.3. Clean Architecture
+
+### 7.4. Unidirectional Data Flow (UDF)
+
+### 7.5. Dependency Inversion Principle (DIP)
+
+### 7.6. Design Patterns 
+
+#### 7.6.1. Abstract Factory
+
+#### 7.6.2. Facade
+
+#### 7.6.3. Observer
+
+#### 7.6.4. Command
