@@ -3,5 +3,9 @@
 <img src="./docs/assets/images/android-mockups.png" style="max-height: 600px">
 <img src="./docs/assets/images/ios-mockups.png" style="max-height: 600px">
 
+## Operation
+![Android Recording](./docs/assets/images/android-recording.gif)
+![iOS Recording](./docs/assets/images/ios-recording.gif)
+
 ## Architecture
 The application architecture is explained in detail in [ARCHITECTURE.md](./docs/markdown/ARCHITECTURE.md).
