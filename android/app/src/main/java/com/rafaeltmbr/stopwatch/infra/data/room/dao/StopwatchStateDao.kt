@@ -3,7 +3,7 @@ package com.rafaeltmbr.stopwatch.infra.data.room.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.rafaeltmbr.stopwatch.infra.data.room.entity.StopwatchStateEntity
+import com.rafaeltmbr.stopwatch.infra.data.room.entities.StopwatchStateEntity
 
 @Dao
 interface StopwatchStateDao {
