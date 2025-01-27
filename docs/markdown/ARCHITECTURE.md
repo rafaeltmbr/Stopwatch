@@ -41,20 +41,23 @@ Table of contents
           - 4.2.4.1. external_resources/
 5. [Tests](#6-tests)
 6. [Implementation Details](#5-implementation-details)
-
-- [Appendix 1. Fundamentals](#appendix-1-fundamentals)
-  - A1.1. Unified Modeling Language (UML)
-  - A1.2. Hexagonal Architecture 
-  - A1.3. Unidirectional Data Flow (UDF)
-  - A1.4. Design Patterns 
-    - A1.4.1. Abstract Factory
-    - A1.4.2. Facade
-    - A1.4.3. Observer
-    - A1.4.4. Command
+7. [References](#7-references)
+    - 7.1. Unified Modeling Language (UML)
+    - 7.2. Hexagonal Architecture 
+    - 7.3. Clean Architecture
+    - 7.4. Unidirectional Data Flow (UDF)
+    - 7.5. Dependency Inversion Principle (DIP)
+    - 7.6. Design Patterns 
+      - 7.6.1. Abstract Factory
+      - 7.6.2. Facade
+      - 7.6.3. Observer
+      - 7.6.4. Command
 
 ## 1. Overview
+Despite its seemingly straightforward functionality, a stopwatch application presents a significant challenge in managing a high volume of events within short timeframes. The proposed implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a Unidirectional Data Flow (UDF) architecture.
 
 ## 2. Data Flow
+The application's data flow usually begins with user interactions on the Graphical User Interface (GUI). These interactions trigger a series of processing steps, which result in data visualizations being presented back to the user through the GUI. This cyclical process is illustrated in the following diagram and described in detail by the subsequent sections:
 
 <img src="../assets/images/data-flow-diagram.png" style="max-height: 700px">
 
@@ -63,9 +66,9 @@ The user interface (UI) is presented through Views, which are responsible for di
 
 ### 2.2. ViewModel and Action Handling
 The ViewModel acts as an intermediary between the View and the application logic. It receives Action events from the View and processes them accordingly. The ViewModel is responsible for:
-Executing relevant Use Cases based on the received Action.
-Instructing the Navigator to transition between different Views.
-Updating the View State to reflect changes in the application's data.
+- Executing relevant Use Cases based on the received Action.
+- Instructing the Navigator to transition between different Views.
+- Updating the View State to reflect changes in the application's data.
 
 ### 2.3. Navigation with the Navigator
 The Navigator handles all screen navigation within the application. It interacts directly with the UI framework and libraries to manage View transitions and rendering. The ViewModel directs the Navigator to navigate to specific Views based on user actions or application logic.
@@ -79,7 +82,8 @@ The Domain State Store serves as the central repository for the application's st
 ### 2.6. View State Updates and UI Mappers
 The ViewModel subscribes to Domain State changes and updates the View State accordingly. To transform Domain State into a format suitable for display, the ViewModel utilizes UI Mappers. These mappers handle data transformations and ensure the View State is optimized for UI rendering. The View, also subscribing to View State changes, receives updates via the [Observer Pattern](https://refactoring.guru/design-patterns/observer) and refreshes its display.
 
-## 3. Dependency Diagram 
+## 3. Dependency Diagram
+To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core domain logic and entities. When the flow of control goes against the this dependency direction, the Dependency Inversion Principle (DIP) is employed. The relationships between application components are visualized in the following UML diagram:
 
 ![Dependency Diagram](../assets/images/dependency-diagram.png)
 
@@ -97,5 +101,4 @@ During architecture implementation, some exceptions were found:
 - Instead of using **Command Pattern** to update *MutableStateStore*, lambdas were used.
   Thanks to closure, all command parameters can be implied from the lambda creation context.
 
-
-## Appendix 1. Fundamentals
+## 7. References
