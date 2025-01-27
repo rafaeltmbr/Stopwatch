@@ -5,7 +5,7 @@ Table of contents
     - [1.1. Platform-Agnostic](#11---platform-agnostic)
     - [1.2. Layers](#12---layers)
       - [1.2.1. Domain](#121---domain)
-      - [1.2.2. Infrastructure (Infra)](#122---infrastructure-infra)
+      - [1.2.2. Infrastructure](#122---infrastructure)
       - [1.2.3. External](#123---external)
 2. [Data Flow](#2-data-flow)
     - [2.1. User Interaction and View](#21-user-interaction-and-view)
@@ -16,33 +16,6 @@ Table of contents
     - [2.6. View State Updates and UI Mappers](#26-view-state-updates-and-ui-mappers)
 3. [Dependency Diagram](#3-dependency-diagram)
 4. [Code Structure](#4-code-structure)
-    - 4.1. domain/
-      - 4.1.1. data/
-        - 4.1.1.1. data_sources/
-        - 4.1.1.2. repositories/
-        - 4.1.1.3. stores/
-      - 4.1.2. entities/
-      - 4.1.3. services/
-        - 4.1.3.1. external_resources/
-      - 4.1.4. use_cases/
-      - 4.1.5. utils/
-    - 4.2. infra/
-      - 4.2.1. data/
-        - 4.2.1.1. persistency_library/
-          - 4.2.1.1.1. data_sources/
-          - 4.2.1.1.2. entities/
-      - 4.2.2. di/
-      - 4.2.3. presentation/
-        - 4.2.3.1. entities/
-        - 4.2.3.2. mappers/
-        - 4.2.3.3. navigation/
-        - 4.2.3.4. view_models/
-        - 4.2.3.5. ui_library/
-          - 4.2.3.5.1. components/
-          - 4.2.3.5.2. navigation/
-          - 4.2.3.5.3. views/
-      - 4.2.4. services/
-          - 4.2.4.1. external_resources/
 5. [Tests](#6-tests)
 6. [Implementation Details](#5-implementation-details)
 7. [Essential Concepts](#7-references)
@@ -75,16 +48,23 @@ Elements present in the Domain layer:
 - Services
 - State Stores
 - Data Repositories
+- Utils
 
-#### 1.2.2 - Infrastructure (Infra)
-The Infrastructure layer houses platform-specific implementations and dependencies on frameworks and libraries. It bridges the gap between the Domain layer and the external environment, providing platform-specific adaptations. 
+#### 1.2.2 - Infrastructure
+The Infrastructure (Infra) layer houses platform-specific implementations and dependencies on frameworks and libraries. It bridges the gap between the Domain layer and the external environment, providing platform-specific adaptations. 
 
 Elements present in the Infra layer: 
 - Views
+- View Components
 - ViewModels
-- Navigators
 - UI Mappers
+- Navigators
+- Presentation Entities
+- External Resources Facade
+- Data Entities
 - Data Sources
+- Dependency Container
+- Factories
 
 #### 1.2.3 - External
 The External layer encompasses the underlying platform, frameworks, and libraries upon which the application relies. It represents the external environment with which the application interacts.
@@ -94,6 +74,7 @@ Elements present in the External layer:
 - Databases
 - Network Interfaces
 - UI Framework
+- Dependency Injection Library
 - Third-Party Libraries
 
 ## 2. Data Flow
@@ -130,6 +111,51 @@ To minimize coupling between system components, all dependencies are mediated th
 ## 4. Code Structure
 The Android and iOS applications were developed independently, utilizing the recommended languages and frameworks for each platform: [Kotlin with Jetpack Compose](https://developer.android.com/courses/android-basics-compose/course) for Android and [Swift with SwiftUI](https://developer.apple.com/tutorials/app-dev-training/) for iOS. Despite the technological differences, both implementations adhere to a common architecture and code structure. The Android codebase resides in the `android` folder, while the iOS codebase is located in the `ios` folder.
 
+The following diagram illustrates the application's folder structure:
+
+```
+-- src
+   |-- domain
+   |   |-- data
+   |   |   |-- data_sources
+   |   |   |-- repositories
+   |   |   \-- stores
+   |   |
+   |   |-- entities
+   |   |
+   |   |-- services
+   |   |   \-- external_resources
+   |   |
+   |   |-- use_cases
+   |   |
+   |   \-- utils
+   | 
+   \-- infra
+       |-- data
+       |   \-- [persistency library]
+       |       |-- data_sources
+       |       \-- entities
+       |
+       |-- di
+       |
+       |-- presentation
+       |   |-- entities
+       |   |-- mappers
+       |   |-- navigation
+       |   |-- view_models
+       |   |
+       |   \-- [ui library]
+       |       |--- components
+       |       |--- navigation
+       |       \--- views
+       |
+       \-- services
+           \-- external_resources
+
+-- tests
+```
+
+While platform-specific nuances may influence the final implementation details, the overall project structure and organization should remain consistent across platforms.
 
 ## 5. Tests
 Unit tests were implemented for Use Cases, ViewModels, and UI Mappers, leveraging the respective testing frameworks for Android (i.e., JUnit) and iOS (i.e., XCTest). The testing strategy focused on covering critical logic within these components, prioritizing areas with higher potential for errors. This approach aims to ensure the quality and reliability of core application functionalities.
