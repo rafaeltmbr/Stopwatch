@@ -79,7 +79,7 @@ Elements present in the External layer:
 ## 2. Data Flow
 The application's data flow usually begins with user interactions on the Graphical User Interface (GUI). These interactions trigger a series of processing steps, which result in data visualizations being presented back to the user through the GUI. This cyclical process is illustrated in the following diagram and described in detail by the subsequent sections:
 
-<img src="../assets/images/data-flow-diagram.png" style="max-height: 700px">
+![Data Flow](../assets/images/data-flow-diagram.gif)
 
 ### 2.1. User Interaction and View
 The user interface (UI) is presented through Views, which are responsible for displaying information and handling user interactions. When a user interacts with a View (e.g., clicking a button), it emits an Action event. This event encapsulates relevant information about the interaction, such as Action.Start when the Start button is clicked.
