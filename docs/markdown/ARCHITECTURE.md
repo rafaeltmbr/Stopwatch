@@ -1,17 +1,17 @@
 # Architecture
 
 Table of contents
-1. [Overview](#)
-    - [1.1. Platform-Agnostic](#)
-2. [Layers](#)
-    - [2.1. Domain](#)
-      - [2.1.1. Domain Entities](#)
-      - [2.1.2. Use Cases](#)
-      - [2.1.3. Services](#)
-      - [2.1.4. Data](#)
-        - [2.1.4.1. Data Repositories](#)
-        - [2.1.4.2. State Stores](#)
-      - [2.1.5. Utils](#)
+1. [Overview](#1-overview)
+    - [1.1. Platform-Agnostic](#11-platform-agnostic)
+2. [Layers](#2-layers)
+    - [2.1. Domain](#21-domain)
+      - [2.1.1. Domain Entities](#211-domain-entities)
+      - [2.1.2. Use Cases](#212-use-cases)
+      - [2.1.3. Services](#213-services)
+      - [2.1.4. Data](#214-data)
+        - [2.1.4.1. Data Repositories](#2141-data-repositories)
+        - [2.1.4.2. State Stores](#2142-state-stores)
+      - [2.1.5. Utils](#215-utils)
     - [2.2. Infrastructure](#)
       - [2.2.1. Presentation](#)
         - [2.2.1.1. Presentation Entities](#)
@@ -78,12 +78,139 @@ The architecture divides the application into three distinct layers: Domain, Inf
 The Domain layer contains the core business logic and entities of the application, independent of any specific platform or framework. It represents the pure, platform-agnostic essence of the stopwatch functionality. The Domain layer contains elements like Domain Entities, Use Cases, Services, State Stores, Data Repositories and Utils.
 
 #### 2.1.1. Domain Entities
+Domain Entities represent the core data structures and types within the application. These data structures are primarily data containers, encapsulating the essential information without inherent behavior. They are utilized throughout the Domain layer and may also be accessed by the Infrastructure layer for platform-specific adaptations.
+
+In the context of the stopwatch application, a Domain Entity representing the application state could be defined as follows:
+
+```
+enum StopwatchStatus:
+  initial
+  running
+  paused
+
+class StopwatchState:
+  status: StopwatchStatus
+  timeMilliseconds: Integer
+```
+
 #### 2.1.2. Use Cases
+Use Cases encapsulate the core business logic of the application. They orchestrate operations by delegating tasks to Services and accessing data through State Stores and Data Repositories. Each Use Case focuses on a specific business operation, promoting modularity and maintainability. Even a simple application may comprise numerous, specialized Use Cases to address various functionalities.
+
+The following code snippet demonstrates a potential implementation of a Use Case for starting a stopwatch:
+
+```
+class StartStopwatchUseCase:
+  stateStore: StateStore<StopwatchState>
+  timerService: TimerService
+
+  execute():
+    if stateStore.state.status == StopwatchStatus.initial:
+      timerService.start() 
+      newState = StopwatchState(status = running, timeMilliseconds = 0)
+      stateStore.update(newState)
+```
+
 #### 2.1.3. Services
+Domain Services encapsulate specialized business operations, often involving complex algorithms or interactions with external resources. Use Cases leverage Domain Services to delegate specific tasks or access specialized functionalities.
+
+The following code snippet illustrates a potential implementation of a timer Domain Service:
+
+```
+class TimeState:
+  isRunning: Boolean
+  timeMilliseconds: Integer
+
+class TimerService:
+  state: TimerState
+
+  start():
+    if !state.isRunning:
+      state = TimerState(isRunning = true, timeMilliseconds = 0)
+      loop()
+
+  loop():
+    while state.isRunning:
+      delay(milliseconds = 10)
+      newTime = state.timeMilliseconds + 10
+      state = TimerState(isRunning = state.isRunning, timeMilliseconds = newTime)
+
+  pause():
+  ...
+
+  resume():
+  ...
+
+  reset():
+  ...
+```
+
 #### 2.1.4. Data
+The Domain Data layer comprises components that Use Cases utilize for updating application state or accessing external data sources. These components provide an abstraction layer, allowing Use Cases to interact with data without being tightly coupled to specific implementation details.
+
 #### 2.1.4.1. Data Repositories
+Data Repositories abstract data access for Use Cases, enabling local data persistence and potential integration with external Data Sources. They provide a well-defined interface, allowing Use Cases to interact with data without depending on specific implementation details. This abstraction promotes flexibility and maintainability by decoupling the business logic from the underlying data storage mechanisms.
+
+The following code snippet demonstrates a potential implementation of a Data Repository for a weather application. This implementation retrieves weather information from two sources: a remote server and a local cache. If the remote server fails to provide predictions (e.g., due to network connectivity issues), the repository falls back to the local cache, providing the most recent predictions available for the specified date. This strategy ensures data availability even in offline scenarios, enhancing the application's resilience.
+
+```
+class WeatherRepository:
+  cache: LocalWeatherDataSource
+  server: RemoteWeatherDataSource
+
+  getTodaysPredictions():
+    today = Date()
+
+    try:
+      predicitons = server.getPredictions(date = today)
+      cache.setPredictions(date = today, predictions = predictions)
+    catch:
+      // do nothing
+
+    return cache.getPredictions(date = today)
+```
+
 #### 2.1.4.2. State Stores
+State Stores serve as the single source of truth for application state, providing a centralized and consistent representation of data. Use Cases interact with State Stores to update and retrieve the application's state. To notify interested components about state changes, State Stores employ a publish-subscribe mechanism, often implemented using an Observer pattern-like approach. This allows components to react to state updates in a decoupled and efficient manner.
+
+The following code snippet demonstrates a generic implementation of a State Store using the Observer pattern:
+
+```
+class Listener<T>:
+  handleUpdate(newState: T)
+
+class StateStore<T>:
+  state: T
+  listeners: Listener<T>[]
+
+  updateState(newState: T):
+    state = newState 
+    for listener in listeners:
+      listener.handleUpdate(state)
+
+  addListener(listener: Listener<T>):
+    if !listeners.contains(listener):
+      listeners.add(listener)
+  
+  removeListener(listener: Listener<T>):
+    if listernes.contains(listener)
+      listeners.remove(listener)
+```
+
 #### 2.1.5. Utils
+Utility classes and functions, often referred to as "Utils," provide reusable helper functionalities that can be accessed by various components across the application. These utilities typically encapsulate common operations or logic that are not specific to any particular domain or layer. The following code snippet illustrates the types of functionalities that might be included within utility classes:
+
+```
+class DateUtils
+  static diff(date1: Date, date2: Date) -> Date:
+    diff = date1.toMilliseconds() - date2.toMilliseconds()
+    return Date(milliseconds = Math.abs(diff))
+  
+// Usage
+championshipMatch = Date(...) // some arbitrary date
+today = Date()
+remainingDate = DateUtils.diff(today, championshipMatch)
+print("Remaining days: ", remainingDate.days)
+```
 
 ### 2.2. Infrastructure
 The Infrastructure (Infra) layer houses platform-specific implementations and dependencies on frameworks and libraries. It bridges the gap between the Domain layer and the external environment, providing platform-specific adaptations.  The Infrastructure layer contains presentation, data implementation, services external resources, dependency injection elements and the application's entry point. 
