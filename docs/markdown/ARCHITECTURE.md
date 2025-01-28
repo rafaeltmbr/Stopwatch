@@ -30,8 +30,7 @@ Table of contents
       - [7.6.4. Command](#764-command)
 
 ## 1. Overview
-While seemingly simple, a stopwatch application poses a significant challenge in managing a high volume of rapidly occurring events. The implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a Unidirectional Data Flow (UDF) pattern, ensuring predictable and efficient state management.
-Platform-Agnostic Architecture
+While seemingly simple, a stopwatch application poses a significant challenge in managing a high volume of rapidly occurring events. The implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a [Unidirectional Data Flow (UDF)](#74-unidirectional-data-flow-udf) pattern, ensuring predictable and efficient state management.
 
 ### 1.1 - Platform-Agnostic
 The architecture is designed to be platform-agnostic, promoting code reusability and maintainability across different platforms. This design principle was validated by implementing the architecture on both Android and iOS, demonstrating its adaptability and portability.
@@ -70,7 +69,7 @@ Elements present in the Infra layer:
 The External layer encompasses the underlying platform, frameworks, and libraries upon which the application relies. It represents the external environment with which the application interacts.
 
 Elements present in the External layer:
-- Android or iOS Operating System
+- Operating System
 - Databases
 - Network Interfaces
 - UI Framework
@@ -169,16 +168,16 @@ During architecture implementation, some exceptions were found:
 - On Android, *ViewModel* depends on platform specific code, because the
   `androidx.lifecycle.ViewModel` base class must be extended. Otherwise, coroutines won't be
   lifecycle sensitive, possibly leading to memory leaks or unwanted background process running.
-- Instead of using [Command](#764-command) pattern to update *MutableStateStore*, lambdas were used.
-  Thanks to closure, all command parameters can be implied from the lambda creation context.
+- Instead of using the [Command](#764-command) pattern to update the Domain State Store, lambdas were applied.
+  Thanks to closure, all command parameters can be implied from the lambda's creation context.
 
 ## 7. Essential Concepts
 
 ### 7.1. Unified Modeling Language (UML)
-Unified Modeling Language (UML) is a standardized visual modeling language used to specify, visualize, construct, and document the artifacts of software systems. It provides a set of diagrams and notations for representing various aspects of a system, including its structure, behavior, and interactions. UML diagrams help developers and stakeholders understand, communicate, and collaborate on software design and development. [Read more](https://www.geeksforgeeks.org/unified-modeling-language-uml-class-diagrams/).
+Unified Modeling Language (UML) is a standardized visual modeling language used to specify, visualize, construct, and document the artifacts of software systems. It provides a set of diagrams and notations for representing various aspects of a system, including its structure, behavior, and interactions. [Read more](https://www.geeksforgeeks.org/unified-modeling-language-uml-class-diagrams/).
 
 ### 7.2. Clean Architecture
-Clean Architecture Clean Architecture is a software design philosophy that emphasizes the separation of concerns and the independence of the core business logic from external frameworks and infrastructure. It promotes a layered architecture where dependencies flow inward, from outer layers like the UI and databases, towards the inner core domain logic. This approach enhances testability, maintainability, and portability of software systems. [Read more](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
+Clean Architecture Clean Architecture is a software design philosophy that emphasizes the separation of concerns and the independence of the core business logic from external frameworks and infrastructure. It promotes a layered architecture where dependencies flow inward, from outer layers like the UI and databases, towards the inner core domain logic. [Read more](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
 ### 7.4. Unidirectional Data Flow (UDF)
 Unidirectional Data Flow (UDF) is an architectural pattern where data flows in a single direction, creating a predictable and manageable data flow within an application. It typically involves components like views, view models, and data stores, with data flowing from the View to the ViewModel and updates propagating back through defined channels. UDF simplifies state management, reduces complexity, and enhances the testability of applications. [Read more](https://developer.android.com/develop/ui/compose/architecture#udf).
