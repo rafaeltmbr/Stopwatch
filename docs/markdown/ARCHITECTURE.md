@@ -2,7 +2,9 @@
 
 Table of contents
 1. [Overview](#1-overview)
-    - [1.1. Platform-Agnostic](#11-platform-agnostic)
+    - [1.1. Platform-Agnostic Core](#11-platform-agnostic-core)
+    - [1.2. Hexagonal Architecture Approach](#12-hexagonal-architecture-approach)
+    - [1.3. Data Flow Overview](#13-data-flow-overview)
 2. [Layers](#2-layers)
     - [2.1. Domain](#21-domain)
       - [2.1.1. Domain Entities](#211-domain-entities)
@@ -58,10 +60,25 @@ Table of contents
       - [8.6.4. Command](#864-command)
 
 ## 1. Overview
-While seemingly simple, a stopwatch application poses a significant challenge in managing a high volume of rapidly occurring events. The implementation updates the stopwatch state every 10 milliseconds during operation, while concurrently handling user interactions. To address this demanding event processing requirement, the application leverages a [Unidirectional Data Flow (UDF)](#) pattern, ensuring predictable and efficient state management.
+This document details the architecture of the Stopwatch, a mobile application for recording the running time and lap duration. The architecture is designed to support the app's core features while ensuring long-term maintainability and scalability.
 
-### 1.1. Platform-Agnostic
-The architecture is designed to be platform-agnostic, promoting code reusability and maintainability across different platforms. This design principle was validated by implementing the architecture on both Android and iOS, demonstrating its adaptability and portability.
+## 1.1. Platform-Agnostic Core
+
+The Stopwatch application is built around a platform-agnostic core, the Domain Layer. This layer contains the essential business logic for starting, pausing, resuming e resetting the stopwatch. This core is designed to be independent of any specific platform (Android, iOS) or technology, allowing us to reuse the same logic across all supported platforms.
+
+## 1.2. Hexagonal Architecture Approach
+
+To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Hexagonal Architecture (Ports and Adapters) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
+
+The Domain Layer defines "Ports," which are interfaces that specify how the core interacts with the outside world. The Infrastructure Layer contains "Adapters," which implement these ports and handle the specific details of interacting with external systems. This separation allows us to change external systems (e.g., switch databases) without affecting the core business logic.
+
+The application is designed to be testable, maintainable, and scalable. The use of Hexagonal Architecture allows us to test the core business logic in isolation, without needing to set up complex external dependencies. The platform-agnostic core allows us to reuse the same logic across all supported platforms, reducing development time and ensuring consistency.
+
+## 1.3. Data Flow Overview
+
+The application follows a unidirectional data flow pattern. User interactions in the User Interface trigger actions that are handled by ViewModels. ViewModels then interact with Use Cases to execute business logic. Use Cases use Data Repositories to access data and use Services to do specialized work or interface with external resources. UI Mappers transform data from the Domain Layer into a format suitable for the Views, which then updates accordingly.
+
+![Data Flow](../assets/images/data-flow-diagram.gif)
 
 ## 2. Layers
 The architecture divides the application into three distinct layers: Domain, Infrastructure and External.
