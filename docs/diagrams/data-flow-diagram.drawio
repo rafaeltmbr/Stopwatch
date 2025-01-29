@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="jtDUzQ1pqoce6ORhRkvu" name="Page-1">
-        <mxGraphModel dx="1173" dy="824" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+        <mxGraphModel dx="1056" dy="742" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -159,32 +159,32 @@
                 <mxCell id="93" style="edgeStyle=none;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.268;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=none;startFill=0;endArrow=classic;endFill=1;flowAnimation=0;" parent="1" source="53" target="40" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="53" value="External Resource Facade" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="53" value="External Resource Adapter" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="920" y="340" width="120" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="91" style="edgeStyle=none;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.375;entryDx=0;entryDy=0;entryPerimeter=0;startArrow=none;startFill=0;endArrow=classic;endFill=1;flowAnimation=0;" parent="1" source="54" target="40" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="54" value="Data Source" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="54" value="Data Source&lt;br&gt;Adapter" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="920" y="400" width="120" height="40" as="geometry"/>
                 </mxCell>
                 <mxCell id="66" value="" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="1120" y="835" width="20" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="67" value="Domain" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;dashPattern=1 1;" parent="1" vertex="1">
+                <mxCell id="67" value="Core" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;dashPattern=1 1;" parent="1" vertex="1">
                     <mxGeometry x="1150" y="830" width="50" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="68" value="" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="1120" y="865" width="20" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="69" value="Infra" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;dashPattern=1 1;" parent="1" vertex="1">
-                    <mxGeometry x="1150" y="860" width="30" height="30" as="geometry"/>
+                <mxCell id="69" value="Platform" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;dashPattern=1 1;" parent="1" vertex="1">
+                    <mxGeometry x="1150" y="860" width="50" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="70" value="" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
                     <mxGeometry x="1120" y="895" width="20" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="71" value="External" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;dashed=1;dashPattern=1 1;" parent="1" vertex="1">
-                    <mxGeometry x="1150" y="890" width="50" height="30" as="geometry"/>
+                    <mxGeometry x="1150" y="890" width="70" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="72" value="Root Layer" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="1120" y="800" width="80" height="20" as="geometry"/>

@@ -2,19 +2,19 @@
 
 Table of contents
 1. [Overview](#1-overview)
-    - [1.1. Platform-Agnostic Core](#11-platform-agnostic-core)
-    - [1.2. Hexagonal Architecture Approach](#12-hexagonal-architecture-approach)
-    - [1.3. Data Flow Overview](#13-data-flow-overview)
+    - [1.1. Architectural Goals](#11-architectural-goals)
+    - [1.2. Unidirectional Data Flow](#)
+    - [1.3. Ports and Adapters Architecture Approach](#12-ports-and-adapters-architecture-approach)
 2. [Layers](#2-layers)
-    - [2.1. Domain](#21-domain)
-      - [2.1.1. Domain Entities](#211-domain-entities)
+    - [2.1. Core](#21-core)
+      - [2.1.1. Core Entities](#211-core-entities)
       - [2.1.2. Use Cases](#212-use-cases)
       - [2.1.3. Services](#213-services)
       - [2.1.4. Data](#214-data)
         - [2.1.4.1. Data Repositories](#2141-data-repositories)
         - [2.1.4.2. State Stores](#2142-state-stores)
       - [2.1.5. Utils](#215-utils)
-    - [2.2. Infrastructure](#22-infrastructure)
+    - [2.2. Platform](#22-platform)
       - [2.2.1. Presentation](#221-presentation)
         - [2.2.1.1. Presentation Entities](#2211-presentation-entities)
         - [2.2.1.2. Views](#2212-views)
@@ -26,7 +26,7 @@ Table of contents
         - [2.2.2.1. Data Entities](#2221-data-entities)
         - [2.2.2.2. Data Sources](#2222-data-sources)
       - [2.2.3. Services](#223-services)
-        - [2.2.3.1. External Resource Facades](#2231-external-resource-facades)
+        - [2.2.3.1. External Resource Adapters](#2231-external-resource-adapters)
       - [2.2.4. Dependency Injection](#224-dependency-injection)
         - [2.2.4.1. Dependency Container](#2241-dependency-container)
         - [2.2.4.2. Factories](#2242-factories)
@@ -37,7 +37,7 @@ Table of contents
     - [3.2. ViewModel and Action Handling](#32-viewmodel-and-action-handling)
     - [3.3. Navigation with Navigator](#33-navigation-with-the-navigator)
     - [3.4. Business Logic and Use Cases](#34-business-logic-and-use-cases)
-    - [3.5. Domain State Store: The Single Source of Truth](#35-domain-state-store-the-single-source-of-truth)
+    - [3.5. Core State Store: The Single Source of Truth](#35-core-state-store-the-single-source-of-truth)
     - [3.6. View State Updates and UI Mappers](#2215-ui-mappers)
 4. [Dependency Diagram](#4-dependency-diagram)
 5. [Folder Structure](#5-folder-structure)
@@ -55,45 +55,56 @@ Table of contents
     - [8.5. Dependency Inversion Principle (DIP)](#85-dependency-inversion-principle-dip)
     - [8.6. Design Patterns](#86-design-patterns)
       - [8.6.1. Abstract Factory](#861-abstract-factory)
-      - [8.6.2. Facade](#862-facade)
-      - [8.6.3. Observer](#863-observerj)
-      - [8.6.4. Command](#864-command)
+      - [8.6.2. Observer](#863-observerj)
+      - [8.6.3. Command](#864-command)
 
 ## 1. Overview
-This document details the architecture of the Stopwatch, a mobile application for recording the running time and lap duration. The architecture is designed to support the app's core features while ensuring long-term maintainability and scalability.
+This document presents the architectural design of the Stopwatch, a mobile application for precisely tracking elapsed time and lap intervals. The architecture is based on the Ports and Adapters architectural pattern and is designed to support the app's core functionality: starting, pausing, resuming, resetting, and lap management, while ensuring long-term maintainability and the ability to adapt to evolving user needs.
 
-## 1.1. Platform-Agnostic Core
+## 1.1. Architectural Goals 
+The primary architectural goals are:
 
-The Stopwatch application is built around a platform-agnostic core, the Domain Layer. This layer contains the essential business logic for starting, pausing, resuming e resetting the stopwatch. This core is designed to be independent of any specific platform (Android, iOS) or technology, allowing us to reuse the same logic across all supported platforms.
+*   **Efficient Data Processing:** Enable the application to efficiently process high-volume data streams.
+*   **Separation of Concerns:** Isolate core business logic from implementation details.
+*   **Maintainability:** Provide a system that is easy to maintain and modify over time.
+*   **Scalability:** Provide a system that can adapt to evolving user needs.
+*   **Testability:** Provide a system that is easy to test.
 
-## 1.2. Hexagonal Architecture Approach
+These goals are achieved through a Unidirectional Data Flow (UDF) approach based on the Ports and Adapters pattern.
 
-To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Hexagonal Architecture (Ports and Adapters) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
-
-The Domain Layer defines "Ports," which are interfaces that specify how the core interacts with the outside world. The Infrastructure Layer contains "Adapters," which implement these ports and handle the specific details of interacting with external systems. This separation allows us to change external systems (e.g., switch databases) without affecting the core business logic.
-
-The application is designed to be testable, maintainable, and scalable. The use of Hexagonal Architecture allows us to test the core business logic in isolation, without needing to set up complex external dependencies. The platform-agnostic core allows us to reuse the same logic across all supported platforms, reducing development time and ensuring consistency.
-
-## 1.3. Data Flow Overview
-
-The application follows a unidirectional data flow pattern. User interactions in the User Interface trigger actions that are handled by ViewModels. ViewModels then interact with Use Cases to execute business logic. Use Cases use Data Repositories to access data and use Services to do specialized work or interface with external resources. UI Mappers transform data from the Domain Layer into a format suitable for the Views, which then updates accordingly.
-
+## 1.2. Unidirectional Data Flow Approach 
 ![Data Flow](../assets/images/data-flow-diagram.gif)
 
+The application employs a unidirectional data flow, ensuring that data flows in a single direction. The data flow is as follows:
+
+1.  User interacts with the Graphical User Interface (GUI), represented by Views.
+2.  Views trigger actions that are handled by ViewModels.
+3.  ViewModels interact with Use Cases to execute business logic.
+4.  Use Cases access data through Data Repositories and utilize Services for specialized operations or to interface with external resources.
+5.  Use Cases update the Core State Store to reflect changes in the application's state.
+6.  ViewModels listen for updates from the Core State Store, use UI Mappers to transform data, and update the View State accordingly.
+7.  Views update accordingly based on the View State.
+
+## 1.3. Ports and Adapters Architecture Approach
+To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Ports and Adapters Architecture (Ports and Adapters) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
+
+The Core Layer defines "Ports," which are interfaces that specify how the core interacts with the outside world. The Platform Layer contains "Adapters," which implement these ports and handle the specific details of interacting with external systems. This separation allows us to change external systems (e.g., switch databases) without affecting the core business logic.
+
+The application is designed to be testable, maintainable, and scalable. The use of Ports and Adapters Architecture allows us to test the core business logic in isolation, without needing to set up complex external dependencies. The platform-agnostic core allows us to reuse the same logic across all supported platforms, reducing development time and ensuring consistency.
+
+
 ## 2. Layers
-The architecture divides the application into three distinct layers: Domain, Infrastructure and External.
+The architecture divides the application into three distinct layers: Core, Platform and External.
 
 ![Architecture Layers](../assets/images/architecture-layers.png)
 
-### 2.1. Domain
-The Domain layer contains the core business logic and entities of the application, independent of any specific platform or framework. It represents the pure, platform-agnostic essence of the stopwatch functionality. The Domain layer contains elements like Domain Entities, Use Cases, Services, State Stores, Data Repositories and Utils.
+### 2.1. Core
+The Core layer contains the core business logic and entities of the application, independent of any specific platform or framework. It represents the pure, platform-agnostic essence of the stopwatch functionality. The Core layer contains elements like Core Entities, Use Cases, Services, State Stores, Data Repositories and Utils.
 
-![Domain Layer](../assets/images/domain-layer.png)
+#### 2.1.1. Core Entities
+Core Entities represent the core data structures and types within the application. These data structures are primarily data containers, encapsulating the essential information without inherent behavior. They are utilized throughout the Core layer and may also be accessed by the Platform layer for platform-specific adaptations.
 
-#### 2.1.1. Domain Entities
-Domain Entities represent the core data structures and types within the application. These data structures are primarily data containers, encapsulating the essential information without inherent behavior. They are utilized throughout the Domain layer and may also be accessed by the Infrastructure layer for platform-specific adaptations.
-
-In the context of the stopwatch application, a Domain Entity representing the application state could be defined as follows:
+In the context of the stopwatch application, a Core Entity representing the application state could be defined as follows:
 
 ```
 enum StopwatchStatus:
@@ -124,9 +135,9 @@ class StartStopwatchUseCase:
 ```
 
 #### 2.1.3. Services
-Domain Services encapsulate specialized business operations, often involving complex algorithms or interactions with external resources. Use Cases leverage Domain Services to delegate specific tasks or access specialized functionalities.
+Core Services encapsulate specialized business operations, often involving complex algorithms or interactions with external resources. Use Cases leverage Core Services to delegate specific tasks or access specialized functionalities.
 
-The following code snippet illustrates a potential implementation of a timer Domain Service:
+The following code snippet illustrates a potential implementation of a timer Core Service:
 
 ```
 class TimeState:
@@ -158,7 +169,7 @@ class TimerService:
 ```
 
 #### 2.1.4. Data
-The Domain Data layer comprises components that Use Cases utilize for updating application state or accessing external data sources. These components provide an abstraction layer, allowing Use Cases to interact with data without being tightly coupled to specific implementation details.
+The Core Data layer comprises components that Use Cases utilize for updating application state or accessing external data sources. These components provide an abstraction layer, allowing Use Cases to interact with data without being tightly coupled to specific implementation details.
 
 #### 2.1.4.1. Data Repositories
 Data Repositories abstract data access for Use Cases, enabling local data persistence and potential integration with external Data Sources. They provide a well-defined interface, allowing Use Cases to interact with data without depending on specific implementation details. This abstraction promotes flexibility and maintainability by decoupling the business logic from the underlying data storage mechanisms.
@@ -227,10 +238,8 @@ remainingDate = DateUtils.diff(today, championshipMatch)
 print("Remaining days: ", remainingDate.days)
 ```
 
-### 2.2. Infrastructure
-The Infrastructure (Infra) layer houses platform-specific implementations and dependencies on frameworks and libraries. It bridges the gap between the Domain layer and the external environment, providing platform-specific adaptations.  The Infrastructure layer contains Presentation elements, Data Sources, External Resource Facades, Dependency Injection classes and the Application's Entry Point. 
-
-![Infrastructure Layer](../assets/images/infrastructure-layer.png)
+### 2.2. Platform
+The Platform layer houses platform-specific implementations and dependencies on frameworks and libraries. It bridges the gap between the Core layer and the external environment, providing platform-specific adaptations.  The Platform layer contains Presentation elements, Data Sources, External Resource Adapters, Dependency Injection classes and the Application's Entry Point. 
 
 #### 2.2.1. Presentation
 The Presentation layer exhibits platform-specific variations in its implementation. In some applications, it encompasses graphical user interface (GUI) elements, while in others, it may involve simple text-based input/output through a command-line interface (CLI). It could even be realized as a network protocol like HTTP. In the context of this stopwatch mobile application, the Presentation layer utilizes platform-specific GUI libraries for rendering data, handling user interactions, and managing navigation within the application. It encapsulates all the logic necessary for presentation, ensuring a clear separation of concerns from the underlying business logic and data access layers.
@@ -298,7 +307,7 @@ class PrimaryButton:
 ```
 
 #### 2.2.1.4. ViewModels
-A ViewModel connects the View to the application's business logic, acting as an intermediary that receives Action events from the View and processes them accordingly. It manages the View State for display and handles View Actions by delegating to Use Cases or Navigators. The ViewModel subscribes to the Domain State Store (Observer pattern) and updates the View State accordingly. It may delegate formatting to UI Mappers. Views observe ViewModel state changes.
+A ViewModel connects the View to the application's business logic, acting as an intermediary that receives Action events from the View and processes them accordingly. It manages the View State for display and handles View Actions by delegating to Use Cases or Navigators. The ViewModel subscribes to the Core State Store (Observer pattern) and updates the View State accordingly. It may delegate formatting to UI Mappers. Views observe ViewModel state changes.
 
 The ViewModel is responsible for:
 - Executing relevant Use Cases based on received Actions.
@@ -322,7 +331,7 @@ enum StopwatchAction:
 class StopwatchViewModel:
   state: StopwatchViewState
   listeners: Listener[]
-  stateStore: DomainStateStore
+  stateStore: CoreStateStore
 
   startStopwatch: StartStopwatchUseCase
   pauseStopwatch: PauseStopwatchUseCase
@@ -342,7 +351,7 @@ class StopwatchViewModel:
       case reset: resetStopwatch.execute()
       case seetDetails: navigator.navigate(screen = "details") 
 
-  handleUpdate(newState: DomainState):
+  handleUpdate(newState: CoreState):
     state = StopwatchViewState(
       status = newState.status,
       time = timeUiMapper.map(newState.timeMilliseconds)
@@ -395,12 +404,12 @@ class Navigator:
 ```
 
 #### 2.2.2. Data
-The Infrastructure layer implements Data Sources defined in the Domain layer, connecting to external data resources and hiding platform-specific details. This promotes loose coupling and isolates the Domain layer from data access implementation specifics.
+The Platform layer implements Data Sources defined in the Core layer, connecting to external data resources and hiding platform-specific details. This promotes loose coupling and isolates the Core layer from data access implementation specifics.
 
 #### 2.2.2.1. Data Entities
-Infrastructure Data Entities represent data structures used by third-party libraries for Data Source implementation, reflecting the library's data format and serialization.
+Platform Data Entities represent data structures used by third-party libraries for Data Source implementation, reflecting the library's data format and serialization.
 
-The following code demonstrates an Infrastructure Data Entity. Note the introduction of third-party library specific code:
+The following code demonstrates an Platform Data Entity. Note the introduction of third-party library specific code:
 
 ```
 import Table, Column from database_library
@@ -449,30 +458,30 @@ class StopwatchStateDatabaseDataSource implements StopwatchStateDataSource:
 ```
 
 #### 2.2.3. Services
-The Infrastructure Services layer provides concrete implementations for External Resource Facades defined in the Domain Services layer.
+The Platform Services layer provides concrete implementations for External Resource Adapters defined in the Core Services layer.
 
-#### 2.2.3.1. External Resource Facades
-External Resource Facades bridge the Domain Services layer with external resources, such as third-party libraries or operating system functionalities. This decouples the Services from external dependencies through the Facade pattern. 
+#### 2.2.3.1. External Resource Adapters
+External Resource Adapters bridge the Core Services layer with external resources, such as third-party libraries or operating system functionalities. This decouples the Services from external dependencies through the Adapter pattern. 
 
-The following code demonstrates an External Resource Facade of a email service:
+The following code demonstrates an External Resource Adapter of a email service:
 
 ```
-// domain layer (domain/services/external_resources/EmailFacade)
+// core layer (core/services/external_resources/EmailAdapter)
 class EmailMessage:
   from: String
   to: String
   subject: String
   body: String
 
-interface EmailFacade:
+interface EmailAdapter:
   send(message: EmailMessage)
 
 
-// infrastructure layer (infra/services/external_resources/EmailFacadeImpl) 
+// platform layer (infra/services/external_resources/EmailAdapterImpl) 
 import MailService from third_party_email_library
 import credentianls from infra/config/mail
 
-class EmailFacadeImpl implements EmailFacade:
+class EmailAdapterImpl implements EmailAdapter:
   mail = MailService(credentials = credentials)
 
   send(message: EmailMessage):
@@ -561,10 +570,10 @@ class ViewModelFactory:
 ```
 
 #### 2.2.5. Application Entry Point
-Application Entry Points differ significantly across platforms, ranging from a simple `main` function to complex class hierarchies. In Android, the entry point is the class specified in the `AndroidManifest.xml` file, while in iOS, it's a struct with the `@main` annotation. The Entry Point may reside in the project's root or within the infrastructure layer directory. The Application Entry Point is responsible for creating the dependency container and performing all necessary initializations.
+Application Entry Points differ significantly across platforms, ranging from a simple `main` function to complex class hierarchies. In Android, the entry point is the class specified in the `AndroidManifest.xml` file, while in iOS, it's a struct with the `@main` annotation. The Entry Point may reside in the project's root or within the platform layer directory. The Application Entry Point is responsible for creating the dependency container and performing all necessary initializations.
 
 ### 2.3. External
-The External layer represents the environment outside of the application's Domain and Infrastructure layers, encompassing the underlying platform, frameworks, and external libraries that the application relies upon for various functionalities. It acts as the interface between the application and the external world. This layer typically comprises a diverse set of components, including:
+The External layer represents the environment outside of the application's Core and Platform layers, encompassing the underlying platform, frameworks, and external libraries that the application relies upon for various functionalities. It acts as the interface between the application and the external world. This layer typically comprises a diverse set of components, including:
 
 - **Operating System (OS)**: Provides fundamental services and resources, such as process management, memory allocation, and file system access.
 
@@ -604,13 +613,13 @@ The ViewModel acts as an intermediary between the View and the application logic
 The Navigator handles all screen navigation within the application. It interacts directly with the UI framework and libraries to manage View transitions and rendering. The ViewModel directs the Navigator to navigate to specific Views based on user actions or application logic.
 
 ### 3.4. Business Logic and Use Cases
-Use Cases encapsulate the core business logic of the application. They may delegate tasks to Services for performing specilized operations or accessing external resources though the [Facade](#) pattern. Use Cases utilize Data Repositories to persist data beyond the application's lifecycle. During execution, Use Cases may update the application's state by emitting a new Domain State to the Domain State Store using the [Command](#) pattern.
+Use Cases encapsulate the core business logic of the application. They may delegate tasks to Services for performing specilized operations or accessing external resources though the [Adapter](#) pattern. Use Cases utilize Data Repositories to persist data beyond the application's lifecycle. During execution, Use Cases may update the application's state by emitting a new Core State to the Core State Store using the [Command](#) pattern.
 
-### 3.5. Domain State Store: The Single Source of Truth
-The Domain State Store serves as the central repository for the application's state. Components interested in state changes can subscribe to updates using the [Observer](#) pattern. This ensures that all parts of the application have a consistent view of the current state.
+### 3.5. Core State Store: The Single Source of Truth
+The Core State Store serves as the central repository for the application's state. Components interested in state changes can subscribe to updates using the [Observer](#) pattern. This ensures that all parts of the application have a consistent view of the current state.
 
 ### 3.6. View State Updates and UI Mappers
-The ViewModel subscribes to Domain State changes and updates the View State accordingly. To transform Domain State into a format suitable for display, the ViewModel utilizes UI Mappers. These mappers handle data transformations and ensure the View State is optimized for UI rendering. The View, also subscribing to View State changes, receives updates via the [Observer](#) pattern and refreshes its display.
+The ViewModel subscribes to Core State changes and updates the View State accordingly. To transform Core State into a format suitable for display, the ViewModel utilizes UI Mappers. These mappers handle data transformations and ensure the View State is optimized for UI rendering. The View, also subscribing to View State changes, receives updates via the [Observer](#) pattern and refreshes its display.
 
 ## 4. Dependency Diagram
 To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core domain logic and entities, aligning with principles of [Clean Architecture](#). When the flow of control necessitates a reversal of this dependency direction, the [Dependency Inversion Principle (DIP)](#) is applied. Additionally, to decouple object creation from utilization, the [Abstract Factory](#) pattern is employed. The relationships between application components are visualized in the following UML diagram:
@@ -624,7 +633,7 @@ The following diagram illustrates the application's folder structure:
 
 ```
 -- src
-   |-- domain
+   |-- core
    |   |-- data
    |   |   |-- data_sources (interfaces)
    |   |   |-- repositories
@@ -672,7 +681,7 @@ During architecture implementation, some exceptions were found:
 - On Android, *ViewModel* depends on platform specific code, because the
   `androidx.lifecycle.ViewModel` base class must be extended. Otherwise, coroutines won't be
   lifecycle sensitive, possibly leading to memory leaks or unwanted background process running.
-- Instead of using the [Command](#764-command) pattern to update the Domain State Store, lambdas were applied.
+- Instead of using the [Command](#764-command) pattern to update the Core State Store, lambdas were applied.
   Thanks to closure, all command parameters can be implied from the lambda's creation context.
   
 ## 7. Tests
@@ -687,7 +696,7 @@ For more information about unit testing on a specific platform, check the follow
 Unified Modeling Language (UML) is a standardized visual modeling language used to specify, visualize, construct, and document the artifacts of software systems. It provides a set of diagrams and notations for representing various aspects of a system, including its structure, behavior, and interactions. [Read more](https://www.geeksforgeeks.org/unified-modeling-language-uml-class-diagrams/).
 
 ### 8.2. Clean Architecture
-Clean Architecture Clean Architecture is a software design philosophy that emphasizes the separation of concerns and the independence of the core business logic from external frameworks and infrastructure. It promotes a layered architecture where dependencies flow inward, from outer layers like the UI and databases, towards the inner core domain logic. [Read more](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
+Clean Architecture Clean Architecture is a software design philosophy that emphasizes the separation of concerns and the independence of the core business logic from external frameworks and platform. It promotes a layered architecture where dependencies flow inward, from outer layers like the UI and databases, towards the inner core domain logic. [Read more](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
 ### 8.4. Unidirectional Data Flow (UDF)
 Unidirectional Data Flow (UDF) is an architectural pattern where data flows in a single direction, creating a predictable and manageable data flow within an application. It typically involves components like views, view models, and data stores, with data flowing from the View to the ViewModel and updates propagating back through defined channels. UDF simplifies state management, reduces complexity, and enhances the testability of applications. [Read more](https://developer.android.com/develop/ui/compose/architecture#udf).
@@ -701,11 +710,8 @@ Design Patterns Design patterns are reusable solutions to recurring design probl
 #### 8.6.1. Abstract Factory
 The Abstract Factory pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes. It allows for the creation of objects without knowing their specific types, promoting flexibility and loose coupling. This pattern is useful when a system needs to support multiple variations of objects or when the concrete types of objects should be determined at runtime. [Read more](https://refactoring.guru/design-patterns/abstract-factory).
 
-#### 8.6.2. Facade
-The Facade pattern provides a simplified interface to a complex subsystem, hiding its internal complexities and making it easier to use. It acts as a single point of entry for interacting with the subsystem, reducing dependencies and improving code clarity. This pattern is useful when working with large or complex libraries or when you want to provide a simplified API for a specific use case. [Read more](https://refactoring.guru/design-patterns/facade).
-
-#### 8.6.3. Observer
+#### 8.6.2. Observer
 The Observer pattern defines a one-to-many dependency between objects, where one object (the subject) notifies all its dependents (observers) of any state changes. This allows for loose coupling between objects, as the subject doesn't need to know the specific types of its observers. This pattern is commonly used for event handling, notifications, and data synchronization.[Read more](https://refactoring.guru/design-patterns/observer).
 
-#### 8.6.4. Command
+#### 8.6.3. Command
 The Command pattern encapsulates a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations. It decouples the object that invokes the operation from the one that knows how to perform it. This pattern is useful for implementing undo/redo functionality, transaction management, and macro recording. [Read more](https://refactoring.guru/design-patterns/command).
