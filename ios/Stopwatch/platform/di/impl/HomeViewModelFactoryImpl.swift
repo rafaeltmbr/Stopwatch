@@ -4,6 +4,7 @@ class HomeViewModelFactoryImpl<SS, SN>: HomeViewModelFactory
 where SS: MutableStateStore, SS.State == StopwatchState, SN: StackNavigator
 {
     private let stopwatchStore: SS
+    private let loggingUseCase: LoggingUseCase
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let pauseStopwatchUseCase: PauseStopwatchUseCase
     private let resetStopwatchUseCase: ResetStopwatchUseCase
@@ -14,6 +15,7 @@ where SS: MutableStateStore, SS.State == StopwatchState, SN: StackNavigator
     
     init(
         _ stopwatchStore: SS,
+        _ loggingUseCase: LoggingUseCase,
         _ startStopwatchUseCase: StartStopwatchUseCase,
         _ pauseStopwatchUseCase: PauseStopwatchUseCase,
         _ resetStopwatchUseCase: ResetStopwatchUseCase,
@@ -23,6 +25,7 @@ where SS: MutableStateStore, SS.State == StopwatchState, SN: StackNavigator
         _ stackNavigator: SN
     ) {
         self.stopwatchStore = stopwatchStore
+        self.loggingUseCase = loggingUseCase
         self.startStopwatchUseCase = startStopwatchUseCase
         self.pauseStopwatchUseCase = pauseStopwatchUseCase
         self.resetStopwatchUseCase = resetStopwatchUseCase
@@ -35,6 +38,7 @@ where SS: MutableStateStore, SS.State == StopwatchState, SN: StackNavigator
     func make() -> some HomeViewModel {
         HomeViewModelImpl(
             stopwatchStore,
+            loggingUseCase,
             startStopwatchUseCase,
             pauseStopwatchUseCase,
             resetStopwatchUseCase,

@@ -31,6 +31,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         )
         let calculateLapsStatuses = CalculateLapsStatusesImpl()
         let useCases = ApplicationUseCases(
+            LoggingUseCaseImpl(services.logging),
             StartStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             ResetStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
@@ -45,6 +46,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         let stackNavigator = StackNavigatorImpl(stack: [.home], eventEmitter: EventEmitterImpl())
         let homeViewModelFactory = HomeViewModelFactoryImpl(
             data.stopwatchStore,
+            useCases.logging,
             useCases.startStopwatch,
             useCases.pauseStopwatch,
             useCases.resetStopwatch,
@@ -55,6 +57,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         )
         let lapsViewModelFactory = LapsViewModelFactoryImpl(
             data.stopwatchStore,
+            useCases.logging,
             useCases.startStopwatch,
             useCases.newLap,
             stringTimeMapper,

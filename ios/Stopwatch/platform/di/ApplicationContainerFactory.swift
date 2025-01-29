@@ -21,6 +21,7 @@ where TS: TimerService {
 }
 
 class ApplicationUseCases {
+    let logging: LoggingUseCase
     let startStopwatch: StartStopwatchUseCase
     let pauseStopwatch: PauseStopwatchUseCase
     let resetStopwatch: ResetStopwatchUseCase
@@ -30,6 +31,7 @@ class ApplicationUseCases {
     let restoreStopwatchState: RestoreStopwatchStateUseCase
     
     init(
+        _ logging: LoggingUseCase,
         _ startStopwatch: StartStopwatchUseCase,
         _ pauseStopwatch: PauseStopwatchUseCase,
         _ resetStopwatch: ResetStopwatchUseCase,
@@ -38,6 +40,7 @@ class ApplicationUseCases {
         _ saveStopwatchState: SaveStopwatchStateUseCase,
         _ restoreStopwatchState: RestoreStopwatchStateUseCase
     ) {
+        self.logging = logging
         self.startStopwatch = startStopwatch
         self.pauseStopwatch = pauseStopwatch
         self.resetStopwatch = resetStopwatch

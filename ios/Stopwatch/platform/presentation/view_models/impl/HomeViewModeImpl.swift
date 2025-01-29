@@ -1,10 +1,13 @@
 import SwiftUI
 
+private let TAG = "HomeViewModelImpl"
+
 class HomeViewModelImpl<SS, SN>: HomeViewModel
 where SS: StateStore, SS.State == StopwatchState, SN: StackNavigator {
     @Published private(set) var state = HomeState()
     
     private let stopwatchStore: SS
+    private let loggingUseCase: LoggingUseCase
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let pauseStopwatchUseCase: PauseStopwatchUseCase
     private let resetStopwatchUseCase: ResetStopwatchUseCase
@@ -16,6 +19,7 @@ where SS: StateStore, SS.State == StopwatchState, SN: StackNavigator {
     
     init(
         _ stopwatchStore: SS,
+        _ loggingUseCase: LoggingUseCase,
         _ startStopwatchUseCase: StartStopwatchUseCase,
         _ pauseStopwatchUseCase: PauseStopwatchUseCase,
         _ resetStopwatchUseCase: ResetStopwatchUseCase,
@@ -25,6 +29,7 @@ where SS: StateStore, SS.State == StopwatchState, SN: StackNavigator {
         _ stackNavigator: SN
     ) {
         self.stopwatchStore = stopwatchStore
+        self.loggingUseCase = loggingUseCase
         self.startStopwatchUseCase = startStopwatchUseCase
         self.pauseStopwatchUseCase = pauseStopwatchUseCase
         self.resetStopwatchUseCase = resetStopwatchUseCase
@@ -84,6 +89,8 @@ where SS: StateStore, SS.State == StopwatchState, SN: StackNavigator {
             case .lap: await newLapUseCase.execute()
             case .seeAll: stackNavigator.push(.laps)
             }
+            
+            loggingUseCase.debug(tag: TAG, message: "Handled Action \(action)")
         }
     }
 }

@@ -1,12 +1,15 @@
 import Foundation
 import SwiftUI
 
+private let TAG = "LapsViewModelImpl"
+
 class LapsViewModelImpl<MSS, SN>: ObservableObject, LapsViewModel
 where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
     @Published private(set) var state: LapsState = LapsState()
     
     private var subscriptionId: UUID? = nil
     private let stopwatchStore: MSS
+    private let loggingUseCase: LoggingUseCase
     private let startStopwatchUseCase: StartStopwatchUseCase
     private let newLapUseCase: NewLapUseCase
     private let stringTimeMapper: StringTimeMapper
@@ -14,6 +17,7 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
     
     init(
         _ stopwatchStore: MSS,
+        _ loggingUseCase: LoggingUseCase,
         _ startStopwatchUseCase: StartStopwatchUseCase,
         _ newLapUseCase: NewLapUseCase,
         _ stringTimeMapper: StringTimeMapper,
@@ -21,6 +25,7 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
     ) {
         self.state = Self.handleStopwatchStateUpdate(stopwatchStore.state, stringTimeMapper)
         self.stopwatchStore = stopwatchStore
+        self.loggingUseCase = loggingUseCase
         self.startStopwatchUseCase = startStopwatchUseCase
         self.newLapUseCase = newLapUseCase
         self.stringTimeMapper = stringTimeMapper
@@ -53,6 +58,7 @@ where MSS: MutableStateStore, MSS.State == StopwatchState, SN: StackNavigator {
             case .resume: await startStopwatchUseCase.execute()
             case .lap: await newLapUseCase.execute()
             }
+            loggingUseCase.debug(tag: TAG, message: "Handled Action \(action)")
         }
     }
     
