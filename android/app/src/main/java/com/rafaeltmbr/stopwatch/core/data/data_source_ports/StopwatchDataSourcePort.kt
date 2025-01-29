@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.core.data.data_sources
+package com.rafaeltmbr.stopwatch.core.data.data_source_ports
 
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
 

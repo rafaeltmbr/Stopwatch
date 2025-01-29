@@ -1,7 +1,7 @@
 package com.rafaeltmbr.stopwatch.core.services.impl
 
 import com.rafaeltmbr.stopwatch.core.services.LoggingService
-import com.rafaeltmbr.stopwatch.core.services.external_resources.PlatformLoggerPort
+import com.rafaeltmbr.stopwatch.core.services.external_resource_ports.PlatformLoggerPort
 
 
 class LoggingServiceImpl(

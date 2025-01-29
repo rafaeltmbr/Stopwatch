@@ -16,14 +16,14 @@ import com.rafaeltmbr.stopwatch.core.use_cases.impl.StartStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.UpdateStopwatchTimeUseCaseImpl
 import com.rafaeltmbr.stopwatch.core.utils.impl.CalculateLapsStatusesImpl
 import com.rafaeltmbr.stopwatch.platform.data.room.StopwatchDatabase
-import com.rafaeltmbr.stopwatch.platform.data.room.data_sources.RoomStopwatchDataSourceAdapter
+import com.rafaeltmbr.stopwatch.platform.data.room.data_source_adapters.RoomStopwatchDataSourceAdapter
 import com.rafaeltmbr.stopwatch.platform.di.ApplicationContainer
 import com.rafaeltmbr.stopwatch.platform.di.ApplicationContainerFactory
 import com.rafaeltmbr.stopwatch.platform.presentation.compose.navigation.StackNavigatorImpl
 import com.rafaeltmbr.stopwatch.platform.presentation.mappers.impl.StringTimeMapperImpl
 import com.rafaeltmbr.stopwatch.platform.presentation.mappers.impl.ViewTimeMapperImpl
 import com.rafaeltmbr.stopwatch.platform.presentation.navigation.StackNavigator
-import com.rafaeltmbr.stopwatch.platform.services.external_resources.AndroidPlatformLoggerAdapter
+import com.rafaeltmbr.stopwatch.platform.services.external_resource_adapters.AndroidPlatformLoggerAdapter
 
 class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
     ApplicationContainerFactory {

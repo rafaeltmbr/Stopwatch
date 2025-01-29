@@ -1,6 +1,6 @@
-package com.rafaeltmbr.stopwatch.platform.data.room.data_sources
+package com.rafaeltmbr.stopwatch.platform.data.room.data_source_adapters
 
-import com.rafaeltmbr.stopwatch.core.data.data_sources.StopwatchDataSourcePort
+import com.rafaeltmbr.stopwatch.core.data.data_source_ports.StopwatchDataSourcePort
 import com.rafaeltmbr.stopwatch.core.entities.Lap
 import com.rafaeltmbr.stopwatch.core.entities.Status
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState

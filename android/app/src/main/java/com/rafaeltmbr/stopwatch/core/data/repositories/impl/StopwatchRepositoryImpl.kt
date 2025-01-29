@@ -1,6 +1,6 @@
 package com.rafaeltmbr.stopwatch.core.data.repositories.impl
 
-import com.rafaeltmbr.stopwatch.core.data.data_sources.StopwatchDataSourcePort
+import com.rafaeltmbr.stopwatch.core.data.data_source_ports.StopwatchDataSourcePort
 import com.rafaeltmbr.stopwatch.core.data.repositories.StopwatchRepository
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
 

@@ -1,4 +1,4 @@
-package com.rafaeltmbr.stopwatch.core.services.external_resources
+package com.rafaeltmbr.stopwatch.core.services.external_resource_ports
 
 import com.rafaeltmbr.stopwatch.core.services.LoggingService
 

@@ -11,12 +11,13 @@ Table of Contents
 2.  Core Concepts
     *   2.1. Ports and Adapters
     *   2.2. Unidirectional Data Flow (UDF)
-    *   2.3. Dependency Inversion Principle (DIP)
-    *   2.4. Design Patterns
-        *   2.4.1. Abstract Factory
-        *   2.4.2. Observer
-        *   2.4.3. Command
-        *   2.4.4. Adapter
+    *   2.3. Dependency Injection (DI)
+    *   2.4. Dependency Inversion Principle (DIP)
+    *   2.5. Design Patterns
+        *   2.5.1. Abstract Factory
+        *   2.5.2. Observer
+        *   2.5.3. Command
+        *   2.5.4. Adapter
 3.  Layers
     *   3.1. Core
         *   3.1.1. Core Entities
@@ -610,23 +611,23 @@ The following diagram illustrates the application's folder structure:
 -- src
    |-- core
    |   |-- data
-   |   |   |-- data_sources (interfaces)
+   |   |   |-- data_source_ports
    |   |   |-- repositories
    |   |   \-- stores
    |   |
    |   |-- entities
    |   |
    |   |-- services
-   |   |   \-- external_resources (interfaces)
+   |   |   \-- external_resource_ports
    |   |
    |   |-- use_cases
    |   |
    |   \-- utils
    | 
-   \-- infra
+   \-- platform
        |-- data
        |   \-- [persistency library]
-       |       |-- data_sources (implementations)
+       |       |-- data_source_adapters
        |       \-- entities
        |
        |-- di
@@ -643,7 +644,7 @@ The following diagram illustrates the application's folder structure:
        |       \--- views
        |
        \-- services
-           \-- external_resources (implementations)
+           \-- external_resource_adapters
 
 -- tests
 ```

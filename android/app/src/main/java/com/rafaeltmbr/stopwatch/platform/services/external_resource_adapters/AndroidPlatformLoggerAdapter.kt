@@ -1,7 +1,7 @@
-package com.rafaeltmbr.stopwatch.platform.services.external_resources
+package com.rafaeltmbr.stopwatch.platform.services.external_resource_adapters
 
 import android.util.Log
-import com.rafaeltmbr.stopwatch.core.services.external_resources.PlatformLoggerPort
+import com.rafaeltmbr.stopwatch.core.services.external_resource_ports.PlatformLoggerPort
 
 class AndroidPlatformLoggerAdapter : PlatformLoggerPort {
     override fun debug(tag: String, message: String) {
