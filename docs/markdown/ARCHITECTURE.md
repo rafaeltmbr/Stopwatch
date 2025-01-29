@@ -1,62 +1,65 @@
 # Architecture
 
-Table of contents
-1. [Overview](#1-overview)
-    - [1.1. Architectural Goals](#11-architectural-goals)
-    - [1.2. Unidirectional Data Flow](#)
-    - [1.3. Ports and Adapters Architecture Approach](#12-ports-and-adapters-architecture-approach)
-2. [Layers](#2-layers)
-    - [2.1. Core](#21-core)
-      - [2.1.1. Core Entities](#211-core-entities)
-      - [2.1.2. Use Cases](#212-use-cases)
-      - [2.1.3. Services](#213-services)
-      - [2.1.4. Data](#214-data)
-        - [2.1.4.1. Data Repositories](#2141-data-repositories)
-        - [2.1.4.2. State Stores](#2142-state-stores)
-      - [2.1.5. Utils](#215-utils)
-    - [2.2. Platform](#22-platform)
-      - [2.2.1. Presentation](#221-presentation)
-        - [2.2.1.1. Presentation Entities](#2211-presentation-entities)
-        - [2.2.1.2. Views](#2212-views)
-        - [2.2.1.3. View Components](#2213-view-components)
-        - [2.2.1.4. ViewModels](#2214-viewmodels)
-        - [2.2.1.5. UI Mappers](#2215-ui-mappers)
-        - [2.2.1.6. Navigators](#2216-navigators)
-      - [2.2.2. Data](#222-data)
-        - [2.2.2.1. Data Entities](#2221-data-entities)
-        - [2.2.2.2. Data Sources](#2222-data-sources)
-      - [2.2.3. Services](#223-services)
-        - [2.2.3.1. External Resource Adapters](#2231-external-resource-adapters)
-      - [2.2.4. Dependency Injection](#224-dependency-injection)
-        - [2.2.4.1. Dependency Container](#2241-dependency-container)
-        - [2.2.4.2. Factories](#2242-factories)
-      - [2.2.5. Application Entry Point](#225-application-entry-point)
-    - [2.3. External](#23-external)
-3. [Data Flow](#3-data-flow)
-    - [3.1. User Interaction and View](#31-user-interaction-and-view)
-    - [3.2. ViewModel and Action Handling](#32-viewmodel-and-action-handling)
-    - [3.3. Navigation with Navigator](#33-navigation-with-the-navigator)
-    - [3.4. Business Logic and Use Cases](#34-business-logic-and-use-cases)
-    - [3.5. Core State Store: The Single Source of Truth](#35-core-state-store-the-single-source-of-truth)
-    - [3.6. View State Updates and UI Mappers](#2215-ui-mappers)
-4. [Dependency Diagram](#4-dependency-diagram)
-5. [Folder Structure](#5-folder-structure)
-6. [Implementation](#6-implementation-details)
-    - 6.1. Android Implementation
-    - 6.2. iOS Implementation
-    - 6.3. Implementation Exceptions
-7. [Tests](#7-tests)
-    - 7.1. Android Tests
-    - 7.2. iOS Tests
-8. [Essential Concepts](#8-essential-concepts)
-    - [8.1. Unified Modeling Language (UML)](#81-unified-modeling-language-uml)
-    - [8.2. Clean Architecture](#82-clean-architecture)
-    - [8.4. Unidirectional Data Flow (UDF)](#84-unidirectional-data-flow-udf)
-    - [8.5. Dependency Inversion Principle (DIP)](#85-dependency-inversion-principle-dip)
-    - [8.6. Design Patterns](#86-design-patterns)
-      - [8.6.1. Abstract Factory](#861-abstract-factory)
-      - [8.6.2. Observer](#863-observerj)
-      - [8.6.3. Command](#864-command)
+Table of Contents
+
+1.  Introduction
+    *   1.1. Overview
+    *   1.2. Architectural Goals
+    *   1.3. Architectural Approach
+        *   1.3.1. Ports and Adapters
+        *   1.3.2. Unidirectional Data Flow (UDF)
+2.  Core Concepts
+    *   2.1. Ports and Adapters
+    *   2.2. Unidirectional Data Flow (UDF)
+    *   2.3. Dependency Inversion Principle (DIP)
+    *   2.4. Design Patterns
+        *   2.4.1. Abstract Factory
+        *   2.4.2. Observer
+        *   2.4.3. Command
+        *   2.4.4. Adapter
+3.  Layers
+    *   3.1. Core
+        *   3.1.1. Core Entities
+        *   3.1.2. Use Cases
+        *   3.1.3. Services
+        *   3.1.4. Data
+            *   3.1.4.1. Repositories
+            *   3.1.4.2. State Stores
+        *   3.1.5. Utilities
+    *   3.2. Platform
+        *   3.2.1. Presentation
+            *   3.2.1.1. Presentation Entities
+            *   3.2.1.2. Views and View Components
+            *   3.2.1.3. ViewModels
+            *   3.2.1.4. UI Mappers
+            *   3.2.1.5. Navigators
+        *   3.2.2. Data
+            *   3.2.2.1. Data Entities
+            *   3.2.2.2. Data Sources
+        *   3.2.3. Services
+            *   3.2.3.1. External Resource Adapters
+        *   3.2.4. Dependency Injection
+        *   3.2.5. Application Lifecycle
+    *   3.3. External
+4.  Stopwatch Specifics
+    *   4.1. Time Tracking
+    *   4.2. Lap Management
+    *   4.3. Stopwatch States
+    *   4.4. UI/UX Considerations
+5.  Data Flow
+6.  State Management
+7.  Dependency Diagram
+8.  Folder Structure
+9.  Implementation
+    *   9.1. Android Implementation
+    *   9.2. iOS Implementation
+    *   9.3. Platform-Specific Considerations
+10. Error Handling Strategy
+11. Testing Strategy
+    *   11.1. Android Tests
+    *   11.2. iOS Tests
+12. Appendix
+    *   12.1. Unified Modeling Language (UML)
 
 ## 1. Overview
 This document presents the architectural design of the Stopwatch, a mobile application for precisely tracking elapsed time and lap intervals. The architecture is based on the Ports and Adapters architectural pattern and is designed to support the app's core functionality: starting, pausing, resuming, resetting, and lap management, while ensuring long-term maintainability and the ability to adapt to evolving user needs.
@@ -72,7 +75,14 @@ The primary architectural goals are:
 
 These goals are achieved through a Unidirectional Data Flow (UDF) approach based on the Ports and Adapters pattern.
 
-## 1.2. Unidirectional Data Flow Approach 
+## 1.2. Ports and Adapters Architecture Approach
+To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Ports and Adapters Architecture (Ports and Adapters) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
+
+The Core Layer defines "Ports," which are interfaces that specify how the core interacts with the outside world. The Platform Layer contains "Adapters," which implement these ports and handle the specific details of interacting with external systems. This separation allows us to change external systems (e.g., switch databases) without affecting the core business logic.
+
+The application is designed to be testable, maintainable, and scalable. The use of Ports and Adapters Architecture allows us to test the core business logic in isolation, without needing to set up complex external dependencies. The platform-agnostic core allows us to reuse the same logic across all supported platforms, reducing development time and ensuring consistency.
+
+## 1.3. Unidirectional Data Flow Approach 
 ![Data Flow](../assets/images/data-flow-diagram.gif)
 
 The application employs a unidirectional data flow, ensuring that data flows in a single direction. The data flow is as follows:
@@ -84,14 +94,6 @@ The application employs a unidirectional data flow, ensuring that data flows in 
 5.  Use Cases update the Core State Store to reflect changes in the application's state.
 6.  ViewModels listen for updates from the Core State Store, use UI Mappers to transform data, and update the View State accordingly.
 7.  Views update accordingly based on the View State.
-
-## 1.3. Ports and Adapters Architecture Approach
-To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Ports and Adapters Architecture (Ports and Adapters) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
-
-The Core Layer defines "Ports," which are interfaces that specify how the core interacts with the outside world. The Platform Layer contains "Adapters," which implement these ports and handle the specific details of interacting with external systems. This separation allows us to change external systems (e.g., switch databases) without affecting the core business logic.
-
-The application is designed to be testable, maintainable, and scalable. The use of Ports and Adapters Architecture allows us to test the core business logic in isolation, without needing to set up complex external dependencies. The platform-agnostic core allows us to reuse the same logic across all supported platforms, reducing development time and ensuring consistency.
-
 
 ## 2. Layers
 The architecture divides the application into three distinct layers: Core, Platform and External.
@@ -594,39 +596,12 @@ The External layer represents the environment outside of the application's Core 
 - **System Services**: Provides access to platform-specific services, such as location services, notification management, and background tasks.
 Security Frameworks: Provides security features such as encryption, authentication, and authorization.
 
-
-## 3. Data Flow
-The application's data flow usually begins with user interactions on the Graphical User Interface (GUI). These interactions trigger a series of processing steps, which result in data visualizations being presented back to the user through the GUI. This cyclical process is illustrated in the following diagram and described in detail by the subsequent sections:
-
-![Data Flow](../assets/images/data-flow-diagram.gif)
-
-### 3.1. User Interaction and View
-The user interface (UI) is presented through Views, which are responsible for displaying information and handling user interactions. When a user interacts with a View (e.g., clicking a button), it emits an Action event. This event encapsulates relevant information about the interaction, such as Action.Start when the Start button is clicked.
-
-### 3.2. ViewModel and Action Handling
-The ViewModel acts as an intermediary between the View and the application logic. It receives Action events from the View and processes them accordingly. The ViewModel is responsible for:
-- Executing relevant Use Cases based on the received Action.
-- Instructing the Navigator to transition between different Views.
-- Updating the View State to reflect changes in the application's data.
-
-### 3.3. Navigation with the Navigator
-The Navigator handles all screen navigation within the application. It interacts directly with the UI framework and libraries to manage View transitions and rendering. The ViewModel directs the Navigator to navigate to specific Views based on user actions or application logic.
-
-### 3.4. Business Logic and Use Cases
-Use Cases encapsulate the core business logic of the application. They may delegate tasks to Services for performing specilized operations or accessing external resources though the [Adapter](#) pattern. Use Cases utilize Data Repositories to persist data beyond the application's lifecycle. During execution, Use Cases may update the application's state by emitting a new Core State to the Core State Store using the [Command](#) pattern.
-
-### 3.5. Core State Store: The Single Source of Truth
-The Core State Store serves as the central repository for the application's state. Components interested in state changes can subscribe to updates using the [Observer](#) pattern. This ensures that all parts of the application have a consistent view of the current state.
-
-### 3.6. View State Updates and UI Mappers
-The ViewModel subscribes to Core State changes and updates the View State accordingly. To transform Core State into a format suitable for display, the ViewModel utilizes UI Mappers. These mappers handle data transformations and ensure the View State is optimized for UI rendering. The View, also subscribing to View State changes, receives updates via the [Observer](#) pattern and refreshes its display.
-
-## 4. Dependency Diagram
+## 3. Dependency Diagram
 To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core domain logic and entities, aligning with principles of [Clean Architecture](#). When the flow of control necessitates a reversal of this dependency direction, the [Dependency Inversion Principle (DIP)](#) is applied. Additionally, to decouple object creation from utilization, the [Abstract Factory](#) pattern is employed. The relationships between application components are visualized in the following UML diagram:
 
 ![Dependency Diagram](../assets/images/dependency-diagram.png)
 
-## 5. Folder Structure
+## 4. Folder Structure
 The Android and iOS applications were developed independently, utilizing the recommended languages and frameworks for each platform: [Kotlin with Jetpack Compose](https://developer.android.com/courses/android-basics-compose/course) for Android and [Swift with SwiftUI](https://developer.apple.com/tutorials/app-dev-training/) for iOS. Despite the technological differences, both implementations adhere to a common architecture and folder structure. The Android codebase resides in the `android` folder, while the iOS codebase is located in the `ios` folder.
 
 The following diagram illustrates the application's folder structure:
@@ -674,6 +649,8 @@ The following diagram illustrates the application's folder structure:
 ```
 
 While platform-specific nuances may influence the final implementation details, the overall project structure and organization should remain consistent across platforms.
+
+## 5. Error Handling
 
 ## 6. Implementation 
 During architecture implementation, some exceptions were found:
