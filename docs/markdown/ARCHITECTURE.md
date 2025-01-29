@@ -532,14 +532,14 @@ class ViewModelFactory:
   container: StopwatchDependencyContainer
 
   make():
-    return ViewMode(
+    return ViewModel(
       stateStore = container.data.stateStore,
-      startStopwatch: container.useCases.startStopwatch,
-      pauseStopwatch: container.useCases.pauseStopwatch,
-      ResumeStopwatch: container.useCases.resumeStopwatch,
-      ResetStopwatch: container.useCases.resetStopwatch,
-      timeUiMapper: container.presentation.timeUiMapper,
-      navigator: container.presentation.navigator
+      startStopwatch = container.useCases.startStopwatch,
+      pauseStopwatch = container.useCases.pauseStopwatch,
+      ResumeStopwatch = container.useCases.resumeStopwatch,
+      ResetStopwatch = container.useCases.resetStopwatch,
+      timeUiMapper = container.presentation.timeUiMapper,
+      navigator = container.presentation.navigator
     )
 ```
 
