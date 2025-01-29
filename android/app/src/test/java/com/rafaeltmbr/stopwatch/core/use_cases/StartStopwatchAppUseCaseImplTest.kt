@@ -9,7 +9,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
-class StartStopwatchUseCaseImplTest {
+class StartStopwatchAppUseCaseImplTest {
     @Test
     fun start_shouldExecuteTimerAndUpdateStateStore() = runTest {
         val store = MutableStateStoreImpl(StopwatchState())

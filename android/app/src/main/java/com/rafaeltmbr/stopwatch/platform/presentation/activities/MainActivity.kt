@@ -1,14 +1,16 @@
-package com.rafaeltmbr.stopwatch.platform
+package com.rafaeltmbr.stopwatch.platform.presentation.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.rafaeltmbr.stopwatch.platform.StopwatchApp
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 private const val TAG = "MainActivity"
 
@@ -19,7 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val container = (applicationContext as Stopwatch).container
+            val container = (applicationContext as StopwatchApp).container
             container.presentation.stackNavigator.NavigationStack(
                 container.presentation.homeViewModelFactory,
                 container.presentation.lapsViewModelFactory
@@ -31,7 +33,7 @@ class MainActivity : ComponentActivity() {
         super.onPause()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val container = (applicationContext as Stopwatch).container
+            val container = (applicationContext as StopwatchApp).container
             try {
                 container.services.logging.debug(TAG, "Saving stopwatch state...")
                 container.useCases.saveStopwatchState.execute()

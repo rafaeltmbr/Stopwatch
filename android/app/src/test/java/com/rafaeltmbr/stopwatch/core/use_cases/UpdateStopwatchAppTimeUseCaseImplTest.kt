@@ -10,7 +10,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Test
 
-class UpdateStopwatchTimeUseCaseImplTest {
+class UpdateStopwatchAppTimeUseCaseImplTest {
     @Test
     fun update_shouldCorrectlyUpdateStopwatchState() = runTest {
         val store = MutableStateStoreImpl(

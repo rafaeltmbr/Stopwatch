@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "Stopwatch"
 
-class Stopwatch : Application() {
+class StopwatchApp : Application() {
 
     lateinit var container: ApplicationContainer
 
