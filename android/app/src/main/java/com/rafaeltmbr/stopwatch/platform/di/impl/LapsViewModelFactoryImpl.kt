@@ -6,7 +6,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.rafaeltmbr.stopwatch.core.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.core.services.LoggingService
+import com.rafaeltmbr.stopwatch.core.use_cases.LoggingUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.StartStopwatchUseCase
 import com.rafaeltmbr.stopwatch.platform.di.LapsViewModelFactory
@@ -18,9 +18,9 @@ import com.rafaeltmbr.stopwatch.platform.presentation.view_models.impl.LapsViewM
 class LapsViewModelFactoryImpl(
     private val stopwatchStore: MutableStateStore<StopwatchState>,
     private val stackNavigator: StackNavigator,
+    private val loggingUseCase: LoggingUseCase,
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val newLapUseCase: NewLapUseCase,
-    private val loggingService: LoggingService,
     private val stringTimeMapper: StringTimeMapper
 ) : LapsViewModelFactory {
     @Composable
@@ -30,9 +30,9 @@ class LapsViewModelFactoryImpl(
                 LapsViewModelImpl(
                     stopwatchStore,
                     stackNavigator,
+                    loggingUseCase,
                     startStopwatchUseCase,
                     newLapUseCase,
-                    loggingService,
                     stringTimeMapper,
                 )
             }

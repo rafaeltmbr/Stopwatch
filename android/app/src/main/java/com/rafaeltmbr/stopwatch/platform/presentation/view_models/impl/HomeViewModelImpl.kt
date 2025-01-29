@@ -6,7 +6,7 @@ import com.rafaeltmbr.stopwatch.core.data.stores.StateStore
 import com.rafaeltmbr.stopwatch.core.entities.Lap
 import com.rafaeltmbr.stopwatch.core.entities.Status
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.core.services.LoggingService
+import com.rafaeltmbr.stopwatch.core.use_cases.LoggingUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.ResetStopwatchUseCase
@@ -29,11 +29,11 @@ private const val TAG = "HomeViewModelImpl"
 class HomeViewModelImpl(
     stopwatchStore: StateStore<StopwatchState>,
     private val stackNavigator: StackNavigator,
+    private val loggingUseCase: LoggingUseCase,
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val pauseStopwatchUseCase: PauseStopwatchUseCase,
     private val resetStopwatchUseCase: ResetStopwatchUseCase,
     private val newLapUseCase: NewLapUseCase,
-    private val loggingService: LoggingService,
     private val viewTimeMapper: ViewTimeMapper,
     private val stringTimeMapper: StringTimeMapper,
 ) : ViewModel(), HomeViewModel {
@@ -60,10 +60,10 @@ class HomeViewModelImpl(
                     HomeViewModel.Action.Lap -> newLapUseCase.execute()
                     HomeViewModel.Action.SeeAll -> stackNavigator.push(StackNavigator.Screen.Laps)
                 }
-                loggingService.debug(TAG, "Action handled: $action")
+                loggingUseCase.debug(TAG, "Action handled: $action")
             } catch (_: CancellationException) {
             } catch (e: Exception) {
-                loggingService.error(TAG, "Failed to handle action: $action", e)
+                loggingUseCase.error(TAG, "Failed to handle action: $action", e)
             }
         }
     }

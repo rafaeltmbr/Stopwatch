@@ -6,6 +6,7 @@ import com.rafaeltmbr.stopwatch.core.data.stores.impl.MutableStateStoreImpl
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.core.services.impl.LoggingServiceImpl
 import com.rafaeltmbr.stopwatch.core.services.impl.TimerServiceImpl
+import com.rafaeltmbr.stopwatch.core.use_cases.impl.LoggingUseCaseImpl
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.NewLapUseCaseImpl
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.PauseStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.ResetStopwatchUseCaseImpl
@@ -46,6 +47,7 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
 
         val calculateLapsStatuses = CalculateLapsStatusesImpl()
         val useCases = ApplicationContainer.UseCases(
+            LoggingUseCaseImpl(services.logging),
             NewLapUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
             PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             ResetStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
@@ -71,20 +73,20 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
             HomeViewModelFactoryImpl(
                 data.stopwatchStore,
                 stackNavigator,
+                useCases.logging,
                 useCases.startStopwatch,
                 useCases.pauseStopwatch,
                 useCases.resetStopwatch,
                 useCases.newLap,
-                services.logging,
                 viewTimeMapper,
                 stringTimeMapper
             ),
             LapsViewModelFactoryImpl(
                 data.stopwatchStore,
                 stackNavigator,
+                useCases.logging,
                 useCases.startStopwatch,
                 useCases.newLap,
-                services.logging,
                 stringTimeMapper
             ),
         )

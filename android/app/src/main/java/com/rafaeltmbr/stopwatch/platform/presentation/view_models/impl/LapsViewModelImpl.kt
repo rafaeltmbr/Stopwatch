@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.core.data.stores.StateStore
 import com.rafaeltmbr.stopwatch.core.entities.Lap
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.core.services.LoggingService
+import com.rafaeltmbr.stopwatch.core.use_cases.LoggingUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.StartStopwatchUseCase
 import com.rafaeltmbr.stopwatch.platform.presentation.entities.ViewLap
@@ -25,9 +25,9 @@ private const val TAG = "LapsViewModelImpl"
 class LapsViewModelImpl(
     private val stopwatchStore: StateStore<StopwatchState>,
     private val stackNavigator: StackNavigator,
+    private val loggingUseCase: LoggingUseCase,
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val newLapUseCase: NewLapUseCase,
-    private val loggingService: LoggingService,
     private val stringTimeMapper: StringTimeMapper,
 ) : ViewModel(), LapsViewModel {
     private var _state = MutableStateFlow(LapsViewModel.State())
@@ -48,10 +48,10 @@ class LapsViewModelImpl(
                     LapsViewModel.Action.Lap -> newLapUseCase.execute()
                     LapsViewModel.Action.NavigateBack -> stackNavigator.pop()
                 }
-                loggingService.debug(TAG, "Action handled: $action")
+                loggingUseCase.debug(TAG, "Action handled: $action")
             } catch (_: CancellationException) {
             } catch (e: Exception) {
-                loggingService.error(TAG, "Failed to handle action: $action", e)
+                loggingUseCase.error(TAG, "Failed to handle action: $action", e)
             }
         }
     }

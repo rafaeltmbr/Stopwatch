@@ -5,6 +5,7 @@ import com.rafaeltmbr.stopwatch.core.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
 import com.rafaeltmbr.stopwatch.core.services.LoggingService
 import com.rafaeltmbr.stopwatch.core.services.TimerService
+import com.rafaeltmbr.stopwatch.core.use_cases.LoggingUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.ResetStopwatchUseCase
@@ -26,6 +27,7 @@ data class ApplicationContainer(
     )
 
     data class UseCases(
+        val logging: LoggingUseCase,
         val newLap: NewLapUseCase,
         val pauseStopwatch: PauseStopwatchUseCase,
         val resetStopwatch: ResetStopwatchUseCase,

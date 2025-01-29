@@ -6,7 +6,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.rafaeltmbr.stopwatch.core.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
-import com.rafaeltmbr.stopwatch.core.services.LoggingService
+import com.rafaeltmbr.stopwatch.core.use_cases.LoggingUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.PauseStopwatchUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.ResetStopwatchUseCase
@@ -21,11 +21,11 @@ import com.rafaeltmbr.stopwatch.platform.presentation.view_models.impl.HomeViewM
 class HomeViewModelFactoryImpl(
     private val stopwatchStore: MutableStateStore<StopwatchState>,
     private val stackNavigator: StackNavigator,
+    private val loggingUseCase: LoggingUseCase,
     private val startStopwatchUseCase: StartStopwatchUseCase,
     private val pauseStopwatchUseCase: PauseStopwatchUseCase,
     private val resetStopwatchUseCase: ResetStopwatchUseCase,
     private val newLapUseCase: NewLapUseCase,
-    private val loggingService: LoggingService,
     private val viewTimeMapper: ViewTimeMapper,
     private val stringTimeMapper: StringTimeMapper
 ) : HomeViewModelFactory {
@@ -37,11 +37,11 @@ class HomeViewModelFactoryImpl(
                 HomeViewModelImpl(
                     stopwatchStore,
                     stackNavigator,
+                    loggingUseCase,
                     startStopwatchUseCase,
                     pauseStopwatchUseCase,
                     resetStopwatchUseCase,
                     newLapUseCase,
-                    loggingService,
                     viewTimeMapper,
                     stringTimeMapper,
                 )
