@@ -1,6 +1,6 @@
 import SwiftUI
 
-class StopwatchDataSourceFileManager: StopwatchDataSource {
+class FileManagerStopwatchDataSourceAdapter: StopwatchDataSourcePort {
     private let loggingService: LoggingService
     
     init(_ loggingService: LoggingService) {

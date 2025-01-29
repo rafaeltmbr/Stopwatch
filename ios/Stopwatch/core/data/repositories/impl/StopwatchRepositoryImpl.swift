@@ -1,7 +1,7 @@
 struct StopwatchRepositoryImpl: StopwatchRepository {
-    private let stopwatchDataSource: StopwatchDataSource
+    private let stopwatchDataSource: StopwatchDataSourcePort
     
-    init(_ stopwatchDataSource: StopwatchDataSource) {
+    init(_ stopwatchDataSource: StopwatchDataSourcePort) {
         self.stopwatchDataSource = stopwatchDataSource
     }
     

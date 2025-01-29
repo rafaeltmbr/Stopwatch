@@ -27,7 +27,7 @@ class ApplicationContainerFactoryImpl: ApplicationContainerFactory {
         )
         let data = ApplicationData(
             MutableStateStoreImpl(StopwatchState(), EventEmitterImpl<StopwatchState>()),
-            StopwatchRepositoryImpl(StopwatchDataSourceFileManager(services.logging))
+            StopwatchRepositoryImpl(FileManagerStopwatchDataSourceAdapter(services.logging))
         )
         let calculateLapsStatuses = CalculateLapsStatusesImpl()
         let useCases = ApplicationUseCases(
