@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="Page-1" id="Z0Z9ZaM-AJmBViPzEow9">
-        <mxGraphModel dx="2256" dy="1142" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+        <mxGraphModel dx="3312" dy="1884" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -350,9 +350,9 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;startFill=0;endArrow=open;endFill=0;exitX=1;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="02XY2JCdMLhreh1r9P0p-51" edge="1">
+                <mxCell id="65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=none;startFill=0;endArrow=open;endFill=0;" parent="1" edge="1">
                     <mxGeometry relative="1" as="geometry">
-                        <mxPoint x="1570" y="590" as="sourcePoint"/>
+                        <mxPoint x="1540" y="590" as="sourcePoint"/>
                         <mxPoint x="2020" y="590" as="targetPoint"/>
                         <Array as="points">
                             <mxPoint x="1660" y="590"/>
@@ -745,22 +745,22 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="216" value="Stopwatch Architecture Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" parent="1" vertex="1">
-                    <mxGeometry x="1060" y="-17" width="290" height="20" as="geometry"/>
-                </mxCell>
                 <mxCell id="217" value="External (Host System, Framework and Libraries)" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;" parent="1" vertex="1">
                     <mxGeometry x="1030" y="1034" width="470" height="38" as="geometry"/>
                 </mxCell>
-                <mxCell id="218" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;endArrow=open;endFill=0;" edge="1" parent="1" source="02XY2JCdMLhreh1r9P0p-22">
+                <mxCell id="218" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;endArrow=open;endFill=0;" parent="1" source="02XY2JCdMLhreh1r9P0p-22" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="530" y="1000" as="targetPoint"/>
                         <mxPoint x="530" y="720" as="sourcePoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="219" style="edgeStyle=none;html=1;endArrow=open;endFill=0;" edge="1" parent="1" source="79">
+                <mxCell id="219" style="edgeStyle=none;html=1;endArrow=open;endFill=0;" parent="1" source="79" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="820" y="1000" as="targetPoint"/>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="220" value="Stopwatch Dependency Diagram" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;" parent="1" vertex="1">
+                    <mxGeometry x="1060" y="-17" width="310" height="17" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
