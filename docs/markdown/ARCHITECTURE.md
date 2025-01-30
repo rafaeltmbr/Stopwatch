@@ -8,7 +8,7 @@ Table of Contents
     *   [1.3. Architectural Approach](#13-architectural-approach)
         *   1.3.1. Ports and Adapters
         *   1.3.2. Unidirectional Data Flow (UDF)
-2.  [Essencial Concepts](#2-essential-concepts)
+2.  Essencial Concepts
     *   2.1. Ports and Adapters
     *   2.2. Unidirectional Data Flow (UDF)
     *   2.3. Dependency Injection (DI)
@@ -44,7 +44,7 @@ Table of Contents
             *   [3.2.4.2. Factories](#3242-factories)
         *   [3.2.5. Application Entry Point](#325-application-entry-point)
     *   [3.3. External](#33-external)
-4.  [Stopwatch Specifics](#4-stopwatch-specifics)
+4.  Stopwatch Specifics
     *   4.1. Time Tracking
     *   4.2. Lap Management
     *   4.3. Stopwatch States
@@ -56,12 +56,12 @@ Table of Contents
 9.  [Implementation](#9-implementation)
     *   9.1. Android Implementation
     *   9.2. iOS Implementation
-    *   9.3. Platform-Specific Considerations
+    *   [9.3. Platform-Specific Considerations](#93-platform-specific-considerations)
 10. Error Handling Strategy
-11. [Testing Strategy](#11-testing-strategy)
+11. Testing Strategy
     *   11.1. Android Tests
     *   11.2. iOS Tests
-12. [Appendix](#12-appendix)
+12. Appendix
     *   12.1. Unified Modeling Language (UML)
 
 ## 1. Introduction
@@ -91,34 +91,10 @@ The application is designed to be testable, maintainable, and scalable. The use 
 
 ## 2. Essential Concepts
 
-### 2.1. Ports and Adapters
-
-### 2.2. Unidirectional Data Flow (UDF)
-Unidirectional Data Flow (UDF) is an architectural pattern where data flows in a single direction, creating a predictable and manageable data flow within an application. It typically involves components like views, view models, and data stores, with data flowing from the View to the ViewModel and updates propagating back through defined channels. UDF simplifies state management, reduces complexity, and enhances the testability of applications. [Read more](https://developer.android.com/develop/ui/compose/architecture#udf).
-
-### 2.3. Dependency Injection (DI)
-
-### 2.4. Dependency Inversion Principle (DIP)
-Dependency Inversion Principle (DIP) is a software design principle that promotes loose coupling between components by inverting the direction of dependencies. Instead of high-level modules depending on low-level modules, both depend on abstractions (interfaces). This allows for greater flexibility, maintainability, and testability by enabling components to be easily swapped or modified without affecting other parts of the system. [Read more](https://en.wikipedia.org/wiki/Dependency_inversion_principle).
-
-### 2.5. Design Patterns 
-Design Patterns Design patterns are reusable solutions to recurring design problems in software development. They provide proven approaches for structuring code, managing dependencies, and implementing common functionalities. Design patterns are categorized into creational, structural, and behavioral patterns, each addressing a specific type of design challenge. [Read more](https://refactoring.guru/design-patterns/what-is-pattern).
-
-#### 2.5.1. Abstract Factory
-The Abstract Factory pattern provides an interface for creating families of related or dependent objects without specifying their concrete classes. It allows for the creation of objects without knowing their specific types, promoting flexibility and loose coupling. This pattern is useful when a system needs to support multiple variations of objects or when the concrete types of objects should be determined at runtime. [Read more](https://refactoring.guru/design-patterns/abstract-factory).
-
-#### 2.5.2. Observer
-The Observer pattern defines a one-to-many dependency between objects, where one object (the subject) notifies all its dependents (observers) of any state changes. This allows for loose coupling between objects, as the subject doesn't need to know the specific types of its observers. This pattern is commonly used for event handling, notifications, and data synchronization.[Read more](https://refactoring.guru/design-patterns/observer).
-
-#### 2.5.3. Command
-The Command pattern encapsulates a request as an object, thereby letting you parameterize clients with different requests, queue or log requests, and support undoable operations. It decouples the object that invokes the operation from the one that knows how to perform it. This pattern is useful for implementing undo/redo functionality, transaction management, and macro recording. [Read more](https://refactoring.guru/design-patterns/command).
-
-#### 2.5.3. Adapter
-
 ## 3. Layers
 The application's architecture is structured into three distinct layers: [Core](#31-core), [Platform](#31-core), and [External](#33-external). This layered approach promotes a clear separation of concerns, enhances testability and maintainability, and allows for code reuse across different platforms.
 
-*   **Core Layer:** Contains the platform-independent business logic, domain entities, and use cases. It defines *what* the application does, independent of any specific platform.
+*   **Core Layer:** Contains the platform-independent business logic, core entities, and use cases. It defines *what* the application does, independent of any specific platform.
 *   **Platform Layer:** Contains the platform-specific code required to implement the application on a particular platform (e.g., Android or iOS). It handles the user interface, user interactions, and platform-specific APIs.
 *   **External Layer:** Represents third-party libraries, frameworks, services, the underlying operating system, and platform services that the application interacts with but does not directly control. It is accessed through the Platform layer. This layer is conceptual and does not contain application code.
 
@@ -127,11 +103,11 @@ The [Core](#31-core) layer is independent of both the [Platform](#32-platform) a
 ![Architecture Layers](../assets/images/architecture-layers.png)
 
 ### 3.1. Core
-The Core layer contains the application's platform-independent business logic, domain entities, and use cases. This layer is entirely free of platform-specific code and can be reused across different platforms (e.g., Android, iOS). It defines *what* the application does, independent of *how* it is presented or implemented on a specific platform.
+The Core layer contains the application's platform-independent business logic, core entities, and use cases. This layer is entirely free of platform-specific code and can be reused across different platforms (e.g., Android, iOS). It defines *what* the application does, independent of *how* it is presented or implemented on a specific platform.
 
 *   **Responsibilities:**
     *   Defining the application's core business rules and logic.
-    *   Managing domain entities and data structures.
+    *   Managing core entities and data structures.
     *   Implementing Use Cases that represent the application's core functionality.
     *   Providing interfaces for data access through Repositories.
     *   Defining the application's core state.
@@ -152,13 +128,12 @@ In the context of the stopwatch application, a Core Entity representing the appl
 
 ```
 enum StopwatchStatus:
-  initial
-  running
-  paused
+  PAUSED
+  RUNNING
 
 class StopwatchState:
   status: StopwatchStatus
-  timeMilliseconds: Integer
+  time: Integer // milliseconds
 ```
 
 #### 3.1.2. Use Cases
@@ -168,17 +143,17 @@ The following code snippet demonstrates a potential implementation of a Use Case
 
 ```
 import StopwatchState from core/entities
-import CoreStateStore from core/data/state_stores/CoreStateStore
+import StopwatchStateStore from core/data/state_stores/StopwatchStateStore
 import TimerService from core/services/TimerService
 
 class StartStopwatchUseCase:
-  stateStore: CoreStateStore
+  stateStore: StopwatchStateStore
   timerService: TimerService
 
   execute():
-    if stateStore.state.status == StopwatchStatus.initial:
+    if stateStore.state.status == StopwatchStatus.PAUSED:
       timerService.start() 
-      newState = StopwatchState(status = running, timeMilliseconds = 0)
+      newState = StopwatchState(status = StopwatchState.RUNNING, time = 0)
       stateStore.update(newState)
 ```
 
@@ -270,29 +245,29 @@ The following code snippet demonstrates an implementation of a StopwatchState St
 ```
 import StopwatchState from core/entities/StopwatchState 
 
-class CoreStateListener:
+class StopwatchStateListener:
   handleUpdate(newState: StopwatchState)
 
-class CoreStateStore:
+class StopwatchStateStore:
   state: StopwatchState 
-  listeners: CoreStateListener[]
+  listeners: StopwatchStateListener[]
 
   updateState(newState: StopwatchState)
     state = newState 
     for listener in listeners:
       listener.handleUpdate(state)
 
-  addListener(listener: CoreStateListener):
+  addListener(listener: StopwatchStateListener):
     if listener not in listeners:
       listeners.add(listener)
   
-  removeListener(listener: CoreStateListener):
+  removeListener(listener: StopwatchStateListener):
     if listener in listernes:
       listeners.remove(listener)
 ```
 
 #### 3.1.5. Utilities
-Utility classes and functions, often referred to as "Utils," provide reusable helper functionalities that can be accessed by various components across the application. These utilities typically encapsulate common operations or logic that are not specific to any particular domain or layer.
+Utility classes and functions, often referred to as "Utils," provide reusable helper functionalities that can be accessed by various components across the application. These utilities typically encapsulate common operations or logic that are not specific to any particular core or layer.
 
 The following code snippet illustrates the types of functionalities that might be included within utility classes:
 
@@ -347,52 +322,42 @@ class StopwatchViewTime:
 The following code snippet demonstrates a basic stopwatch View that uses a stylized button View Component:
 
 ```
-import StopwatchAction, StopwatchViewMdeol, StopwatchViewStateListener
+import StopwatchAction, StopwatchViewModel, StopwatchViewStateListener
   from platform/presentation/viewmodels/StopwatchViewModel
 
 import PrimaryButton from platform/presentation/view_components/PrimaryButton
 
-class CounterView implements CounterViewStateListener:
+class StopwatchView implements StopwatchViewStateListener:
   context: UiLibraryContext
   viewModel: CounterViewModel
 
   init():
     viewModel.addListener(this)
+    context.onBackButton(handleBack)
 
   render(state: CounterViewState):
-    container = Column(alignment = "center", spacing = "10px")
-    container.append(element = Text(value = state.count))
+    text = Text(value = state.count)
     
     switch state.status:
-      case StopwatchState.INITIAL:
-        container.append(
-          PrimaryButton(text = "start", onClick = handleStart)
-        )
+      case StopwatchStatus.STOPPED:
+        button = PrimaryButton(text = "Start", onClick = handleStart)
       case StopwatchStatus.RUNNING:
-        container.append(
-          PrimaryButton(text = "pause", onClick = handlePause)
-        )
-      case StopwatchStatus.PAUSED:
-        container.append(
-          PrimaryButton(text = "resume", onClick = handleResume)
-        )
-        container.append(
-          Button(text = "reset", onClick = handleReset)
-        )
+        button = PrimaryButton(text = "Stop", onClick = handleStop)
+
+    container = Column(alignment = "center", spacing = "10px")
+    container.append(element = text)
+    container.append(element = button)
 
     context.updateUi(element = container)
 
   private handleStart():
-    viewModel.handleAction(StopwatchAction.Start)
+    viewModel.handleAction(StopwatchAction.START)
 
-  private handlePause():
-    viewModel.handleAction(StopwatchAction.Pause)
+  private handleStop():
+    viewModel.handleAction(StopwatchAction.STOP)
 
-  private handleResume():
-    viewModel.handleAction(StopwatchAction.Resume)
-
-  private handleReset():
-    viewModel.handleAction(StopwatchAction.Reset)
+  private handleBack():
+    viewModel.handleAction(StopwatchAction.BACK)
 
   handleUpdate(state: CounterViewState):
     render(state)
@@ -423,32 +388,28 @@ ViewModels also subscribe to the Core [State Store](#3142-state-stores), which h
 The following code snippet demonstrates a simple stopwatch ViewModel:
 
 ```
-import StopwatchState, StopwatchStateListener from core/entities/StopwatchState
-import CoreStateListener from core/data/state_stores/CoreStateStore
+import StopwatchState, StopwatchStatus from core/entities/StopwatchState
+import StopwatchStateListener from core/data/state_stores/StopwatchStateStore
 
 class StopwatchViewState:
   status: StopwatchStatus
   time: String
 
 enum StopwatchAction:
-  start
-  pause
-  resume
-  reset
-  seeDetails
+  START
+  STOP
+  BACK
 
 interface StopwatchViewStateListener:
   handleUpdate(stopwatchViewState: StopwatchViewState)
 
-class StopwatchViewModel implements CoreStateListener:
+class StopwatchViewModel implements StopwatchStateListener:
   state: StopwatchViewState
   listeners: StopwatchViewStateListener[]
-  stateStore: CoreStateStore
+  stateStore: StopwatchStateStore
 
   startStopwatch: StartStopwatchUseCase
-  pauseStopwatch: PauseStopwatchUseCase
-  ResumeStopwatch: ResumeStopwatchUseCase
-  ResetStopwatch: ResetStopwatchUseCase
+  stopStopwatch: StopStopwatchUseCase
   timeUiMapper: StopwatchTimeUiMapper
   navigator: Navigator
 
@@ -457,11 +418,9 @@ class StopwatchViewModel implements CoreStateListener:
 
   handleAction(action: StopwatchAction):
     switch action:
-      case start: startStopwatch.execute()
-      case pause: pauseStopwatch.execute()
-      case resume: resumeStopwatch.execute()
-      case reset: resetStopwatch.execute()
-      case seetDetails: navigator.navigate(location = "details") 
+      case StopwatchAction.START: startStopwatch.execute()
+      case StopwatchAction.STOP: stopStopwatch.execute()
+      case StopwatchAction.BACK: navigator.back() 
 
   handleUpdate(newState: StopwatchState):
     state = StopwatchViewState(
@@ -722,7 +681,7 @@ The application employs a unidirectional data flow, ensuring that data flows in 
 ## 6. State Management
 
 ## 7. Dependency Diagram
-To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core domain logic and entities, aligning with principles of [Clean Architecture](#). When the flow of control necessitates a reversal of this dependency direction, the [Dependency Inversion Principle (DIP)](#) is applied. Additionally, to decouple object creation from utilization, the [Abstract Factory](#) pattern is employed. The relationships between application components are visualized in the following UML diagram:
+To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core business logic and entities, aligning with principles of [Clean Architecture](#). When the flow of control necessitates a reversal of this dependency direction, the [Dependency Inversion Principle (DIP)](#) is applied. Additionally, to decouple object creation from utilization, the [Abstract Factory](#) pattern is employed. The relationships between application components are visualized in the following UML diagram:
 
 ![Dependency Diagram](../assets/images/dependency-diagram.png)
 
@@ -776,6 +735,8 @@ The following diagram illustrates the application's folder structure:
 While platform-specific nuances may influence the final implementation details, the overall project structure and organization should remain consistent across platforms.
 
 ## 9. Implementation 
+
+## 9.3. Platform-Specific considerations
 During architecture implementation, some exceptions were found:
 
 - On Android, *ViewModel* depends on platform specific code, because the
@@ -787,12 +748,6 @@ During architecture implementation, some exceptions were found:
 ## 10. Error Handling Strategy
 
 ## 11. Testing Strategy
-Unit tests were implemented for Use Cases, ViewModels, and UI Mappers, leveraging the respective testing frameworks for Android (i.e., JUnit) and iOS (i.e., XCTest). The testing strategy focused on covering critical logic within these components, prioritizing areas with higher potential for errors. This approach aims to ensure the quality and reliability of core application functionalities.
-For more information about unit testing on a specific platform, check the following guides:
-- [Unit tests on Android](https://developer.android.com/training/testing/local-tests)
-- [Unit test on iOS](https://developer.apple.com/documentation/xcode/adding-tests-to-your-xcode-project)
 
 ## 12. Appendix
 
-### 12.1. Unified Modeling Language (UML)
-Unified Modeling Language (UML) is a standardized visual modeling language used to specify, visualize, construct, and document the artifacts of software systems. It provides a set of diagrams and notations for representing various aspects of a system, including its structure, behavior, and interactions. [Read more](https://www.geeksforgeeks.org/unified-modeling-language-uml-class-diagrams/).
