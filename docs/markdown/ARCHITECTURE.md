@@ -36,7 +36,7 @@ Table of Contents
             *   [3.2.1.5. Navigators](#3215-navigators)
         *   [3.2.2. Data](#322-data)
             *   [3.2.2.1. Data Entities](#3221-data-entities)
-            *   [3.2.2.2. Data Sources](#3222-data-sources)
+            *   [3.2.2.2. Data Sources Adapters](#3222-data-sources-adapters)
         *   [3.2.3. Services](#323-services)
             *   [3.2.3.1. External Resource Adapters](#3231-external-resource-adapters)
         *   [3.2.4. Dependency Injection (DI)](#324-dependency-injection-di)
@@ -44,7 +44,7 @@ Table of Contents
             *   [3.2.4.2. Factories](#3242-factories)
         *   [3.2.5. Application Entry Point](#325-application-entry-point)
     *   [3.3. External](#33-external)
-4.  Stopwatch Specifics
+4.  [Stopwatch Specifics](#4-stopwatch-specifics)
     *   4.1. Time Tracking
     *   4.2. Lap Management
     *   4.3. Stopwatch States
@@ -116,15 +116,37 @@ The Command pattern encapsulates a request as an object, thereby letting you par
 #### 2.5.3. Adapter
 
 ## 3. Layers
-The architecture divides the application into three distinct layers: Core, Platform and External.
+The application's architecture is structured into three distinct layers: [Core](#31-core), [Platform](#31-core), and [External](#33-external). This layered approach promotes a clear separation of concerns, enhances testability and maintainability, and allows for code reuse across different platforms.
+
+*   **Core Layer:** Contains the platform-independent business logic, domain entities, and use cases. It defines *what* the application does, independent of any specific platform.
+*   **Platform Layer:** Contains the platform-specific code required to implement the application on a particular platform (e.g., Android or iOS). It handles the user interface, user interactions, and platform-specific APIs.
+*   **External Layer:** Represents third-party libraries, frameworks, services, the underlying operating system, and platform services that the application interacts with but does not directly control. It is accessed through the Platform layer. This layer is conceptual and does not contain application code.
+
+The [Core](#31-core) layer is independent of both the [Platform](#32-platform) and [External](#33-external) layers. The [Platform](#32-platform) layer depends on the [Core](#31-core) layer and adapts it to the specific platform. The [Platform](#32-platform) layer also accesses the [External](#33-external) layer and adapts it to the [Core](#31-core) layer. This dependency structure, as illustrated in the diagram below, isolates the Core layer from changes in the Platform and External layers, promoting stability and maintainability.
 
 ![Architecture Layers](../assets/images/architecture-layers.png)
 
 ### 3.1. Core
-The Core layer contains the core business logic and entities of the application, independent of any specific platform or framework. It represents the pure, platform-agnostic essence of the stopwatch functionality. The Core layer contains elements like Core Entities, Use Cases, Services, State Stores, Repositories and Utils.
+The Core layer contains the application's platform-independent business logic, domain entities, and use cases. This layer is entirely free of platform-specific code and can be reused across different platforms (e.g., Android, iOS). It defines *what* the application does, independent of *how* it is presented or implemented on a specific platform.
+
+*   **Responsibilities:**
+    *   Defining the application's core business rules and logic.
+    *   Managing domain entities and data structures.
+    *   Implementing Use Cases that represent the application's core functionality.
+    *   Providing interfaces for data access through Repositories.
+    *   Defining the application's core state.
+*   **Key Components:**
+    *   [Core Entities](#311-core-entities)
+    *   [Use Cases](#312-use-cases)
+    *   [Services](#313-services)
+    *   [Repositories](#3141-repositories)
+    *   [State Stores](#3142-state-stores)
+    *   [Utilities](#315-utilities)
+
+
 
 #### 3.1.1. Core Entities
-Core Entities represent the core data structures and types within the application. These data structures are primarily data containers, encapsulating the essential information without inherent behavior. They are utilized throughout the Core layer and may also be accessed by the Platform layer for platform-specific adaptations.
+Core Entities represent the core data structures and types within the application. These data structures are primarily data containers, encapsulating the essential information without inherent behavior. They are utilized throughout the [Core layer](#31-core) and may also be accessed by the [Platform layer](#32-platform) for platform-specific adaptations.
 
 In the context of the stopwatch application, a Core Entity representing the application state could be defined as follows:
 
@@ -140,13 +162,17 @@ class StopwatchState:
 ```
 
 #### 3.1.2. Use Cases
-Use Cases encapsulate the core business logic of the application. They orchestrate operations by delegating tasks to Services and accessing data through State Stores and Repositories. Each Use Case focuses on a specific business operation, promoting modularity and maintainability. Even a simple application may comprise numerous, specialized Use Cases to address various functionalities.
+Use Cases encapsulate the core business logic of the application. They orchestrate operations by delegating tasks to [Services](#313-services) and accessing data through [State Stores](#3142-state-stores) and [Repositories](#3141-repositories). Each Use Case focuses on a specific business operation, promoting modularity and maintainability. Even a simple application may comprise numerous, specialized Use Cases to address various functionalities.
 
 The following code snippet demonstrates a potential implementation of a Use Case for starting a stopwatch:
 
 ```
+import StopwatchState from core/entities
+import CoreStateStore from core/data/state_stores/CoreStateStore
+import TimerService from core/services/TimerService
+
 class StartStopwatchUseCase:
-  stateStore: StateStore<StopwatchState>
+  stateStore: CoreStateStore
   timerService: TimerService
 
   execute():
@@ -157,28 +183,39 @@ class StartStopwatchUseCase:
 ```
 
 #### 3.1.3. Services
-Services encapsulate specialized business operations, often involving complex algorithms or interactions with external resources. Use Cases leverage Services to delegate specific tasks or access specialized functionalities.
+Services encapsulate specialized business operations, often involving complex algorithms or interactions with external resources. [Use Cases](#312-use-cases) leverage Services to delegate specific tasks or access specialized functionalities.
 
-The following code snippet illustrates a potential implementation of a timer Core Service:
+The following code snippet illustrates a potential implementation of a timer Service that notifies listeners about state updates:
 
 ```
-class TimeState:
+class TimerState:
   isRunning: Boolean
   timeMilliseconds: Integer
 
+interface TimerListener:
+  handleUpdate(timerState: TimerState)
+
 class TimerService:
   state: TimerState
+  listeners: TimerListener[]
 
   start():
     if !state.isRunning:
-      state = TimerState(isRunning = true, timeMilliseconds = 0)
+      newState = TimerState(isRunning = true, timeMilliseconds = 0)
+      updateState(newState)
       loop()
 
   loop():
     while state.isRunning:
       delay(milliseconds = 10)
       newTime = state.timeMilliseconds + 10
-      state = TimerState(isRunning = state.isRunning, timeMilliseconds = newTime)
+      newState = TimerState(isRunning = state.isRunning, timeMilliseconds = newTime)
+      updateState(newState)
+
+  updateState(newState: TimerState):
+    state = newState
+    for listener in listeners:
+      listener.handleUpdate(newState)
 
   pause():
   ...
@@ -188,22 +225,32 @@ class TimerService:
 
   reset():
   ...
+
+  addListener(listener: TimerListener):
+  ...
+
+  removeListener(listener: TimerListener):
+  ...
 ```
 
 #### 3.1.4. Data
-The Core Data layer comprises components that Use Cases utilize for updating application state or accessing external data sources. These components provide an abstraction layer, allowing Use Cases to interact with data without being tightly coupled to specific implementation details.
+The Core Data layer comprises components that [Use Cases](#312-use-cases) utilize for updating application state or accessing external data sources. These components provide an abstraction layer, allowing Use Cases to interact with data without being tightly coupled to specific implementation details.
 
 #### 3.1.4.1. Repositories
-Repositories abstract data access for Use Cases, enabling local data persistence and potential integration with external Data Sources. They provide a well-defined interface, allowing Use Cases to interact with data without depending on specific implementation details. This abstraction promotes flexibility and maintainability by decoupling the business logic from the underlying data storage mechanisms.
+Repositories abstract data access for [Use Cases](#312-use-cases), enabling local data persistence and potential integration with external [Data Sources](#3222-data-sources). They provide a well-defined interface, allowing Use Cases to interact with data without depending on specific implementation details. This abstraction promotes flexibility and maintainability by decoupling the business logic from the underlying data storage mechanisms.
 
 The following code snippet demonstrates a potential implementation of a Repository for a weather application. This implementation retrieves weather information from two sources: a remote server and a local cache. If the remote server fails to provide predictions (e.g., due to network connectivity issues), the repository falls back to the local cache, providing the most recent predictions available for the specified date. This strategy ensures data availability even in offline scenarios, enhancing the application's resilience.
 
 ```
-class WeatherRepository:
-  cache: LocalWeatherDataSource
-  server: RemoteWeatherDataSource
+import WeatherPredictions from core/entities/WeatherPredictions
+import LocalWeatherDataSourcePort from core/data/data_sources/LocalWeatherDataSourcePort 
+import RemoteWeatherDataSourcePort from core/data/data_sources/RemoteWeatherDataSourcePort 
 
-  getPredictionsForToday():
+class WeatherRepository:
+  cache: LocalWeatherDataSourcePort
+  server: RemoteWeatherDataSourcePort
+
+  getPredictionsForToday() -> WeatherPredictions:
     today = Date()
 
     try:
@@ -218,32 +265,34 @@ class WeatherRepository:
 #### 3.1.4.2. State Stores
 State Stores serve as the single source of truth for application state, providing a centralized and consistent representation of data. Use Cases interact with State Stores to update and retrieve the application's state. To notify interested components about state changes, State Stores employ a publish-subscribe mechanism, often implemented using an Observer pattern-like approach. This allows components to react to state updates in a decoupled and efficient manner.
 
-The following code snippet demonstrates a generic implementation of a State Store using the Observer pattern:
+The following code snippet demonstrates an implementation of a StopwatchState State Store using the Observer pattern:
 
 ```
-class Listener<T>:
-  handleUpdate(newState: T)
+import StopwatchState from core/entities/StopwatchState 
 
-class StateStore<T>:
-  state: T
-  listeners: Listener<T>[]
+class CoreStateListener:
+  handleUpdate(newState: StopwatchState)
 
-  updateState(newState: T):
+class CoreStateStore:
+  state: StopwatchState 
+  listeners: CoreStateListener[]
+
+  updateState(newState: StopwatchState)
     state = newState 
     for listener in listeners:
       listener.handleUpdate(state)
 
-  addListener(listener: Listener<T>):
-    if !listeners.contains(listener):
+  addListener(listener: CoreStateListener):
+    if listener not in listeners:
       listeners.add(listener)
   
-  removeListener(listener: Listener<T>):
-    if listernes.contains(listener)
+  removeListener(listener: CoreStateListener):
+    if listener in listernes:
       listeners.remove(listener)
 ```
 
 #### 3.1.5. Utilities
-Utility (Utils) classes and functions, often referred to as "Utils," provide reusable helper functionalities that can be accessed by various components across the application. These utilities typically encapsulate common operations or logic that are not specific to any particular domain or layer.
+Utility classes and functions, often referred to as "Utils," provide reusable helper functionalities that can be accessed by various components across the application. These utilities typically encapsulate common operations or logic that are not specific to any particular domain or layer.
 
 The following code snippet illustrates the types of functionalities that might be included within utility classes:
 
@@ -261,7 +310,21 @@ print("Remaining days: ", remainingDate.days)
 ```
 
 ### 3.2. Platform
-The Platform layer houses platform-specific implementations and dependencies on frameworks and libraries. It bridges the gap between the Core layer and the external environment, providing platform-specific adaptations.  The Platform layer contains Presentation elements, Data Sources, External Resource Adapters, Dependency Injection classes and the Application's Entry Point. 
+The Platform layer contains the platform-specific code required to implement the application on a particular platform (e.g., Android or iOS). This layer is responsible for presenting the application's data to the user, handling user interactions, and interacting with platform-specific APIs. It depends on the [Core layer](#31-core) and adapts it to the specific platform. It also accesses the [External layer](#33-external) and adapts it to the [Core layer](#core).
+
+*   **Responsibilities:**
+    *   Implementing the user interface (UI) using platform-specific UI frameworks (e.g., Jetpack Compose on Android, SwiftUI on iOS).
+    *   Managing the application's presentation logic (Views, ViewModels).
+    *   Handling user interactions and events.
+    *   Interacting with platform-specific APIs (e.g., location services, camera, push notifications).
+    *   Adapting the Core layer's data and logic for the specific platform.
+    *   Accessing the External layer and adapting it to the Core layer.
+*   **Key Components:**
+    *   [Presentation](#321-presentation) ([Presentation Entities](#3211-presentation-entities), [Views](#3212-views-and-view-components), [ViewModels](#3213-viewmodels), [UI Mappers](#2214-ui-mappers), [Navigators](#3215-navigators))
+    *   [Data](#322-data) ([Data Entities](#3221-data-entities), [Data Sources](#3222-data-sources))
+    *   [Services](#323-services) ([External Resource Adapters](#3231-external-resource-adapters))
+    *   [Dependency Injection](#324-dependency-injection-di) ([Dependency Container](#3241-dependency-container) and [Factories](#3242-factories))
+    *   [Application Entry Point](#325-application-entry-point)
 
 #### 3.2.1. Presentation
 The Presentation layer exhibits platform-specific variations in its implementation. In some applications, it encompasses graphical user interface (GUI) elements, while in others, it may involve simple text-based input/output through a command-line interface (CLI). It could even be realized as a network protocol like HTTP. In the context of this stopwatch mobile application, the Presentation layer utilizes platform-specific GUI libraries for rendering data, handling user interactions, and managing navigation within the application. It encapsulates all the logic necessary for presentation, ensuring a clear separation of concerns from the underlying business logic and data access layers.
@@ -279,14 +342,17 @@ class StopwatchViewTime:
 ```
 
 #### 3.2.1.2. Views and View Components
-**Views** are responsible for rendering the graphical user interface (GUI) and handling user interactions. They act as the visual representation of the application's state. Views can be composed of smaller, reusable UI elements called **View Components**, which encapsulate specific UI functionality. Views observe changes in the **ViewModel's** state and update their display accordingly. This observation is facilitated through an observer-like pattern, ensuring that the UI remains synchronized with the underlying data.
+**Views** are responsible for rendering the graphical user interface (GUI) and handling user interactions. They act as the visual representation of the application's state. Views can be composed of smaller, reusable UI elements called **View Components**, which encapsulate specific UI functionality. Views observe changes in the [ViewModel's](#3213-viewmodels) state through an Observer-like pattern and update their display accordingly, ensuring that the UI remains synchronized with the underlying data. Furthermore, when users interact with the UI, Views forward the appropriate Action to the ViewModel for processing.
 
-The following code snippet demonstrates a basic counter View that uses a PrimaryButton View Component:
+The following code snippet demonstrates a basic stopwatch View that uses a stylized button View Component:
 
 ```
+import StopwatchAction, StopwatchViewMdeol, StopwatchViewStateListener
+  from platform/presentation/viewmodels/StopwatchViewModel
+
 import PrimaryButton from platform/presentation/view_components/PrimaryButton
 
-class CounterView:
+class CounterView implements CounterViewStateListener:
   context: UiLibraryContext
   viewModel: CounterViewModel
 
@@ -294,17 +360,39 @@ class CounterView:
     viewModel.addListener(this)
 
   render(state: CounterViewState):
-    text = Text(value = state.count)
-    button = PrimaryButton(text = "Increment", onClick = handleIncrement)
-
     container = Column(alignment = "center", spacing = "10px")
-    container.append(element = text)
-    container.append(element = button)
+    container.append(element = Text(value = state.count))
+    
+    switch state.status:
+      case StopwatchState.INITIAL:
+        container.append(
+          PrimaryButton(text = "start", onClick = handleStart)
+        )
+      case StopwatchStatus.RUNNING:
+        container.append(
+          PrimaryButton(text = "pause", onClick = handlePause)
+        )
+      case StopwatchStatus.PAUSED:
+        container.append(
+          PrimaryButton(text = "resume", onClick = handleResume)
+        )
+        container.append(
+          Button(text = "reset", onClick = handleReset)
+        )
 
-    context.updateUI(element = container)
+    context.updateUi(element = container)
 
-  handleIncrement():
-    viewModel.handleAction(Action.Increment)
+  private handleStart():
+    viewModel.handleAction(StopwatchAction.Start)
+
+  private handlePause():
+    viewModel.handleAction(StopwatchAction.Pause)
+
+  private handleResume():
+    viewModel.handleAction(StopwatchAction.Resume)
+
+  private handleReset():
+    viewModel.handleAction(StopwatchAction.Reset)
 
   handleUpdate(state: CounterViewState):
     render(state)
@@ -326,18 +414,20 @@ class PrimaryButton:
 ```
 
 #### 3.2.1.3. ViewModels
-A ViewModel connects the View to the application's business logic, acting as an intermediary that receives Action events from the View and processes them accordingly. It manages the View State for display and handles View Actions by delegating to Use Cases or Navigators. The ViewModel subscribes to the Core State Store (Observer pattern) and updates the View State accordingly. It may delegate formatting to UI Mappers. Views observe ViewModel state changes.
+ViewModels act as the intermediaries between the [View](#3212-views-and-view-components) and the application's [Core layer](#31-core). Their primary responsibilities are to manage the View's state and to handle user interactions. ViewModels are responsible for ensuring the View always displays the correct and up-to-date information.
 
-The ViewModel is responsible for:
-- Executing relevant Use Cases based on received Actions.
-- Instructing the Navigator to transition between Views.
-- Updating the View State to reflect data changes.
+ViewModels handle user interactions by receiving Actions. These Actions are simple data structures (typically Sealed Objects in Kotlin or Enums in Swift) that describe user interactions or events within the View. Upon receiving an Action, ViewModels process it. This processing may involve delegating work to one or more [Use Cases](#312-use-cases) to perform business logic operations, or instructing a [Navigator](#3215-navigators) to transition to a different View or location within the application.
+
+ViewModels also subscribe to the Core [State Store](#3142-state-stores), which holds the application's overall state, using an Observer-like pattern. When the Core State changes, ViewModels receive these updates. Based on the nature of the state change, ViewModels may instruct the Navigator to transition to a different View or location. They may also transform the received data, typically by delegating this transformation to a [UI Mapper](#2214-ui-mappers). Finally, ViewModels update the View State—a simple data structure that holds the information needed to render the View in a format suitable for the View to consume—ensuring the View always displays the correct and up-to-date information.
 
 The following code snippet demonstrates a simple stopwatch ViewModel:
 
 ```
+import StopwatchState, StopwatchStateListener from core/entities/StopwatchState
+import CoreStateListener from core/data/state_stores/CoreStateStore
+
 class StopwatchViewState:
-  status: StopwatchState
+  status: StopwatchStatus
   time: String
 
 enum StopwatchAction:
@@ -347,9 +437,12 @@ enum StopwatchAction:
   reset
   seeDetails
 
-class StopwatchViewModel:
+interface StopwatchViewStateListener:
+  handleUpdate(stopwatchViewState: StopwatchViewState)
+
+class StopwatchViewModel implements CoreStateListener:
   state: StopwatchViewState
-  listeners: Listener[]
+  listeners: StopwatchViewStateListener[]
   stateStore: CoreStateStore
 
   startStopwatch: StartStopwatchUseCase
@@ -368,9 +461,9 @@ class StopwatchViewModel:
       case pause: pauseStopwatch.execute()
       case resume: resumeStopwatch.execute()
       case reset: resetStopwatch.execute()
-      case seetDetails: navigator.navigate(screen = "details") 
+      case seetDetails: navigator.navigate(location = "details") 
 
-  handleUpdate(newState: CoreState):
+  handleUpdate(newState: StopwatchState):
     state = StopwatchViewState(
       status = newState.status,
       time = timeUiMapper.map(newState.timeMilliseconds)
@@ -379,15 +472,15 @@ class StopwatchViewModel:
     for listener in listeners:
       listener.update(state)
 
-  addListener(listener: Listener)
+  addListener(listener: StopwatchViewStateListener)
   ...
 
-  removeListener(listener: Listener)
+  removeListener(listener: StopwatchViewStateListener)
   ...
 ```
 
 #### 2.2.1.4. UI Mappers
-UI Mappers transform data into a format suitable for presentation, easing the ViewModel's formatting burden.
+UI Mappers transform data into a format suitable for presentation, easing the [ViewModel's](#3213-viewmodels) formatting burden.
 
 The following code demonstrates a stopwatch time UI Mapper:
 
@@ -402,28 +495,26 @@ class StopwatchTimeUiMapper:
 ```
 
 #### 3.2.1.5. Navigators
-Navigators handle screen transitions, relieving ViewModels of navigation logic. They typically wrap underlying UI library navigation code, adding convenience and abstracting implementation details.
+Navigators handle screen transitions, relieving [ViewModels](#3213-viewmodels) of navigation logic. They typically wrap underlying UI library navigation code, adding convenience and abstracting implementation details.
 
 The following code demonstrates a basic Navigator:
 
 ```
 class Navigator:
   uiLibraryNavigator: UILibraryNavigator
-  navigationStack: String[]
+  locationStack: String[]
 
-  navigate(screen: String):
-    if screen in navigationStack:
-      return
-
-    navigationStack.append(screen)
-    uiLibraryNavigator.navigate(screen)
+  navigate(location: String):
+    if location not in locationStack:
+      locationStack.push(location)
+      uiLibraryNavigator.navigate(location)
 
   back():
   ...
 ```
 
 #### 3.2.2. Data
-The Platform layer implements Data Sources defined in the Core layer, connecting to external data resources and hiding platform-specific details. This promotes loose coupling and isolates the Core layer from data access implementation specifics.
+The [Platform layer](#32-platform) implements [Data Sources Adapters](#3222-data-sources) defined in the [Core layer](#31-core), connecting to external data resources and hiding platform-specific details. This promotes loose coupling and isolates the Core layer from data access implementation specifics.
 
 #### 3.2.2.1. Data Entities
 Platform Data Entities represent data structures used by third-party libraries for Data Source implementation, reflecting the library's data format and serialization.
@@ -441,19 +532,16 @@ class StopwatchStateEntity: Table(name = "stopwatch_state"):
   timeMilliseconds: Column(name = "time", type = "INTEGER", nullable = false)
 ```
 
-#### 3.2.2.2. Data Sources
-Data Sources provide an abstraction for Repositories to access external data persistence mechanisms, such as databases, files, or network services. Different implementations can be provided for the same interface, hiding data access details from the calling code.
+#### 3.2.2.2. Data Sources Adapters
+Data Source Adapters are responsible for interacting with external data persistence mechanisms, such as databases, files, or network services. They act as the bridge between the [Core layer](#31-core) and the [External layer](#33-external). Following the Ports and Adapters pattern, the Core layer defines Data Source Ports (interfaces) that specify how data should be accessed. The Platform layer then provides concrete implementations of these ports in the form of Data Source Adapters. These adapters encapsulate the specific details of interacting with each persistence mechanism, allowing [Repositories](#3141-repositories) to access data without needing to know the underlying implementation. This design enables the use of different Data Source Adapters interchangeably, providing flexibility and testability.
 
 The following code demonstrates a Data Source implementation for saving and restoring stopwatch state: 
 
 ```
 import Connection from database_library
+import StopwatchStateDataSourcePort from core/data/data_sources/StopwatchDataSourcePort
 
-interface StopwatchStateDataSource:
-  save(state: StopwatchState)
-  load() -> StopwatchState?
-
-class StopwatchStateDatabaseDataSource implements StopwatchStateDataSource:
+class DatabaseStopwatchStateDataSourceAdapter implements StopwatchStateDataSourcePort:
   connection: Connection
 
   save(state: StopwatchState):
@@ -466,7 +554,7 @@ class StopwatchStateDatabaseDataSource implements StopwatchStateDataSource:
     connection.save(entity)
     
   load() -> StopwatchState?:
-    entity = connection.findById(1)
+    entity = connection.findById(id = 1, entity = StopwatchStateEntity)
     if entity == null:
       return null 
 
@@ -477,35 +565,26 @@ class StopwatchStateDatabaseDataSource implements StopwatchStateDataSource:
 ```
 
 #### 3.2.3. Services
-The Platform Services layer provides concrete implementations for External Resource Adapters defined in the Core Services layer.
+The Platform Services layer provides concrete implementations for External Resource Ports defined in the [Core Services layer](#313-services).
 
 #### 3.2.3.1. External Resource Adapters
-External Resource Adapters bridge the Core Services layer with external resources, such as third-party libraries or operating system functionalities. This decouples the Services from external dependencies through the Adapter pattern. 
+External Resource Adapters are responsible for handling interactions with external resources, including third-party libraries and operating system functionalities. They act as the bridge between the [Core layer](#31-core) and the [External layer](#33-external). The Core layer defines External Resource Ports (interfaces) that specify how these external resources should be accessed, and the Platform layer provides concrete implementations of these ports in the form of External Resource Adapters. These adapters encapsulate the specific details of interacting with each external resource, allowing Core [Services](#313-services) to remain agnostic of the underlying implementation. This design decouples Core Services from external dependencies, providing flexibility and testability.
 
 The following code demonstrates an External Resource Adapter of a email service:
 
 ```
-// core layer (core/services/external_resources/EmailAdapter)
-class EmailMessage:
-  from: String
-  to: String
-  subject: String
-  body: String
+import EmailProviderPort from core/services/external_resource_ports/EmailProviderPort
+import MailService, Credentials from third_party_email_library
 
-interface EmailAdapter:
-  send(message: EmailMessage)
+class EmailProviderAdapter implements EmailProviderPort:
+  mail: MailService
 
-
-// platform layer (platform/services/external_resources/EmailAdapterImpl) 
-import MailService from third_party_email_library
-import credentianls from platform/config/mail
-
-class EmailAdapterImpl implements EmailAdapter:
-  mail = MailService(credentials = credentials)
+  init(credentials: Credentials):
+    mail = MailService(credentials)
 
   send(message: EmailMessage):
     mail.send(
-      from = credentations.user, 
+      from = credentations.accountEmail, 
       to = message.to,
       subject = message.subject,
       body = message.body
@@ -586,32 +665,37 @@ class ViewModelFactory:
       timeUiMapper = container.presentation.timeUiMapper,
       navigator = container.presentation.navigator
     )
+
+// Client code
+class View:
+  viewModel: ViewModel
+
+  init(viewModelFactory: ViewModelFactory):
+    viewModel = viewModelFactory.make()
+
+  render():
+  ...
 ```
 
 #### 3.2.5. Application Entry Point
-Application Entry Points differ significantly across platforms, ranging from a simple `main` function to complex class hierarchies. In Android, the entry point is the class specified in the `AndroidManifest.xml` file, while in iOS, it's a struct with the `@main` annotation. The Entry Point may reside in the project's root or within the platform layer directory. The Application Entry Point is responsible for creating the dependency container and performing all necessary initializations.
+Application Entry Points differ significantly across platforms, ranging from a simple `main` function to complex class hierarchies. In Android, the entry point is the class specified in the `AndroidManifest.xml` file, while in iOS, it's a struct with the `@main` annotation. The Application Entry Point is responsible for creating the [Dependency Container](#3241-dependency-container) and performing all necessary initializations.
 
 ### 3.3. External
-The External layer represents the environment outside of the application's Core and Platform layers, encompassing the underlying platform, frameworks, and external libraries that the application relies upon for various functionalities. It acts as the interface between the application and the external world. This layer typically comprises a diverse set of components, including:
+The [External](#33-external) layer represents components that the application interacts with but does not directly control. This layer is isolated from the Core layer and is accessed through the Platform layer. This layer is conceptual and does not contain application code. As shown in the diagram, the External layer includes the following key components:
 
-- **Operating System (OS)**: Provides fundamental services and resources, such as process management, memory allocation, and file system access.
+*   **Key Components:**
+    *   **Operating System (OS):** Provides fundamental services and resources, such as process management, memory allocation, and file system access.
+    *   **Presentation Framework:** Handles the user interface and interaction, including UI elements, layout management, and event handling (e.g., Jetpack Compose, SwiftUI).
+    *   **Persistence Mechanism:** Manages data storage and retrieval, encompassing databases (e.g., Room, SQLite, Core Data), file systems, and other storage solutions.
+    *   **Network Interfaces:** Facilitates communication with external systems and services, enabling data transfer and interaction with remote resources (e.g., Retrofit, OkHttp, URLSession).
+    *   **Dependency Injection (DI) Library:** Manages object creation and dependency resolution, promoting loose coupling and modularity (e.g., Hilt, Koin).
+    *   **Third-Party Libraries:** Provides specialized functionalities, such as image loading, analytics, or payment processing, that are not part of the core application or platform (e.g., Glide, SDWebImage, Firebase).
+    *   **Hardware Interfaces:** Provides access to device hardware components, such as the camera, GPS, sensors, and Bluetooth.
+    *   **Cloud Services:** Integrates with cloud-based platforms for services like data storage, authentication, and push notifications (e.g., AWS, Google Cloud, Azure).
+    *   **System Services:** Provides access to platform-specific services, such as location services, notification management, and background tasks.
+    *   **Security Frameworks:** Provides security features such as encryption, authentication, and authorization.
 
-- **Presentation Framework**: Handles the user interface and interaction, including UI elements, layout management, and event handling (e.g., Jetpack Compose, SwiftUI).
-
-- **Persistence Mechanism**: Manages data storage and retrieval, encompassing databases (e.g., Room, SQLite), file systems, and other storage solutions.
-
-- **Network Interfaces**: Facilitates communication with external systems and services, enabling data transfer and interaction with remote resources (e.g., Retrofit, OkHttp).
-
-- **Dependency Injection (DI) Library**: Manages object creation and dependency resolution, promoting loose coupling and modularity (e.g., Hilt, Koin).
-
-- **Third-Party Libraries**: Provides specialized functionalities, such as image loading, analytics, or payment processing, that are not part of the core application or platform (e.g., Glide, Firebase).
-
-- **Hardware Interfaces**: Provides access to device hardware components, such as the camera, GPS, sensors, and Bluetooth.
-
-- **Cloud Services**: Integrates with cloud-based platforms for services like data storage, authentication, and push notifications (e.g., AWS, Google Cloud, Azure).
-
-- **System Services**: Provides access to platform-specific services, such as location services, notification management, and background tasks.
-Security Frameworks: Provides security features such as encryption, authentication, and authorization.
+## 4. Stopwatch Specifics
 
 ## 5. Data Flow 
 ![Data Flow](../assets/images/data-flow-diagram.gif)
