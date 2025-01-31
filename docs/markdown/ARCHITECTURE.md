@@ -174,7 +174,7 @@ The following code snippet illustrates a potential implementation of a timer Ser
 ```
 class TimerState:
   isRunning: Boolean
-  timeMilliseconds: Integer
+  time: Integer
 
 interface TimerListener:
   handleUpdate(timerState: TimerState)
@@ -185,15 +185,15 @@ class TimerService:
 
   start():
     if !state.isRunning:
-      newState = TimerState(isRunning = true, timeMilliseconds = 0)
+      newState = TimerState(isRunning = true, time = 0)
       updateState(newState)
       loop()
 
   loop():
     while state.isRunning:
       delay(milliseconds = 10)
-      newTime = state.timeMilliseconds + 10
-      newState = TimerState(isRunning = state.isRunning, timeMilliseconds = newTime)
+      newTime = state.time + 10
+      newState = TimerState(isRunning = state.isRunning, time = newTime)
       updateState(newState)
 
   updateState(newState: TimerState):
@@ -428,7 +428,7 @@ class StopwatchViewModel implements StopwatchStateListener:
   handleUpdate(newState: StopwatchState):
     state = StopwatchViewState(
       status = newState.status,
-      time = timeUiMapper.map(newState.timeMilliseconds)
+      time = timeUiMapper.map(newState.time)
     )
 
     for listener in listeners:
@@ -491,7 +491,7 @@ class StopwatchStateEntity: Table(name = "stopwatch_state"):
 
   status: Column(name = "status", type = "INTEGER", nullable = false)
 
-  timeMilliseconds: Column(name = "time", type = "INTEGER", nullable = false)
+  time: Column(name = "time", type = "INTEGER", nullable = false)
 ```
 
 #### 3.2.2.2. Data Sources Adapters
@@ -510,7 +510,7 @@ class DatabaseStopwatchStateDataSourceAdapter implements StopwatchStateDataSourc
     entity = StopwatchStateEntity(
       id = 1,
       status = state.status.toInt(),
-      timeMilliseconds = state.timeMilliseconds
+      time = state.time
     )
     
     connection.save(entity)
@@ -522,7 +522,7 @@ class DatabaseStopwatchStateDataSourceAdapter implements StopwatchStateDataSourc
 
     return StopwatchState(
       status = Status.fromInt(entity.status),
-      timeMilliseconds = entity.timeMilliseconds
+      time = entity.time
     )
 ```
 
