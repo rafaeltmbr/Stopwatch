@@ -83,14 +83,18 @@ These goals are achieved through a Unidirectional Data Flow (UDF) approach based
 #### 1.3.1 Ports and Adapters
 To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Ports and Adapters (aka Hexagonal Architecture) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
 
-The Core Layer defines "Ports," which are interfaces that specify how the core interacts with the outside world. The Platform Layer contains "Adapters," which implement these ports and handle the specific details of interacting with external systems. This separation allows us to change external systems (e.g., switch databases) without affecting the core business logic.
+The Core Layer defines **Ports**, which are interfaces that define how the core interacts with external resources. The Platform Layer contains **Adapters**, which provide concrete implementations of these ports, handling the specific details of interacting with external resources. This separation of concerns allows for flexibility in the choice of external resources (such as databases, file systems, or network services) without requiring changes to the core business logic. To replace an external resource, one only needs to implement a new adapter that conforms to the existing port.
 
 The application is designed to be testable, maintainable, and scalable. The use of Ports and Adapters Architecture allows us to test the core business logic in isolation, without needing to set up complex external dependencies. The platform-agnostic core allows us to reuse the same logic across all supported platforms, reducing development time and ensuring consistency.
+
+The following diagram illustrates the Ports and Adapters architectural pattern.
 
 ![Ports and Adapters](../assets/images/ports-and-adapters-diagram.png)
 
 #### 1.3.2 Unidirectional Data Flow (UDF)
 The Unidirectional Data Flow (UDF) pattern ensures that data flows in a single direction throughout the application. This characteristic enables predictable state changes, which is crucial for applications with high stream demand. In this pattern, the flow typically begins with user interactions in the presentation layer, which trigger action events. These events are then processed by the core logic layer, which updates the application's state accordingly. Finally, the presentation layer listens for changes in the application's state and updates the UI to reflect those changes. This single-direction flow, from presentation to core logic to state and back to presentation, ensures that state changes are predictable and manageable, even under high stream demand.
+
+The following picture illustrates the UDF pattern.
 
 ![Unidirectional Data Flow](../assets/images/unidirectional-data-flow-diagram.gif)
 
@@ -197,13 +201,7 @@ class TimerService:
     for listener in listeners:
       listener.handleUpdate(newState)
 
-  pause():
-  ...
-
-  resume():
-  ...
-
-  reset():
+  stop():
   ...
 
   addListener(listener: TimerListener):
@@ -573,9 +571,7 @@ class ServicesContainer:
 
 class UseCasesContainer:
   startStopwatch: StartStopwatchUseCase
-  pauseStopwatch: PauseStopwatchUseCase
-  resumeStopwatch: ResumeStopwatchUseCase
-  resetStopwatch: ResetStopwatchUseCase
+  stopStopwatch: StopStopwatchUseCase
 
 class PresentationContainer:
   navigator: Navigator
@@ -599,9 +595,7 @@ class StopwatchDependencyContainer:
 
     useCases = UseCasesContainer(
       startStopwatch = StartStopwatchUseCaseImpl(data.stateStore, services.timer),
-      pauseStopwatch = PauseStopwatchUseCaseImpl(data.stateStore, services.timer),
-      resumeStopwatch = ResumeStopwatchUseCaseImpl(data.stateStore, services.timer),
-      resetStopwatch = ResetStopwatchUseCaseImpl(data.stateStore, services.timer),
+      stopStopwatch = StopStopwatchUseCaseImpl(data.stateStore, services.timer),
     )
 
     presentation = PresentationContainer(
@@ -623,9 +617,7 @@ class ViewModelFactory:
     return ViewModel(
       stateStore = container.data.stateStore,
       startStopwatch = container.useCases.startStopwatch,
-      pauseStopwatch = container.useCases.pauseStopwatch,
-      ResumeStopwatch = container.useCases.resumeStopwatch,
-      ResetStopwatch = container.useCases.resetStopwatch,
+      stopStopwatch = container.useCases.stopStopwatch,
       timeUiMapper = container.presentation.timeUiMapper,
       navigator = container.presentation.navigator
     )
