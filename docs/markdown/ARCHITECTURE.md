@@ -6,8 +6,8 @@ Table of Contents
     *   [1.1. Overview](#11-overview)
     *   [1.2. Architectural Goals](#12-architectural-goals)
     *   [1.3. Architectural Approach](#13-architectural-approach)
-        *   1.3.1. Ports and Adapters
-        *   1.3.2. Unidirectional Data Flow (UDF)
+        *   [1.3.1. Ports and Adapters](#131-ports-and-adapters)
+        *   [1.3.2. Unidirectional Data Flow (UDF)](#131-ports-and-adapters)
 2.  Essencial Concepts
     *   2.1. Ports and Adapters
     *   2.2. Unidirectional Data Flow (UDF)
@@ -81,7 +81,7 @@ These goals are achieved through a Unidirectional Data Flow (UDF) approach based
 
 ### 1.3. Architectural approach
 #### 1.3.1 Ports and Adapters
-To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Ports and Adapters Architecture (Ports and Adapters) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
+To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Ports and Adapters (aka Hexagonal Architecture) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
 
 The Core Layer defines "Ports," which are interfaces that specify how the core interacts with the outside world. The Platform Layer contains "Adapters," which implement these ports and handle the specific details of interacting with external systems. This separation allows us to change external systems (e.g., switch databases) without affecting the core business logic.
 
@@ -90,7 +90,7 @@ The application is designed to be testable, maintainable, and scalable. The use 
 ![Ports and Adapters](../assets/images/ports-and-adapters-diagram.png)
 
 #### 1.3.2 Unidirectional Data Flow (UDF)
-The Unidirectional Data Flow (UDF) pattern ensures that data flows in a single direction throughout the application. This characteristic enables predictable state changes, which is crucial for applications with high stream demand. In this pattern, the flow typically begins with user interactions in the presentation layer, which trigger action events. These events are then processed by the logic layer, which updates the application's state accordingly. Finally, the presentation layer listens for changes in the application's state and updates the UI to reflect those changes. This single-direction flow, from presentation to logic to state and back to presentation, ensures that state changes are predictable and manageable, even under high stream demand.
+The Unidirectional Data Flow (UDF) pattern ensures that data flows in a single direction throughout the application. This characteristic enables predictable state changes, which is crucial for applications with high stream demand. In this pattern, the flow typically begins with user interactions in the presentation layer, which trigger action events. These events are then processed by the core logic layer, which updates the application's state accordingly. Finally, the presentation layer listens for changes in the application's state and updates the UI to reflect those changes. This single-direction flow, from presentation to core logic to state and back to presentation, ensures that state changes are predictable and manageable, even under high stream demand.
 
 ![Unidirectional Data Flow](../assets/images/unidirectional-data-flow-diagram.gif)
 
