@@ -77,13 +77,13 @@ The primary architectural goals are:
 *   **Scalability:** Provide a system that can adapt to evolving user needs.
 *   **Testability:** Provide a system that is easy to test.
 
-These goals are achieved through a Unidirectional Data Flow (UDF) approach based on the Ports and Adapters pattern.
-
 ### 1.3. Architectural approach
-#### 1.3.1 Ports and Adapters
-To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Ports and Adapters (aka Hexagonal Architecture) pattern. This approach separates the core business logic from external concerns, such as the user interface, data storage, and external APIs.
+The [Architectural Goals](#12-architectural-goals) are achieved through a [Unidirectional Data Flow (UDF) approach](#132-unidirectional-data-flow-udf) based on the [Ports and Adapters pattern](#131-ports-and-adapters).
 
-The Core Layer defines **Ports**, which are interfaces that define how the core interacts with external resources. The Platform Layer contains **Adapters**, which provide concrete implementations of these ports, handling the specific details of interacting with external resources. This separation of concerns allows for flexibility in the choice of external resources (such as databases, file systems, or network services) without requiring changes to the core business logic. To replace an external resource, one only needs to implement a new adapter that conforms to the existing port.
+#### 1.3.1 Ports and Adapters
+To achieve a high degree of flexibility and testability, the Stopwatch application utilizes the Ports and Adapters (aka Hexagonal Architecture) pattern. This approach separates the core business logic from [external concerns](#33-external), such as the user interface, data storage, and external APIs.
+
+The [Core Layer](#31-core) defines **Ports**, which are interfaces that define how the core interacts with external resources. The [Platform Layer](#32-platform) contains **Adapters**, which provide concrete implementations of these ports, handling the specific details of interacting with external resources. This separation of concerns allows for flexibility in the choice of external resources (such as databases, file systems, or network services) without requiring changes to the core business logic. To replace an external resource, one only needs to implement a new adapter that conforms to the existing port.
 
 The application is designed to be testable, maintainable, and scalable. The use of Ports and Adapters Architecture allows us to test the core business logic in isolation, without needing to set up complex external dependencies. The platform-agnostic core allows us to reuse the same logic across all supported platforms, reducing development time and ensuring consistency.
 
