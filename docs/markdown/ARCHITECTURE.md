@@ -44,16 +44,9 @@ Table of Contents
 6.  State Management
 7.  [Dependency Diagram](#7-dependency-diagram)
 8.  [Folder Structure](#8-folder-structure)
-9.  [Implementation](#9-implementation)
-    *   9.1. Android Implementation
-    *   9.2. iOS Implementation
-    *   [9.3. Platform-Specific Considerations](#93-platform-specific-considerations)
-10. Error Handling Strategy
-11. Testing Strategy
-    *   11.1. Android Tests
-    *   11.2. iOS Tests
-12. Appendix
-    *   12.1. Unified Modeling Language (UML)
+9. Error Handling
+10. [Testing Strategy](#10-testing-strategy)
+11. [Considerations](#11-considerations)
 
 ## 1. Introduction
 ### 1.1 Overview
@@ -655,17 +648,17 @@ Application Entry Points differ significantly across platforms, ranging from a s
 ### 3.3. External
 The [External](#33-external) layer represents components that the application interacts with but does not directly control. This layer is isolated from the Core layer and is accessed through the Platform layer. This layer is conceptual and does not contain application code. As shown in the diagram, the External layer includes the following key components:
 
-*   **Key Components:**
-    *   **Operating System (OS):** Provides fundamental services and resources, such as process management, memory allocation, and file system access.
-    *   **Presentation Framework:** Handles the user interface and interaction, including UI elements, layout management, and event handling (e.g., Jetpack Compose, SwiftUI).
-    *   **Persistence Mechanism:** Manages data storage and retrieval, encompassing databases (e.g., Room, SQLite, Core Data), file systems, and other storage solutions.
-    *   **Network Interfaces:** Facilitates communication with external systems and services, enabling data transfer and interaction with remote resources (e.g., Retrofit, OkHttp, URLSession).
-    *   **Dependency Injection (DI) Library:** Manages object creation and dependency resolution, promoting loose coupling and modularity (e.g., Hilt, Koin).
-    *   **Third-Party Libraries:** Provides specialized functionalities, such as image loading, analytics, or payment processing, that are not part of the core application or platform (e.g., Glide, SDWebImage, Firebase).
-    *   **Hardware Interfaces:** Provides access to device hardware components, such as the camera, GPS, sensors, and Bluetooth.
-    *   **Cloud Services:** Integrates with cloud-based platforms for services like data storage, authentication, and push notifications (e.g., AWS, Google Cloud, Azure).
-    *   **System Services:** Provides access to platform-specific services, such as location services, notification management, and background tasks.
-    *   **Security Frameworks:** Provides security features such as encryption, authentication, and authorization.
+**Key Components:**
+  *   **Operating System (OS):** Provides fundamental services and resources, such as process management, memory allocation, and file system access.
+  *   **Presentation Framework:** Handles the user interface and interaction, including UI elements, layout management, and event handling (e.g., Jetpack Compose, SwiftUI).
+  *   **Persistence Mechanism:** Manages data storage and retrieval, encompassing databases (e.g., Room, SQLite, Core Data), file systems, and other storage solutions.
+  *   **Network Interfaces:** Facilitates communication with external systems and services, enabling data transfer and interaction with remote resources (e.g., Retrofit, OkHttp, URLSession).
+  *   **Dependency Injection (DI) Library:** Manages object creation and dependency resolution, promoting loose coupling and modularity (e.g., Hilt, Koin).
+  *   **Third-Party Libraries:** Provides specialized functionalities, such as image loading, analytics, or payment processing, that are not part of the core application or platform (e.g., Glide, SDWebImage, Firebase).
+  *   **Hardware Interfaces:** Provides access to device hardware components, such as the camera, GPS, sensors, and Bluetooth.
+  *   **Cloud Services:** Integrates with cloud-based platforms for services like data storage, authentication, and push notifications (e.g., AWS, Google Cloud, Azure).
+  *   **System Services:** Provides access to platform-specific services, such as location services, notification management, and background tasks.
+  *   **Security Frameworks:** Provides security features such as encryption, authentication, and authorization.
 
 ## 4. Stopwatch Specifics
 
@@ -694,7 +687,7 @@ The application employs a unidirectional data flow, ensuring that data flows in 
 ## 6. State Management
 
 ## 7. Dependency Diagram
-To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core business logic and entities, aligning with principles of [Clean Architecture](#). When the flow of control necessitates a reversal of this dependency direction, the [Dependency Inversion Principle (DIP)](#) is applied. Additionally, to decouple object creation from utilization, the [Abstract Factory](#) pattern is employed. The relationships between application components are visualized in the following UML diagram:
+To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core business logic and entities, aligning with principles of [Clean Architecture](#). When the flow of control necessitates a reversal of this dependency direction, the [Dependency Inversion Principle (DIP)](#) is applied. Additionally, to decouple object creation from utilization, the [Abstract Factory](#) pattern is employed. The relationships between application components are visualized in the following [UML](https://www.geeksforgeeks.org/unified-modeling-language-uml-class-diagrams/) diagram:
 
 ![Dependency Diagram](../assets/images/dependency-diagram.png)
 
@@ -747,20 +740,36 @@ The following diagram illustrates the application's folder structure:
 
 While platform-specific nuances may influence the final implementation details, the overall project structure and organization should remain consistent across platforms.
 
-## 9. Implementation 
+## 9. Error Handling Strategy
 
-## 9.3. Platform-Specific considerations
+## 10. Testing Strategy
+The testing strategy emphasizes thorough unit testing of the core business logic, state management and presentation layer, covering happy paths, error scenarios, and edge cases to ensure application robustness.
+
+**Unit Testing Focus:**
+Unit tests validate component behavior. While primarily focused on individual components, tests may sometimes involve a small cluster of related components. Mocking related components within the core layer is generally avoided.
+
+**Tested components:**
+* **Core layer:**
+  *   **Use Cases:** Validate core business logic and component interactions.
+  *   **Services:** Verify internal logic and calculations. Since these services are internal, tests focus on algorithms and state management.
+  *   **State Stores:** Validate event-driven behavior and state management.
+
+* **Platform layer:**
+  *   **UI Mappers:** Verify correct mapping of core data to presentation data across various scenarios.
+
+**Note:** The components listed above are the current ones with logic and behavior worth testing. As the application grows, other components may also be targeted for testing, and other types of testing (integration, end-to-end) may be implemented. The current testing approach seems to be enough.
+
+**Key Principles:**
+*   **Comprehensive Coverage:** Test all critical code paths (happy paths, errors, edge cases).
+*   **Pragmatic Isolation:** While aiming for isolation, tests may include related components when beneficial.
+*   **Clear Expectations:** Define expected behavior for each component.
+*   **Maintainability:** Write tests for easy updates and extensions.
+
+## 11. Considerations
 During architecture implementation, some exceptions were found:
 
-- On Android, *ViewModel* depends on platform specific code, because the
-  `androidx.lifecycle.ViewModel` base class must be extended. Otherwise, coroutines won't be
-  lifecycle sensitive, possibly leading to memory leaks or unwanted background process running.
-- Instead of using the [Command](#764-command) pattern to update the Core State Store, lambdas were applied.
-  Thanks to closure, all command parameters can be implied from the lambda's creation context.
+* On Android, *ViewModel* depends on platform specific code, because the `androidx.lifecycle.ViewModel` base class must be extended. Otherwise, coroutines won't be lifecycle sensitive, possibly leading to memory leaks or unwanted background process running.
+* Instead of using the [Command](#764-command) pattern to update the Core State Store, lambdas were applied. Thanks to closure, all command parameters can be implied from the lambda's creation context.
+* On iOS, the Combine framework didn't met the expectations for the comunication between layers. So, a simple Observer pattern implementation was used instead.
 
-## 10. Error Handling Strategy
-
-## 11. Testing Strategy
-
-## 12. Appendix
-
+With all being said, the proposed architecture seems to met the [architectural goals](#12-architectural-goals) and application performance.
