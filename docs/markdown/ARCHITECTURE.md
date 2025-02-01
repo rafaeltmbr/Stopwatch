@@ -235,27 +235,25 @@ The Core Data layer comprises components that [Use Cases](#312-use-cases) utiliz
 #### 3.1.4.1. Repositories
 Repositories abstract data access for [Use Cases](#312-use-cases), enabling local data persistence and potential integration with external [Data Sources](#3222-data-sources). They provide a well-defined interface, allowing Use Cases to interact with data without depending on specific implementation details. This abstraction promotes flexibility and maintainability by decoupling the business logic from the underlying data storage mechanisms.
 
-The following code snippet demonstrates a potential implementation of a Repository for a weather application. This implementation retrieves weather information from two sources: a remote server and a local cache. If the remote server fails to provide predictions (e.g., due to network connectivity issues), the repository falls back to the local cache, providing the most recent predictions available for the specified date. This strategy ensures data availability even in offline scenarios, enhancing the application's resilience.
+The following code snippet demonstrates a potential implementation of a Repository for a stopwatch application that synchronize state between muliple devices. This implementation retrieves stopwatch state from two sources: a remote server and a local cache. If the remote server fails to provide the latest stopwatch state (e.g., due to network connectivity issues), the repository falls back to the local cache. This strategy ensures data availability even in offline scenarios, enhancing the application's resilience.
 
 ```
-import WeatherPredictions from core/entities/WeatherPredictions
-import LocalWeatherDataSourcePort from core/data/data_sources/LocalWeatherDataSourcePort 
-import RemoteWeatherDataSourcePort from core/data/data_sources/RemoteWeatherDataSourcePort 
+import StopwatchState from core/entities/StopwatchState
+import LocalStopwatchStateDataSourcePort from core/data/data_sources/LocalStopwatchStateDataSource 
+import RemoteStopwatchStateDataSourcePort from core/data/data_sources/RemoteStopwatchStateDataSourcePort 
 
-class WeatherRepository:
-  cache: LocalWeatherDataSourcePort
-  server: RemoteWeatherDataSourcePort
+class StopwatchStateRepository:
+  cache: LocalStopwatchStateDataSourcePort
+  server: RemoteStopwatchStateDataSourcePort
 
-  getPredictionsForToday() -> WeatherPredictions:
-    today = Date()
-
+  load() -> StopwatchState?:
     try:
-      predicitons = server.getPredictions(date = today)
-      cache.setPredictions(date = today, predictions = predictions)
+      state = server.load()
+      cache.save(state)
     catch:
       // do nothing
 
-    return cache.getPredictions(date = today)
+    return cache.load()
 ```
 
 #### 3.1.4.2. State Stores
