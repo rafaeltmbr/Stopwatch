@@ -42,9 +42,12 @@ Table of Contents
     *   4.4. UI/UX Considerations
 5.  [Data Flow](#5-data-flow)
 6.  State Management
+    * 6.1. State Stores
+    * 6.2. Event Handling
+    * 6.3. Data Synchronization
 7.  [Dependency Diagram](#7-dependency-diagram)
 8.  [Folder Structure](#8-folder-structure)
-9. Error Handling
+9.  [Error Handling](#9-error-handling)
 10. [Testing Strategy](#10-testing-strategy)
 11. [Considerations](#11-considerations)
 
@@ -665,7 +668,7 @@ The [External](#33-external) layer represents components that the application in
 ## 5. Data Flow 
 ![Data Flow](../assets/images/data-flow-diagram.gif)
 
-The application employs a unidirectional data flow, ensuring that data flows in a single direction. The data flow is as follows:
+The application employs a unidirectional data flow as illustrated above. The data flow is as follows:
 
 1.  The user interacts with the Graphical User Interface (GUI) through **Views**. These interactions can include actions like tapping a button, entering text, or swiping.
 2.  The **View** captures the user interaction and triggers a corresponding **Action**. This action is then communicated to the associated **ViewModel**.
@@ -740,7 +743,8 @@ The following diagram illustrates the application's folder structure:
 
 While platform-specific nuances may influence the final implementation details, the overall project structure and organization should remain consistent across platforms.
 
-## 9. Error Handling Strategy
+## 9. Error Handling
+The primary source of potential errors in the Stopwatch involves state persistence. Specifically, errors may occur when saving or restoring the application's state if the persistence mechanism (database or file system) is unavailable or if the required data is not present. As these state persistence operations are transparent to the user, no user intervention is necessary. Errors are handled silently, without displaying any user-facing warnings. Comprehensive error logs are recorded on the device to facilitate troubleshooting.
 
 ## 10. Testing Strategy
 The testing strategy emphasizes thorough unit testing of the core business logic, state management and presentation layer, covering happy paths, error scenarios, and edge cases to ensure application robustness.
@@ -758,12 +762,6 @@ Unit tests validate component behavior. While primarily focused on individual co
   *   **UI Mappers:** Verify correct mapping of core data to presentation data across various scenarios.
 
 **Note:** The components listed above are the current ones with logic and behavior worth testing. As the application grows, other components may also be targeted for testing, and other types of testing (integration, end-to-end) may be implemented. The current testing approach seems to be enough.
-
-**Key Principles:**
-*   **Comprehensive Coverage:** Test all critical code paths (happy paths, errors, edge cases).
-*   **Pragmatic Isolation:** While aiming for isolation, tests may include related components when beneficial.
-*   **Clear Expectations:** Define expected behavior for each component.
-*   **Maintainability:** Write tests for easy updates and extensions.
 
 ## 11. Considerations
 During architecture implementation, some exceptions were found:
