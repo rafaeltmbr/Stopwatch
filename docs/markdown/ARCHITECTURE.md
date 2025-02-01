@@ -7,7 +7,7 @@ Table of Contents
     *   [1.2. Architectural Goals](#12-architectural-goals)
     *   [1.3. Architectural Approach](#13-architectural-approach)
         *   [1.3.1. Ports and Adapters](#131-ports-and-adapters)
-        *   [1.3.2. Unidirectional Data Flow (UDF)](#131-ports-and-adapters)
+        *   [1.3.2. Unidirectional Data Flow (UDF)](#132-unidirectional-data-flow-udf)
 2.  [Essencial Concepts](#2-essential-concepts)
 3.  [Layers](#3-layers)
     *   [3.1. Core](#31-core)
