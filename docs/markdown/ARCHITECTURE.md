@@ -8,16 +8,7 @@ Table of Contents
     *   [1.3. Architectural Approach](#13-architectural-approach)
         *   [1.3.1. Ports and Adapters](#131-ports-and-adapters)
         *   [1.3.2. Unidirectional Data Flow (UDF)](#131-ports-and-adapters)
-2.  Essencial Concepts
-    *   2.1. Ports and Adapters
-    *   2.2. Unidirectional Data Flow (UDF)
-    *   2.3. Dependency Injection (DI)
-    *   2.4. Dependency Inversion Principle (DIP)
-    *   2.5. Design Patterns
-        *   2.5.1. Abstract Factory
-        *   2.5.2. Observer
-        *   2.5.3. Command
-        *   2.5.4. Adapter
+2.  [Essencial Concepts](#2-essential-concepts)
 3.  [Layers](#3-layers)
     *   [3.1. Core](#31-core)
         *   [3.1.1. Core Entities](#311-core-entities)
@@ -87,18 +78,45 @@ The [Core Layer](#31-core) defines **Ports**, which are interfaces that define h
 
 The application is designed to be testable, maintainable, and scalable. The use of Ports and Adapters Architecture allows us to test the core business logic in isolation, without needing to set up complex external dependencies. The platform-agnostic core allows us to reuse the same logic across all supported platforms, reducing development time and ensuring consistency.
 
-The following diagram illustrates the Ports and Adapters architectural pattern.
+The following diagram illustrates the Ports and Adapters architectural pattern in the context of the Stopwatch application.
 
 ![Ports and Adapters](../assets/images/ports-and-adapters-diagram.png)
 
 #### 1.3.2 Unidirectional Data Flow (UDF)
-The Unidirectional Data Flow (UDF) pattern ensures that data flows in a single direction throughout the application. This characteristic enables predictable state changes, which is crucial for applications with high stream demand. In this pattern, the flow typically begins with user interactions in the presentation layer, which trigger action events. These events are then processed by the core logic layer, which updates the application's state accordingly. Finally, the presentation layer listens for changes in the application's state and updates the UI to reflect those changes. This single-direction flow, from presentation to core logic to state and back to presentation, ensures that state changes are predictable and manageable, even under high stream demand.
+The Unidirectional Data Flow (UDF) pattern dictates that data flows in a single direction, determined by its type. **Events**, representing user interactions, flow from the presentation layer towards the core, updating the application's central state—the single source of truth. Conversely, the application's **State** flows from the core towards the user interface. Events trigger central state updates, which then propagate to the user interface.
 
-The following picture illustrates the UDF pattern.
+UDF offers these key benefits:
+* **Predictable Data Flow**: The single, defined direction of data flow (events towards state, state towards UI) makes it much easier to trace how data moves through the application. You know exactly where to look for the source of a change and how it propagates.
+* **Centralized State**: With a single source of truth for the application's state, you don't have to hunt through multiple components to figure out what the current state is. Everything is in one place.
+* **Consistent UI:** Deriving the UI from a single source of truth guarantees consistency and eliminates state duplication.
+* **Easier to reason about**: Because of the predictable flow of data, it is easier to reason about the application behavior.
+* **Simplified Debugging**: When something goes wrong, the predictable data flow and centralized state make it much easier to pinpoint the source of the problem. You can follow the data flow backward or forward to understand what happened.
+
+
+The following diagram illustrates the UDF pattern in the context of the Stopwatch application.
 
 ![Unidirectional Data Flow](../assets/images/unidirectional-data-flow-diagram.gif)
 
 ## 2. Essential Concepts
+This section introduces essential concepts for understanding the application's architecture. Each concept is summarized briefly below. For detailed explanations and further learning, please consult the linked external resources.
+
+* **Ports and Adapters (Hexagonal Architecture)**: This pattern isolates core business logic from external concerns. It defines "Ports" (interfaces) for interaction and "Adapters" (implementations) to connect with external systems. This allows swapping external systems without core modifications. [Read more](https://alistair.cockburn.us/hexagonal-architecture/).
+
+* **Unidirectional Data Flow (UDF)**: UDF ensures data flows in a single direction, enhancing predictability. Typically, user interactions trigger events, which update the state, and then the UI reflects these changes. This is ideal for applications with high stream demand. [Read more](https://developer.android.com/develop/ui/compose/architecture#udf).
+
+* **Dependency Injection (DI)**: DI provides objects with their dependencies from external sources, rather than having them create them internally. This promotes loose coupling, improving modularity and testability. It makes code more maintainable. [Read more](https://builtin.com/articles/dependency-injection).
+
+* **Dependency Inversion Principle (DIP)**: DIP dictates that high-level modules should depend on abstractions, not concrete implementations. This inverts the traditional dependency direction, increasing decoupling and flexibility. It makes code more robust. [Read more](https://www.geeksforgeeks.org/dependecy-inversion-principle-solid/).
+
+* **Design Patterns**: These are reusable solutions to common software design problems. They offer proven templates for solving recurring design challenges. They improve code quality. [Read more](https://refactoring.guru/design-patterns).
+  
+  * **Abstract Factory**: This pattern provides an interface for creating families of related objects without specifying their concrete classes. It's useful when managing groups of interdependent objects. It improves code organization. [Read more](https://refactoring.guru/design-patterns/abstract-factory).
+  
+  * **Observer**: This pattern establishes a one-to-many dependency between objects. When a subject changes, its observers are automatically notified, enabling event handling and state change notifications. It improves code decoupling. [Read more](https://refactoring.guru/design-patterns/observer).
+  
+  * **Command**: This pattern encapsulates a request as an object, enabling parameterization, queuing, and undoable operations. It decouples the invoker from the object that performs the operation. It improves code flexibility. [Read more](https://refactoring.guru/design-patterns/command).
+  
+  * **Adapter**: This pattern allows incompatible interfaces to work together by providing a wrapper. It converts one interface into another that clients expect. It improves code reusability. [Read more](https://refactoring.guru/design-patterns/adapter).
 
 ## 3. Layers
 The application's architecture is structured into three distinct layers: [Core](#31-core), [Platform](#31-core), and [External](#33-external). This layered approach promotes a clear separation of concerns, enhances testability and maintainability, and allows for code reuse across different platforms.
