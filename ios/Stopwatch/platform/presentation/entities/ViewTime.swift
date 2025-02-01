@@ -1,4 +1,4 @@
-struct ViewTime {
+struct ViewTime: Equatable {
     var minutes: [String]
     var seconds: [String]
     var fraction: [String]

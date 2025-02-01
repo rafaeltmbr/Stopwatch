@@ -1,6 +1,6 @@
 import Foundation
 
-struct TimerState {
+struct TimerState: Equatable {
     let isRunning: Bool
     let milliseconds: Int
     

@@ -1,4 +1,4 @@
-struct StopwatchState {
+struct StopwatchState: Equatable {
     let status: Status
     let milliseconds: Int
     let completedLaps: [Lap]
