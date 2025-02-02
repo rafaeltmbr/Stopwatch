@@ -50,6 +50,8 @@ Table of Contents
 9.  [Error Handling](#9-error-handling)
 10. [Testing Strategy](#10-testing-strategy)
 11. [Considerations](#11-considerations)
+    * [11.1. Technology Choices](#111-technology-choices)
+    * [11.2. Implementation Deviations](#112-implementation-deviations)
 
 ## 1. Introduction
 ### 1.1 Overview
@@ -764,10 +766,20 @@ Unit tests validate component behavior. While primarily focused on individual co
 **Note:** The components listed above are the current ones with logic and behavior worth testing. As the application grows, other components may also be targeted for testing, and other types of testing (integration, end-to-end) may be implemented. The current testing approach seems to be enough.
 
 ## 11. Considerations
-During architecture implementation, some exceptions were found:
 
-* On Android, *ViewModel* depends on platform specific code, because the `androidx.lifecycle.ViewModel` base class must be extended. Otherwise, coroutines won't be lifecycle sensitive, possibly leading to memory leaks or unwanted background process running.
-* Instead of using the [Command](#764-command) pattern to update the Core State Store, lambdas were applied. Thanks to closure, all command parameters can be implied from the lambda's creation context.
-* On iOS, the Combine framework didn't met the expectations for the comunication between layers. So, a simple Observer pattern implementation was used instead.
+### 11.1. Technology Choices
+The table below details the specific technology choices made for the Android and iOS implementations:
 
-With all being said, the proposed architecture seems to met the [architectural goals](#12-architectural-goals) and application performance.
+| Technology Area            | Android              | iOS                        |
+| :------------------------- | :------------------- | :------------------------- |
+| **Programming Language**   | Kotlin               | Swift                      |
+| **Data Stream Management** | Kotlin Coroutines    | Combine + Observer Pattern |
+| **UI Framework**           | Jetpack Compose      | SwiftUI                    |
+| **Local Data Persistence** | Room (SQLite)        | FileManager                |
+| **Unit Testing Framework** | JUnit                | Swift Testing              |
+
+### 11.2. Implementation Deviations
+During the implementation phase, certain deviations from the planned architecture were adopted:
+
+*   **Core State Updates:** Instead of employing the Command pattern to update the Core State Store, lambdas were utilized. This approach leverages closure to implicitly capture all necessary command parameters from the lambda's creation context.
+*   **Data Stream Operations:** On Android, Kotlin Coroutines were used to manage data stream operations between application layers. However, the iOS implementation opted for a custom Observer pattern instead of the Combine framework. This decision was made because Combine did not adequately meet the requirements for inter-layer communication in this specific context.
