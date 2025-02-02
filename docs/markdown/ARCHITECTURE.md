@@ -41,10 +41,11 @@ Table of Contents
     *   4.3. Stopwatch States
     *   4.4. UI/UX Considerations
 5.  [Data Flow](#5-data-flow)
-6.  State Management
-    * 6.1. State Stores
-    * 6.2. Event Handling
-    * 6.3. Data Synchronization
+6.  [State Management](#6-state-management)
+    * [6.1. Centralized State Stores](#61-centralized-state-stores)
+    * [6.2. Event-Driven State Updates](#62-event-driven-state-updates)
+    * [6.3. View State and UI Synchronization](#63-view-state-and-ui-synchronization)
+
 7.  [Dependency Diagram](#7-dependency-diagram)
 8.  [Folder Structure](#8-folder-structure)
 9.  [Error Handling](#9-error-handling)
@@ -690,6 +691,19 @@ The application employs a unidirectional data flow as illustrated above. The dat
 
 
 ## 6. State Management
+### 6.1. Centralized State Stores
+The Stopwatch application uses a centralized [State Store](#3142-state-stores) as the single source of truth for its core state. This ensures all components interested in the core state remain synchronized via an Observer-like pattern approach. While the State Store is the single source of truth, its state can be updated by other components, but only through a controlled mechanism with a single point of update. This prevents inconsistencies. The primary State Store is the Core State Store, located within the [Core layer](#31-core).
+
+The Stopwatch application does not require additional State Stores, such as a Presentation State Store, because [ViewModels](#3213-viewmodels) do not share any presentation-specific state.
+
+### 6.2. Event-Driven State Updates
+The Stopwatch application handles two distinct types of events that can lead to Core State Store updates:
+
+*   **User-Initiated Events:** These events originate in the [Presentation layer](#321-presentation) as a result of user interactions. They may propagate through other layers, ultimately triggering specific [Use Cases](#312-use-cases) that handle the logic for updating the Core State Store. This flow of events generally follows the flow of control (from Presentation to State Store).
+*   **Timer-Initiated Events:** The Timer Service, located in the Core layer, triggers Timer State updates. These state changes are mainly triggered when the running time updates. These events also trigger a specific use case that handles the logic for updating the Core State Store.
+
+### 6.3. View State and UI Synchronization
+In the Stopwatch application, ViewModels are the primary components interested in changes to the Core State Store. Each ViewModel maintains its own View State, which is specific to the presentation logic of the corresponding View. When a state change occurs in the Core State Store, the ViewModel receives the updated Stopwatch state, transforms it (using [UI Mappers](#2214-ui-mappers)), and uses it to update its View State. Views then observe changes in their corresponding ViewModel's View State and update the UI accordingly.
 
 ## 7. Dependency Diagram
 To minimize coupling between system components, all dependencies are mediated through interfaces. Furthermore, dependencies flow inward, originating from input/output components (e.g., GUI, data sources) and directed towards core business logic and entities, aligning with principles of [Clean Architecture](#). When the flow of control necessitates a reversal of this dependency direction, the [Dependency Inversion Principle (DIP)](#) is applied. Additionally, to decouple object creation from utilization, the [Abstract Factory](#) pattern is employed. The relationships between application components are visualized in the following [UML](https://www.geeksforgeeks.org/unified-modeling-language-uml-class-diagrams/) diagram:
