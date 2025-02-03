@@ -35,11 +35,11 @@ Table of Contents
             *   [3.2.4.2. Factories](#3242-factories)
         *   [3.2.5. Application Entry Point](#325-application-entry-point)
     *   [3.3. External](#33-external)
-4.  Stopwatch Specifics
-    *   4.1. Time Tracking
-    *   4.2. Lap Management
-    *   4.3. Stopwatch States
-    *   4.4. UI/UX Considerations
+4.  [Stopwatch Specifics](#4-stopwatch-specifics)
+    *   [4.1. Time Tracking](#41-time-tracking)
+    *   [4.2. Lap Management](#42-lap-management)
+    *   [4.3. Stopwatch States](#43-stopwatch-states)
+    *   [4.4. UI/UX Considerations](#44-uiux-considerations)
 5.  [Data Flow](#5-data-flow)
 6.  [State Management](#6-state-management)
     * [6.1. Centralized State Stores](#61-centralized-state-stores)
@@ -667,6 +667,32 @@ The [External](#33-external) layer represents components that the application in
   *   **Security Frameworks:** Provides security features such as encryption, authentication, and authorization.
 
 ## 4. Stopwatch Specifics
+### 4.1. Time Tracking
+
+The Stopwatch tracks time with a high degree of precision, updating the elapsed time every 10 milliseconds (100 times per second). This interval provides sufficient accuracy for most everyday activities and scenarios. Both the internal timer and the Stopwatch User Interface are updated at this same rate. Consequently, there is a frequent flow of data from the Core layer to the Presentation layer, ensuring the UI accurately reflects the elapsed time.
+
+### 4.2. Lap Management
+
+The list of completed laps is a crucial part of the application's core state. Each lap record includes the lap number, its status (e.g., running, completed, best, worst), and the time it took to complete. The current, actively running lap is not stored as a separate entity in the core state. Instead, its duration is dynamically calculated at runtime by subtracting the total accumulated time of all completed laps from the current stopwatch time. This approach ensures that the core state only stores persistent data, while transient data is derived as needed.
+
+### 4.3. Stopwatch States
+
+The Stopwatch can exist in one of three distinct states:
+
+*   **Initial:** Upon a clean initialization (starting from a fresh state, not loading a previous state), the Stopwatch begins in the Initial state. In this state, the elapsed time is zero, and there are no completed laps. Only a clean initialization or a Reset Action can transition the Stopwatch to the Initial state.
+*   **Running:** When the Stopwatch is actively tracking time, the application is in the Running state. In this state, the elapsed time is continuously updated. Only a Start Action or a Resume Action can transition the application to the Running state.
+*   **Paused:** In the Paused state, the Stopwatch's time tracking is halted, and the elapsed time remains frozen. Only a Pause Action can transition the application to the Paused state.
+
+The following state machine diagram illustrates the Stopwatch's states and the actions that trigger state transitions.
+
+![Stopwatch State Machine](../assets/images/state-machine.png)
+
+### 4.4. UI/UX Considerations
+
+To provide a focused and intuitive user experience, the application features two primary Views:
+
+*   **Home View:** This View displays the current elapsed time prominently, along with the primary stopwatch control buttons (Start, Pause, Lap, Reset). It also includes a section showing the current lap's time and the two most recently completed laps. This provides a quick overview of the current timing and recent lap history.
+*   **Laps View:** This View provides a comprehensive view of all lap data. It displays the current elapsed time, the current lap's time, and a complete list of all completed laps. Additionally, it includes a button that allows the user to start the timer if it is paused or to add a new lap if the stopwatch is running. Navigation to the Laps View is enabled only when at least two laps have been completed, ensuring there is sufficient lap data to display.
 
 ## 5. Data Flow 
 ![Data Flow](../assets/images/data-flow-diagram.gif)
