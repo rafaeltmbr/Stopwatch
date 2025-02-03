@@ -34,7 +34,7 @@ class ResetStopwatchAppUseCaseImplTest {
     }
 
     @Test
-    fun reset_shouldNotResetStopwatchIsAlreadyRunning() = runTest {
+    fun reset_shouldNotResetStopwatchIsNotPaused() = runTest {
         val store = MutableStateStoreImpl(StopwatchState())
         val service = TimerServiceImpl()
         val startStopwatch = StartStopwatchUseCaseImpl(store, service)

@@ -37,7 +37,7 @@ class TimerServiceImplTest {
     }
 
     @Test
-    fun start_shouldPauseTimer() = runTest {
+    fun pause_shouldPauseTimer() = runTest {
         val service = TimerServiceImpl(
             coroutineScope = this,
             currentMillisecondsCallback = testScheduler::currentTime
@@ -53,7 +53,7 @@ class TimerServiceImplTest {
     }
 
     @Test
-    fun start_shouldResetTimer() = runTest {
+    fun reset_shouldResetTimer() = runTest {
         val service = TimerServiceImpl(coroutineScope = this)
 
         service.start()
@@ -67,7 +67,7 @@ class TimerServiceImplTest {
     }
 
     @Test
-    fun start_shouldNotResetWhileRunning() = runTest {
+    fun reset_shouldNotResetWhileRunning() = runTest {
         val service = TimerServiceImpl(
             coroutineScope = this,
             currentMillisecondsCallback = testScheduler::currentTime
