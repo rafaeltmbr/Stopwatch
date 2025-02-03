@@ -692,7 +692,7 @@ The following state machine diagram illustrates the Stopwatch's states and the a
 To provide a focused and intuitive user experience, the application features two primary Views:
 
 *   **Home View:** This View displays the current elapsed time prominently, along with the primary stopwatch control buttons (Start, Pause, Lap, Reset). It also includes a section showing the current lap's time and the two most recently completed laps. This provides a quick overview of the current timing and recent lap history.
-*   **Laps View:** This View provides a comprehensive view of all lap data. It displays the current elapsed time, the current lap's time, and a complete list of all completed laps. Additionally, it includes a button that allows the user to start the timer if it is paused or to add a new lap if the stopwatch is running. Navigation to the Laps View is enabled only when at least two laps have been completed, ensuring there is sufficient lap data to display.
+*   **Laps View:** This View provides a comprehensive view of all lap data. It displays the current elapsed time, the current lap's time, and a complete list of all completed laps. Additionally, it includes a button that allows the user to start the timer if it is paused or to add a new lap if the stopwatch is running. Navigation to the Laps View is enabled only when at least three laps have been completed, ensuring there is sufficient lap data to display.
 
 ## 5. Data Flow 
 ![Data Flow](../assets/images/data-flow-diagram.gif)
@@ -769,12 +769,12 @@ The following diagram illustrates the application's folder structure:
        |-- presentation
        |   |-- entities
        |   |-- mappers
-       |   |-- navigation
+       |   |-- navigation (interfaces)
        |   |-- view_models
        |   |
        |   \-- [ui library]
        |       |--- components
-       |       |--- navigation
+       |       |--- navigation (implementations)
        |       \--- views
        |
        \-- services
