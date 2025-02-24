@@ -277,7 +277,7 @@ The following code snippet demonstrates an implementation of a StopwatchState St
 ```
 import StopwatchState from core/entities/StopwatchState
 
-class StopwatchStateListener:
+interface StopwatchStateListener:
   handleUpdate(newState: StopwatchState)
 
 class StopwatchStateStore:
@@ -734,21 +734,23 @@ To provide a focused and intuitive user experience, the application features two
 
 The application employs a unidirectional data flow as illustrated above. The data flow is as follows:
 
-1.  The user interacts with the Graphical User Interface (GUI) through **Views**. These interactions can include actions like tapping a button, entering text, or swiping.
-2.  The **View** captures the user interaction and triggers a corresponding **Action**. This action is then communicated to the associated **ViewModel**.
-3.  The **ViewModel** receives the **Action** and processes it. Based on the action, the ViewModel may perform one or both of the following:
-    - a. The ViewModel invokes one or more **Use Cases** to execute the necessary business logic.
-    - b. The ViewModel instructs the **Navigator** to navigate to a different screen or destination within the application.
-4.  The **Use Case** executes the required business logic. During this process, it may perform one or both of the following:
-    - a. The Use Case utilizes **Services** to perform specialized operations or to interact with external resources (e.g., network, database, sensors).
-    - b. The Use Case accesses and manipulates data through **Repositories**.
-5.  After executing the business logic, the **Use Case** updates the **Core State Store** to reflect any changes to the application's core state.
-6.  The **ViewModel** observes the **Core State Store** for changes.
-7.  When the **ViewModel** detects a change in the **Core State Store**, it updates its internal state. This may involve one or both of the following:
-    - a. The ViewModel uses **UI Mappers** to transform the core state data into a format suitable for the UI, resulting in an updated **View State**.
-    - b. The ViewModel instructs the **Navigator** to navigate to a different screen or destination.
-8.  The **View** observes the **ViewModel's View State** for changes.
-9.  When the **View** detects a change in the **View State**, it updates the GUI to reflect the new state. The user sees the updated GUI, reflecting the current state of the application.
+1. The user interacts with the **Graphical User Interface (GUI)** through actions such as tapping, scrolling, text input, and etc.
+2. The **GUI** captures the user interaction and dispatches an **UI Event** to the **View**.
+3. The **View** captures the user interaction and triggers a corresponding **Action**. This action is then communicated to the associated **ViewModel**.
+4. The **ViewModel** receives the **Action** and processes it. Based on the action, the ViewModel may perform one or both of the following:
+   - a. The ViewModel invokes one or more **Use Cases** to execute the necessary business logic.
+   - b. The ViewModel instructs the **Navigator** to navigate to a different screen or destination within the application.
+5. The **Use Case** executes the required business logic. During this process, it may perform one or both of the following:
+   - a. The Use Case utilizes **Services** to perform specialized operations or to interact with external resources (e.g., network, database, sensors).
+   - b. The Use Case accesses and manipulates data through **Repositories**.
+6. After executing the business logic, the **Use Case** updates the **Core State Store** to reflect any changes to the application's core state.
+7. The **ViewModel** observes the **Core State Store** for changes.
+8. When the **ViewModel** detects a change in the **Core State Store**, it updates its internal state. This may involve one or both of the following:
+   - a. The ViewModel uses **UI Mappers** to transform the core state data into a format suitable for the UI, resulting in an updated **View State**.
+   - b. The ViewModel instructs the **Navigator** to navigate to a different screen or destination.
+9. The **View** observes the **ViewModel's View State** for changes.
+10. When a **View** detects a change in the **View State**, it triggers a process that updates the **GUI** to render new content.
+11. The user sees the updated **GUI**, reflecting the current state of the application.
 
 ## 6. State Management
 
