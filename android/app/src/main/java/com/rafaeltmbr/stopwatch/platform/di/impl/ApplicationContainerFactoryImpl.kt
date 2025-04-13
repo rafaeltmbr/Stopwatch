@@ -14,7 +14,6 @@ import com.rafaeltmbr.stopwatch.core.use_cases.impl.RestoreStopwatchStateUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.SaveStopwatchStateUseCaseImpl
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.StartStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.UpdateStopwatchTimeUseCaseImpl
-import com.rafaeltmbr.stopwatch.core.utils.impl.CalculateLapsStatusesImpl
 import com.rafaeltmbr.stopwatch.platform.data.room.StopwatchDatabase
 import com.rafaeltmbr.stopwatch.platform.data.room.data_source_adapters.RoomStopwatchDataSourceAdapter
 import com.rafaeltmbr.stopwatch.platform.di.ApplicationContainer
@@ -45,10 +44,9 @@ class ApplicationApplicationContainerFactoryImpl(private val context: Context) :
             LoggingServiceImpl(AndroidPlatformLoggerAdapter())
         )
 
-        val calculateLapsStatuses = CalculateLapsStatusesImpl()
         val useCases = ApplicationContainer.UseCases(
             LoggingUseCaseImpl(services.logging),
-            NewLapUseCaseImpl(data.stopwatchStore, calculateLapsStatuses),
+            NewLapUseCaseImpl(data.stopwatchStore),
             PauseStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             ResetStopwatchUseCaseImpl(data.stopwatchStore, services.timer),
             RestoreStopwatchStateUseCaseImpl(

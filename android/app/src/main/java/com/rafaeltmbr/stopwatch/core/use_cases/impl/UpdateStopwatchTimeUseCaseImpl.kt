@@ -2,6 +2,7 @@ package com.rafaeltmbr.stopwatch.core.use_cases.impl
 
 import com.rafaeltmbr.stopwatch.core.data.stores.MutableStateStore
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
+import com.rafaeltmbr.stopwatch.core.entities.Time
 import com.rafaeltmbr.stopwatch.core.services.TimerService
 import com.rafaeltmbr.stopwatch.core.use_cases.UpdateStopwatchTimeUseCase
 
@@ -10,7 +11,7 @@ class UpdateStopwatchTimeUseCaseImpl(
 ) : UpdateStopwatchTimeUseCase {
     override suspend fun execute(timerState: TimerService.State) {
         store.update {
-            it.copy(milliseconds = timerState.milliseconds)
+            it.copy().updateTime(Time(timerState.milliseconds))
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.rafaeltmbr.stopwatch.core.use_cases
 
 import com.rafaeltmbr.stopwatch.core.data.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.core.entities.CompletedLaps
 import com.rafaeltmbr.stopwatch.core.entities.Status
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
+import com.rafaeltmbr.stopwatch.core.entities.Time
 import com.rafaeltmbr.stopwatch.core.services.impl.TimerServiceImpl
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.PauseStopwatchUseCaseImpl
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.StartStopwatchUseCaseImpl
@@ -26,8 +28,8 @@ class StartStopwatchAppUseCaseImplTest {
     fun start_shouldIgnoreStartWhenStopwatchIsAlreadyRunning() = runTest {
         val initial = StopwatchState(
             status = Status.INITIAL,
-            milliseconds = 0L,
-            completedLaps = emptyList()
+            time = Time(),
+            completedLaps = CompletedLaps()
         )
 
         val store = MutableStateStoreImpl(initial)

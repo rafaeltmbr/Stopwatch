@@ -17,12 +17,7 @@ class ResetStopwatchUseCaseImpl(
 
         timerService.reset()
         store.update {
-            it.copy(
-                status = Status.INITIAL,
-                milliseconds = 0L,
-                completedLaps = emptyList(),
-                completedLapsMilliseconds = 0L
-            )
+            it.copy().reset()
         }
     }
 }

@@ -71,24 +71,24 @@ class HomeViewModelImpl(
     private fun handleStopwatchStateUpdate(stopwatchState: StopwatchState) {
         _state.update { currentState ->
             val completedLaps =
-                stopwatchState.completedLaps
+                stopwatchState.completedLaps.laps
                     .subList(
-                        fromIndex = max(0, stopwatchState.completedLaps.size - 2),
-                        toIndex = stopwatchState.completedLaps.size
+                        fromIndex = max(0, stopwatchState.completedLaps.laps.size - 2),
+                        toIndex = stopwatchState.completedLaps.laps.size
                     )
                     .map {
                         ViewLap(
                             index = it.index,
-                            time = stringTimeMapper.map(it.milliseconds),
+                            time = stringTimeMapper.map(it.time.milliseconds),
                             status = it.status
                         )
                     }
 
             val currentLap = ViewLap(
-                index = stopwatchState.completedLaps.size + 1,
+                index = stopwatchState.completedLaps.laps.size + 1,
                 status = Lap.Status.CURRENT,
                 time = stringTimeMapper.map(
-                    stopwatchState.milliseconds - stopwatchState.completedLapsMilliseconds
+                    stopwatchState.time.milliseconds - stopwatchState.completedLaps.time.milliseconds
                 )
             )
 
@@ -96,10 +96,10 @@ class HomeViewModelImpl(
 
             currentState.copy(
                 status = stopwatchState.status,
-                time = viewTimeMapper.map(stopwatchState.milliseconds),
+                time = viewTimeMapper.map(stopwatchState.time.milliseconds),
                 laps = laps,
                 showLapsSection = stopwatchState.status != Status.INITIAL,
-                showSeeAllLaps = stopwatchState.completedLaps.size > 2,
+                showSeeAllLaps = stopwatchState.completedLaps.laps.size > 2,
             )
         }
     }

@@ -1,9 +1,11 @@
 package com.rafaeltmbr.stopwatch.core.use_cases
 
 import com.rafaeltmbr.stopwatch.core.data.stores.impl.MutableStateStoreImpl
+import com.rafaeltmbr.stopwatch.core.entities.CompletedLaps
 import com.rafaeltmbr.stopwatch.core.entities.Lap
 import com.rafaeltmbr.stopwatch.core.entities.Status
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
+import com.rafaeltmbr.stopwatch.core.entities.Time
 import com.rafaeltmbr.stopwatch.core.services.TimerService
 import com.rafaeltmbr.stopwatch.core.use_cases.impl.UpdateStopwatchTimeUseCaseImpl
 import kotlinx.coroutines.test.runTest
@@ -16,15 +18,17 @@ class UpdateStopwatchAppTimeUseCaseImplTest {
         val store = MutableStateStoreImpl(
             StopwatchState(
                 status = Status.RUNNING,
-                milliseconds = 1_000L,
-                completedLaps = listOf(
-                    Lap(
-                        index = 1,
-                        milliseconds = 1_000L,
-                        status = Lap.Status.DONE
-                    )
-                ),
-                completedLapsMilliseconds = 1_000L
+                time = Time(milliseconds = 1_000L),
+                completedLaps = CompletedLaps(
+                    laps = listOf(
+                        Lap(
+                            index = 1,
+                            time = Time(milliseconds = 1_000L),
+                            status = Lap.Status.DONE
+                        )
+                    ),
+                    time = Time(milliseconds = 1_000L)
+                )
             )
         )
         val useCase = UpdateStopwatchTimeUseCaseImpl(store)
@@ -38,15 +42,17 @@ class UpdateStopwatchAppTimeUseCaseImplTest {
 
         val expected = StopwatchState(
             status = Status.RUNNING,
-            milliseconds = 1_700L,
-            completedLaps = listOf(
-                Lap(
-                    index = 1,
-                    milliseconds = 1_000L,
-                    status = Lap.Status.DONE
-                )
-            ),
-            completedLapsMilliseconds = 1_000L
+            time = Time(milliseconds = 1_700L),
+            completedLaps = CompletedLaps(
+                laps = listOf(
+                    Lap(
+                        index = 1,
+                        time = Time(milliseconds = 1_000L),
+                        status = Lap.Status.DONE
+                    )
+                ),
+                time = Time(milliseconds = 1_000L)
+            )
         )
 
         Assert.assertEquals(expected, store.state.value)

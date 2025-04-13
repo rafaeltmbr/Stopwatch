@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.rafaeltmbr.stopwatch.core.data.stores.StateStore
 import com.rafaeltmbr.stopwatch.core.entities.Lap
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
+import com.rafaeltmbr.stopwatch.core.entities.Time
 import com.rafaeltmbr.stopwatch.core.use_cases.LoggingUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.NewLapUseCase
 import com.rafaeltmbr.stopwatch.core.use_cases.StartStopwatchUseCase
@@ -58,16 +59,16 @@ class LapsViewModelImpl(
 
     override fun getViewLapByReversedArrayIndex(index: Int): ViewLap {
         val stopwatchState = stopwatchStore.state.value
-        val computedIndex = stopwatchState.completedLaps.size - index
-        val lap = stopwatchState.completedLaps.getOrNull(computedIndex) ?: Lap(
-            index = stopwatchState.completedLaps.size + 1,
-            milliseconds = stopwatchState.milliseconds - stopwatchState.completedLapsMilliseconds,
+        val computedIndex = stopwatchState.completedLaps.laps.size - index
+        val lap = stopwatchState.completedLaps.laps.getOrNull(computedIndex) ?: Lap(
+            index = stopwatchState.completedLaps.laps.size + 1,
+            time = Time(stopwatchState.time.milliseconds - stopwatchState.completedLaps.time.milliseconds),
             status = Lap.Status.CURRENT
         )
 
         return ViewLap(
             index = lap.index,
-            time = stringTimeMapper.map(lap.milliseconds),
+            time = stringTimeMapper.map(lap.time.milliseconds),
             status = lap.status
         )
     }
@@ -76,8 +77,8 @@ class LapsViewModelImpl(
         _state.update { currentState ->
             currentState.copy(
                 status = stopwatchState.status,
-                lapsCount = stopwatchState.completedLaps.size + 1,
-                time = stringTimeMapper.map(stopwatchState.milliseconds),
+                lapsCount = stopwatchState.completedLaps.laps.size + 1,
+                time = stringTimeMapper.map(stopwatchState.time.milliseconds),
             )
         }
     }

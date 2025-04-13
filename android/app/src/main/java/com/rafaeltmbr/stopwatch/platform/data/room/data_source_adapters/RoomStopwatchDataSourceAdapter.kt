@@ -1,9 +1,11 @@
 package com.rafaeltmbr.stopwatch.platform.data.room.data_source_adapters
 
 import com.rafaeltmbr.stopwatch.core.data.data_source_ports.StopwatchDataSourcePort
+import com.rafaeltmbr.stopwatch.core.entities.CompletedLaps
 import com.rafaeltmbr.stopwatch.core.entities.Lap
 import com.rafaeltmbr.stopwatch.core.entities.Status
 import com.rafaeltmbr.stopwatch.core.entities.StopwatchState
+import com.rafaeltmbr.stopwatch.core.entities.Time
 import com.rafaeltmbr.stopwatch.platform.data.room.dao.LapsDao
 import com.rafaeltmbr.stopwatch.platform.data.room.dao.StopwatchStateDao
 import com.rafaeltmbr.stopwatch.platform.data.room.entities.LapEntity
@@ -19,15 +21,17 @@ class RoomStopwatchDataSourceAdapter(
 
         return StopwatchState(
             status = stopwatchState.status.stopwatchStatus ?: return null,
-            milliseconds = stopwatchState.milliseconds,
-            completedLaps = laps.map {
-                Lap(
-                    index = it.index,
-                    milliseconds = it.milliseconds,
-                    status = it.status.lapStatus ?: return@load null
-                )
-            },
-            completedLapsMilliseconds = laps.sumOf { it.milliseconds }
+            time = Time(stopwatchState.milliseconds),
+            completedLaps = CompletedLaps(
+                laps = laps.map {
+                    Lap(
+                        index = it.index,
+                        time = Time(it.milliseconds),
+                        status = it.status.lapStatus ?: return@load null
+                    )
+                },
+                time = Time(laps.sumOf { it.milliseconds })
+            )
         )
     }
 
@@ -36,17 +40,17 @@ class RoomStopwatchDataSourceAdapter(
         stopwatchStateDao.save(
             StopwatchStateEntity(
                 id = 1,
-                milliseconds = state.milliseconds,
+                milliseconds = state.time.milliseconds,
                 status = state.status.number
             )
         )
 
         lapsDao.clear()
         lapsDao.save(
-            state.completedLaps.map {
+            state.completedLaps.laps.map {
                 LapEntity(
                     index = it.index,
-                    milliseconds = it.milliseconds,
+                    milliseconds = it.time.milliseconds,
                     status = it.status.number
                 )
             }
